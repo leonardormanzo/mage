@@ -1,1 +1,12 @@
+# Conteúdo exclusivamente local: nunca enviar ao GitHub
+privado/
+
+# Atalhos e arquivos temporários do Windows
 *.lnk
+Thumbs.db
+Desktop.ini
+
+# Cópias e arquivos temporários
+*.bak
+*.tmp
+~$*
