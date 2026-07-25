@@ -5,13 +5,16 @@ somente neste computador.
 
 ## Estrutura
 
-- `publicado/`: conteúdo versionado e enviado ao GitHub.
+- `publicado/`: projetos versionados e enviados ao GitHub.
+  - `diario-de-obra/`: projeto Diário de Obra.
+  - `checklist-de-obra/`: projeto Checklist de Obra.
 - `privado/`: conteúdo exclusivamente local, ignorado pelo Git.
 - `.gitignore`: regras que impedem o envio de arquivos privados e temporários.
 
 ## Regra prática
 
-Coloque em `publicado/` apenas arquivos que podem ser vistos por qualquer pessoa.
+Crie uma subpasta dentro de `publicado/` para cada projeto que pode ser visto
+por qualquer pessoa. Use `index.html` como arquivo inicial de projetos web.
 Coloque em `privado/` rascunhos, credenciais, dados pessoais, exportações internas
 e qualquer material que não deva aparecer no GitHub.
 
