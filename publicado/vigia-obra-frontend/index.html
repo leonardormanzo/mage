@@ -1,0 +1,917 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Vigia Obra — Painel de Inspeção</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f4f5f7;
+    --surface: #ffffff;
+    --surface-2: #eceff2;
+    --surface-3: #e0e4e8;
+    --text-primary: #14171a;
+    --text-secondary: #565b61;
+    --text-muted: #8a8f95;
+    --border: rgba(20, 23, 26, 0.12);
+    --border-strong: rgba(20, 23, 26, 0.24);
+    --accent: #2a78d6;
+    --accent-strong: #1c5cab;
+    --accent-ink: #ffffff;
+    --accent-soft: rgba(42, 120, 214, 0.12);
+    --good: #0ca30c;
+    --good-soft: rgba(12, 163, 12, 0.12);
+    --warning: #fab219;
+    --warning-soft: rgba(250, 178, 25, 0.16);
+    --critical: #d03b3b;
+    --critical-soft: rgba(208, 59, 59, 0.12);
+    --radius: 10px;
+    --radius-sm: 6px;
+    --shadow-1: 0 1px 2px rgba(20, 23, 26, 0.05), 0 6px 20px rgba(20, 23, 26, 0.05);
+    --font-display: ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", "Courier New", monospace;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --bg: #0d0e10;
+      --surface: #1a1c1f;
+      --surface-2: #212427;
+      --surface-3: #2b2e32;
+      --text-primary: #f5f6f7;
+      --text-secondary: #c4c9ce;
+      --text-muted: #8d9298;
+      --border: rgba(255, 255, 255, 0.12);
+      --border-strong: rgba(255, 255, 255, 0.24);
+      --accent: #3987e5;
+      --accent-strong: #6cabf0;
+      --accent-ink: #ffffff;
+      --accent-soft: rgba(57, 135, 229, 0.18);
+      --good: #0ca30c;
+      --good-soft: rgba(12, 163, 12, 0.2);
+      --warning: #fab219;
+      --warning-soft: rgba(250, 178, 25, 0.2);
+      --critical: #e66767;
+      --critical-soft: rgba(230, 103, 103, 0.2);
+      --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 6px 20px rgba(0, 0, 0, 0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0d0e10;
+    --surface: #1a1c1f;
+    --surface-2: #212427;
+    --surface-3: #2b2e32;
+    --text-primary: #f5f6f7;
+    --text-secondary: #c4c9ce;
+    --text-muted: #8d9298;
+    --border: rgba(255, 255, 255, 0.12);
+    --border-strong: rgba(255, 255, 255, 0.24);
+    --accent: #3987e5;
+    --accent-strong: #6cabf0;
+    --accent-ink: #ffffff;
+    --accent-soft: rgba(57, 135, 229, 0.18);
+    --good: #0ca30c;
+    --good-soft: rgba(12, 163, 12, 0.2);
+    --warning: #fab219;
+    --warning-soft: rgba(250, 178, 25, 0.2);
+    --critical: #e66767;
+    --critical-soft: rgba(230, 103, 103, 0.2);
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 6px 20px rgba(0, 0, 0, 0.35);
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --bg: #f4f5f7;
+    --surface: #ffffff;
+    --surface-2: #eceff2;
+    --surface-3: #e0e4e8;
+    --text-primary: #14171a;
+    --text-secondary: #565b61;
+    --text-muted: #8a8f95;
+    --border: rgba(20, 23, 26, 0.12);
+    --border-strong: rgba(20, 23, 26, 0.24);
+    --accent: #2a78d6;
+    --accent-strong: #1c5cab;
+    --accent-ink: #ffffff;
+    --accent-soft: rgba(42, 120, 214, 0.12);
+    --good: #0ca30c;
+    --good-soft: rgba(12, 163, 12, 0.12);
+    --warning: #fab219;
+    --warning-soft: rgba(250, 178, 25, 0.16);
+    --critical: #d03b3b;
+    --critical-soft: rgba(208, 59, 59, 0.12);
+    --shadow-1: 0 1px 2px rgba(20, 23, 26, 0.05), 0 6px 20px rgba(20, 23, 26, 0.05);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); }
+
+  .eyebrow {
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* ---------- shell ---------- */
+  .app {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 28px 24px 64px;
+  }
+
+  header.brand {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+  .brand-title {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .brand-title h1 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 0;
+  }
+  .brand-title .tagline {
+    color: var(--text-secondary);
+    font-size: 13.5px;
+  }
+  .theme-toggle {
+    display: flex;
+    gap: 4px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px;
+  }
+  .theme-toggle button {
+    font-family: var(--font-display);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 6px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .theme-toggle button[aria-pressed="true"] {
+    background: var(--surface);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-1);
+  }
+
+  /* ---------- disclaimer placard ---------- */
+  .placard {
+    position: relative;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: var(--warning-soft);
+    border: 1px solid rgba(250, 178, 25, 0.4);
+    border-radius: var(--radius);
+    padding: 14px 16px 14px 18px;
+    margin-bottom: 22px;
+    overflow: hidden;
+  }
+  .placard::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: repeating-linear-gradient(
+      135deg,
+      var(--warning) 0 10px,
+      var(--text-primary) 10px 20px
+    );
+    opacity: 0.55;
+  }
+  .placard-icon {
+    font-size: 18px;
+    line-height: 1;
+    margin-top: 2px;
+  }
+  .placard p {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--text-primary);
+  }
+  .placard strong { font-weight: 700; }
+
+  /* ---------- layout grid ---------- */
+  .layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 22px;
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-1);
+  }
+
+  /* ---------- config rail ---------- */
+  .rail { padding: 18px; display: flex; flex-direction: column; gap: 18px; position: sticky; top: 20px; }
+  .rail h2 {
+    font-family: var(--font-display);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 2px;
+  }
+
+  .video-source {
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    background: var(--surface-2);
+  }
+  .video-source .thumb {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+    background:
+      repeating-linear-gradient(45deg, var(--warning) 0 6px, var(--text-primary) 6px 12px);
+    opacity: 0.85;
+  }
+  .video-source .meta { min-width: 0; }
+  .video-source .filename {
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .video-source .duration {
+    font-family: var(--font-display);
+    font-size: 12px;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+  .field select,
+  .field input[type="number"] {
+    font-family: var(--font-body);
+    font-size: 13.5px;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text-primary);
+  }
+  .field select:focus-visible,
+  .field input:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  .field-hint { font-size: 11.5px; color: var(--text-muted); }
+
+  .btn {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover { background: var(--accent-strong); }
+  .btn-primary:disabled { background: var(--surface-3); color: var(--text-muted); cursor: not-allowed; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border-color: var(--border-strong);
+  }
+  .btn-ghost:hover { background: var(--surface-2); }
+
+  .progress-block { display: flex; flex-direction: column; gap: 8px; }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+  }
+  .progress-label .count { font-family: var(--font-display); font-variant-numeric: tabular-nums; }
+  .progress-track {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--surface-3);
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 999px;
+    width: 0%;
+    transition: width 0.35s ease;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .progress-fill { transition: none; }
+  }
+  .progress-track.indeterminate .progress-fill {
+    width: 40%;
+    animation: indeterminate 1.4s ease-in-out infinite;
+  }
+  @keyframes indeterminate {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(250%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .progress-track.indeterminate .progress-fill { animation: none; width: 60%; }
+  }
+
+  /* ---------- results column ---------- */
+  .results { display: flex; flex-direction: column; gap: 18px; }
+
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 640px) {
+    .stat-row { grid-template-columns: repeat(2, 1fr); }
+  }
+  .stat-tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    box-shadow: var(--shadow-1);
+  }
+  .stat-tile .stat-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+  }
+  .stat-tile .dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .stat-tile .stat-value {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .dot.total { background: var(--accent); }
+  .dot.baixa { background: var(--good); }
+  .dot.media { background: var(--warning); }
+  .dot.alta { background: var(--critical); }
+
+  .list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .list-header h2 {
+    font-family: var(--font-display);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0;
+  }
+  .view-toggle {
+    display: flex;
+    gap: 4px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px;
+  }
+  .view-toggle button {
+    font-size: 12px;
+    font-weight: 600;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 5px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .view-toggle button[aria-pressed="true"] {
+    background: var(--surface);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-1);
+  }
+
+  .occ-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .occ-card {
+    display: flex;
+    gap: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--sev-color, var(--border));
+    border-radius: var(--radius);
+    padding: 13px 16px;
+    box-shadow: var(--shadow-1);
+    animation: rise 0.28s ease both;
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .occ-card { animation: none; }
+  }
+  .occ-main { min-width: 0; flex: 1; }
+  .occ-top {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .occ-timestamp {
+    font-family: var(--font-display);
+    font-size: 12.5px;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    color: var(--text-secondary);
+  }
+  .chip .dot { width: 7px; height: 7px; }
+  .chip-norma {
+    font-family: var(--font-display);
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .occ-risco { font-size: 14px; color: var(--text-primary); }
+  .confidence {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11.5px;
+    color: var(--text-muted);
+  }
+  .confidence .ring {
+    width: 8px; height: 8px; border-radius: 50%;
+    border: 1.5px solid var(--text-muted);
+    background: transparent;
+  }
+  .confidence.alto .ring { background: var(--text-secondary); border-color: var(--text-secondary); }
+  .confidence.medio .ring { background: linear-gradient(90deg, var(--text-secondary) 50%, transparent 50%); }
+  .confidence.baixo .ring { background: transparent; }
+
+  /* table view */
+  .occ-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .occ-table thead th {
+    text-align: left;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 600;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border-strong);
+  }
+  .occ-table tbody td {
+    padding: 9px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .occ-table .ts { font-family: var(--font-display); font-variant-numeric: tabular-nums; color: var(--text-muted); white-space: nowrap; }
+  .occ-table .sev-cell { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .table-scroll { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); box-shadow: var(--shadow-1); }
+  .table-scroll table { min-width: 560px; }
+
+  .error-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    background: var(--critical-soft);
+    border: 1px solid rgba(208, 59, 59, 0.3);
+    font-size: 12.5px;
+    color: var(--text-primary);
+  }
+  .error-row .ts { font-family: var(--font-display); color: var(--text-muted); }
+
+  .empty-state {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13.5px;
+  }
+
+  .toast {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--good-soft);
+    border: 1px solid rgba(12, 163, 12, 0.35);
+    color: var(--text-primary);
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+  }
+
+  .visually-hidden {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="brand">
+    <div class="brand-title">
+      <h1>Vigia Obra</h1>
+      <span class="tagline">Apoio à inspeção de segurança do trabalho — SESMT</span>
+    </div>
+    <div class="theme-toggle" role="group" aria-label="Tema">
+      <button type="button" data-theme-btn="light" aria-pressed="false">Claro</button>
+      <button type="button" data-theme-btn="dark" aria-pressed="false">Escuro</button>
+      <button type="button" data-theme-btn="auto" aria-pressed="true">Auto</button>
+    </div>
+  </header>
+
+  <div class="placard" role="note">
+    <span class="placard-icon" aria-hidden="true">⚠️</span>
+    <p>
+      <strong>Análise assistiva por visão computacional.</strong>
+      Não substitui inspeção presencial. Todas as ocorrências abaixo devem ser
+      revisadas por um técnico do SESMT antes de qualquer ação.
+    </p>
+  </div>
+
+  <div class="layout">
+    <!-- ---------- rail: config ---------- -->
+    <aside class="panel rail">
+      <div>
+        <h2>Vídeo</h2>
+        <div class="video-source" style="margin-top:8px;">
+          <div class="thumb" aria-hidden="true"></div>
+          <div class="meta">
+            <div class="filename">canteiro-bloco-b_turno2.mp4</div>
+            <div class="duration">14:32 · 1080p</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="interval">Intervalo entre frames</label>
+        <select id="interval">
+          <option value="5" selected>5 segundos</option>
+          <option value="10">10 segundos</option>
+          <option value="15">15 segundos</option>
+        </select>
+        <span class="field-hint">Intervalos menores custam mais e detalham mais.</span>
+      </div>
+
+      <div class="field">
+        <label for="model">Modelo</label>
+        <select id="model">
+          <option value="claude-opus-5" selected>claude-opus-5</option>
+          <option value="claude-sonnet-5">claude-sonnet-5 (mais econômico)</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="effort">Nível de esforço</label>
+        <select id="effort">
+          <option value="low">Baixo</option>
+          <option value="medium" selected>Médio</option>
+          <option value="high">Alto</option>
+        </select>
+      </div>
+
+      <button class="btn btn-primary" id="run-btn" type="button">▶ Iniciar análise</button>
+
+      <div class="progress-block" id="progress-block" hidden>
+        <div class="progress-label">
+          <span id="progress-text">Preparando…</span>
+          <span class="count" id="progress-count">0 / 0</span>
+        </div>
+        <div class="progress-track" id="progress-track">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </div>
+
+      <div class="toast" id="done-toast" hidden>
+        <span aria-hidden="true">✓</span>
+        <span id="done-text"></span>
+      </div>
+
+      <button class="btn btn-ghost" id="reset-btn" type="button" hidden>↺ Reiniciar simulação</button>
+    </aside>
+
+    <!-- ---------- results ---------- -->
+    <main class="results">
+      <div class="stat-row">
+        <div class="stat-tile">
+          <div class="stat-label"><span class="dot total" aria-hidden="true"></span>Ocorrências</div>
+          <div class="stat-value" id="stat-total">0</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-label"><span class="dot baixa" aria-hidden="true"></span>Baixa</div>
+          <div class="stat-value" id="stat-baixa">0</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-label"><span class="dot media" aria-hidden="true"></span>Média</div>
+          <div class="stat-value" id="stat-media">0</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-label"><span class="dot alta" aria-hidden="true"></span>Alta</div>
+          <div class="stat-value" id="stat-alta">0</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="list-header">
+          <h2>Ocorrências detectadas</h2>
+          <div class="view-toggle" role="group" aria-label="Modo de exibição">
+            <button type="button" data-view-btn="cards" aria-pressed="true">Cartões</button>
+            <button type="button" data-view-btn="table" aria-pressed="false">Tabela</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="occ-cards" class="occ-list">
+        <div class="empty-state" id="empty-state">
+          Nenhuma ocorrência ainda. Clique em "Iniciar análise" para simular o
+          processamento do vídeo, frame a frame.
+        </div>
+      </div>
+
+      <div id="occ-table-wrap" class="table-scroll" hidden>
+        <table class="occ-table">
+          <thead>
+            <tr>
+              <th scope="col">Timestamp</th>
+              <th scope="col">Severidade</th>
+              <th scope="col">Risco</th>
+              <th scope="col">Norma</th>
+              <th scope="col">Confiança</th>
+            </tr>
+          </thead>
+          <tbody id="occ-table-body"></tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- theme toggle ---------- */
+  var root = document.documentElement;
+  var themeButtons = document.querySelectorAll("[data-theme-btn]");
+  function setTheme(mode) {
+    if (mode === "auto") root.removeAttribute("data-theme");
+    else root.setAttribute("data-theme", mode);
+    themeButtons.forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.themeBtn === mode));
+    });
+  }
+  themeButtons.forEach(function (b) {
+    b.addEventListener("click", function () { setTheme(b.dataset.themeBtn); });
+  });
+
+  /* ---------- view toggle (cards / table) ---------- */
+  var viewButtons = document.querySelectorAll("[data-view-btn]");
+  var cardsEl = document.getElementById("occ-cards");
+  var tableWrap = document.getElementById("occ-table-wrap");
+  function setView(mode) {
+    cardsEl.hidden = mode !== "cards";
+    tableWrap.hidden = mode !== "table";
+    viewButtons.forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.viewBtn === mode));
+    });
+  }
+  viewButtons.forEach(function (b) {
+    b.addEventListener("click", function () { setView(b.dataset.viewBtn); });
+  });
+
+  /* ---------- mock NDJSON stream (mesmo contrato do main.py) ---------- */
+  var mockEvents = [
+    { type: "start", total_frames_estimate: 9, interval: 5, model: "claude-opus-5" },
+    { type: "progress", frame_index: 0, timestamp: "00:00", ocorrencias: [] },
+    { type: "progress", frame_index: 1, timestamp: "00:05", ocorrencias: [
+      { timestamp: "00:05", risco: "Trabalhador sem capacete próximo à betoneira", norma: "NR-6, uso de EPI", confianca: "alto", severidade: "alta" }
+    ]},
+    { type: "progress", frame_index: 2, timestamp: "00:10", ocorrencias: [
+      { timestamp: "00:10", risco: "Ausência de guarda-corpo na abertura do piso 2", norma: "NR-18, item 18.15", confianca: "alto", severidade: "alta" }
+    ]},
+    { type: "progress", frame_index: 3, timestamp: "00:15", ocorrencias: [] },
+    { type: "progress", frame_index: 4, timestamp: "00:20", ocorrencias: [
+      { timestamp: "00:20", risco: "Capacete parcialmente oculto pelo ângulo da câmera", norma: "NR-6, uso de EPI", confianca: "baixo", severidade: "baixa" }
+    ]},
+    { type: "error", frame_index: 5, timestamp: "00:25", message: "Erro na API (529): serviço temporariamente sobrecarregado" },
+    { type: "progress", frame_index: 6, timestamp: "00:30", ocorrencias: [
+      { timestamp: "00:30", risco: "Trabalhador próximo à borda sem cinto de segurança visível", norma: "NR-35, item 35.4.1", confianca: "alto", severidade: "alta" },
+      { timestamp: "00:30", risco: "Sinalização de área de risco ausente ao redor da escavação", norma: "NR-18, item 18.6", confianca: "medio", severidade: "media" }
+    ]},
+    { type: "progress", frame_index: 7, timestamp: "00:35", ocorrencias: [] },
+    { type: "progress", frame_index: 8, timestamp: "00:40", ocorrencias: [
+      { timestamp: "00:40", risco: "Cone de sinalização isolado, sem fita indicando o perímetro", norma: "NR-18, item 18.6", confianca: "medio", severidade: "media" }
+    ]},
+    { type: "done", total_ocorrencias: 6, output_file: "ocorrencias.json",
+      disclaimer: "Esta análise é assistiva e não substitui inspeção presencial de um técnico de segurança do trabalho." }
+  ];
+
+  var runBtn = document.getElementById("run-btn");
+  var resetBtn = document.getElementById("reset-btn");
+  var progressBlock = document.getElementById("progress-block");
+  var progressText = document.getElementById("progress-text");
+  var progressCount = document.getElementById("progress-count");
+  var progressTrack = document.getElementById("progress-track");
+  var progressFill = document.getElementById("progress-fill");
+  var doneToast = document.getElementById("done-toast");
+  var doneText = document.getElementById("done-text");
+  var emptyState = document.getElementById("empty-state");
+  var tableBody = document.getElementById("occ-table-body");
+
+  var statTotal = document.getElementById("stat-total");
+  var statBaixa = document.getElementById("stat-baixa");
+  var statMedia = document.getElementById("stat-media");
+  var statAlta = document.getElementById("stat-alta");
+
+  var counts = { total: 0, baixa: 0, media: 0, alta: 0 };
+  var totalFrames = null;
+
+  var sevColor = { baixa: "var(--good)", media: "var(--warning)", alta: "var(--critical)" };
+  var sevLabel = { baixa: "Baixa", media: "Média", alta: "Alta" };
+  var confLabel = { alto: "Confiança alta", medio: "Confiança média", baixo: "Confiança baixa" };
+
+  function updateStats() {
+    statTotal.textContent = counts.total;
+    statBaixa.textContent = counts.baixa;
+    statMedia.textContent = counts.media;
+    statAlta.textContent = counts.alta;
+  }
+
+  function addOccurrence(occ) {
+    if (emptyState) { emptyState.remove(); emptyState = null; }
+    counts.total += 1;
+    counts[occ.severidade] = (counts[occ.severidade] || 0) + 1;
+    updateStats();
+
+    var card = document.createElement("div");
+    card.className = "occ-card";
+    card.style.setProperty("--sev-color", sevColor[occ.severidade] || "var(--border)");
+    card.innerHTML =
+      '<div class="occ-main">' +
+        '<div class="occ-top">' +
+          '<span class="occ-timestamp">' + occ.timestamp + '</span>' +
+          '<span class="chip"><span class="dot ' + occ.severidade + '"></span>' + sevLabel[occ.severidade] + '</span>' +
+          '<span class="chip chip-norma">' + occ.norma + '</span>' +
+          '<span class="confidence ' + occ.confianca + '"><span class="ring"></span>' + confLabel[occ.confianca] + '</span>' +
+        '</div>' +
+        '<div class="occ-risco">' + occ.risco + '</div>' +
+      '</div>';
+    cardsEl.appendChild(card);
+
+    var row = document.createElement("tr");
+    row.innerHTML =
+      '<td class="ts">' + occ.timestamp + '</td>' +
+      '<td><span class="sev-cell"><span class="dot ' + occ.severidade + '"></span>' + sevLabel[occ.severidade] + '</span></td>' +
+      '<td>' + occ.risco + '</td>' +
+      '<td class="ts">' + occ.norma + '</td>' +
+      '<td>' + confLabel[occ.confianca] + '</td>';
+    tableBody.appendChild(row);
+  }
+
+  function addErrorRow(ev) {
+    var row = document.createElement("div");
+    row.className = "error-row";
+    row.innerHTML = '<span class="ts">' + ev.timestamp + '</span><span>' + ev.message + '</span>';
+    cardsEl.appendChild(row);
+  }
+
+  function handleEvent(ev) {
+    if (ev.type === "start") {
+      totalFrames = ev.total_frames_estimate;
+      progressTrack.classList.toggle("indeterminate", totalFrames === null);
+      progressText.textContent = "Analisando…";
+      progressCount.textContent = "0 / " + (totalFrames === null ? "?" : totalFrames);
+      return;
+    }
+    if (ev.type === "progress") {
+      progressText.textContent = "Frame " + (ev.frame_index + 1) + " · " + ev.timestamp;
+      if (totalFrames) {
+        progressCount.textContent = (ev.frame_index + 1) + " / " + totalFrames;
+        progressFill.style.width = Math.round(((ev.frame_index + 1) / totalFrames) * 100) + "%";
+      }
+      ev.ocorrencias.forEach(addOccurrence);
+      return;
+    }
+    if (ev.type === "error") {
+      progressText.textContent = "Frame " + (ev.frame_index + 1) + " · erro, pulando";
+      addErrorRow(ev);
+      return;
+    }
+    if (ev.type === "done") {
+      progressText.textContent = "Análise concluída";
+      progressFill.style.width = "100%";
+      doneToast.hidden = false;
+      doneText.textContent = ev.total_ocorrencias + " ocorrência(s) salvas em " + ev.output_file;
+      runBtn.disabled = false;
+      runBtn.textContent = "▶ Iniciar análise";
+      resetBtn.hidden = false;
+    }
+  }
+
+  function resetUI() {
+    counts = { total: 0, baixa: 0, media: 0, alta: 0 };
+    updateStats();
+    cardsEl.innerHTML = "";
+    tableBody.innerHTML = "";
+    var placeholder = document.createElement("div");
+    placeholder.className = "empty-state";
+    placeholder.id = "empty-state";
+    placeholder.textContent = 'Nenhuma ocorrência ainda. Clique em "Iniciar análise" para simular o processamento do vídeo, frame a frame.';
+    cardsEl.appendChild(placeholder);
+    emptyState = placeholder;
+    progressBlock.hidden = true;
+    doneToast.hidden = true;
+    resetBtn.hidden = true;
+    progressFill.style.width = "0%";
+    progressTrack.classList.remove("indeterminate");
+  }
+
+  function runSimulation() {
+    resetUI();
+    progressBlock.hidden = false;
+    runBtn.disabled = true;
+    runBtn.textContent = "Analisando…";
+
+    var i = 0;
+    function step() {
+      if (i >= mockEvents.length) return;
+      handleEvent(mockEvents[i]);
+      i += 1;
+      if (i < mockEvents.length) {
+        window.setTimeout(step, 550);
+      }
+    }
+    step();
+  }
+
+  runBtn.addEventListener("click", runSimulation);
+  resetBtn.addEventListener("click", resetUI);
+})();
+</script>
+</body>
+</html>

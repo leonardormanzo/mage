@@ -1,0 +1,1063 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Leonardo Manzo — Engenheiro de Soluções em IA</title>
+<meta name="description" content="Portfólio de Leonardo Manzo: arquiteto e gestor de obras com 10+ anos de experiência, em transição para Engenharia de Soluções em IA. Projetos de IA aplicada à construção civil." />
+<meta name="theme-color" content="#0B0C10" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%230B0C10'/%3E%3Ccircle cx='12' cy='4' r='1.6' fill='%23C1502E'/%3E%3Ccircle cx='5' cy='10' r='1.6' fill='%23C1502E'/%3E%3Ccircle cx='19' cy='10' r='1.6' fill='%23C1502E'/%3E%3Ccircle cx='8' cy='19' r='1.6' fill='%23C1502E'/%3E%3Ccircle cx='16' cy='19' r='1.6' fill='%23C1502E'/%3E%3Ccircle cx='12' cy='13' r='1.8' fill='%23C9A227'/%3E%3Cpath d='M12 5.6V11.4M6.3 10.9L10.7 12.6M17.7 10.9L13.3 12.6M9.3 17.8L11.3 14.6M14.7 17.8L12.7 14.6' stroke='%23C1502E' stroke-width='1.2' fill='none'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0B0C10;
+    --bg-elevated: #101218;
+    --surface: #14161C;
+    --surface-2: #1B1E27;
+    --surface-3: #232733;
+    --text-primary: #F3F1EA;
+    --text-secondary: #B7B6C4;
+    --text-muted: #82818F;
+    --border: rgba(255, 255, 255, 0.10);
+    --border-strong: rgba(255, 255, 255, 0.20);
+    --accent: #C1502E;
+    --accent-strong: #DB6540;
+    --accent-text: #F0975C;
+    --accent-ink: #FFFFFF;
+    --accent-soft: rgba(193, 80, 46, 0.14);
+    --gold: #C9A227;
+    --gold-soft: rgba(201, 162, 39, 0.14);
+    --radius: 16px;
+    --radius-sm: 10px;
+    --radius-pill: 999px;
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 24px 60px rgba(0, 0, 0, 0.35);
+    --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, 'Liberation Mono', monospace;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px;
+    --space-6: 32px; --space-7: 48px; --space-8: 64px; --space-9: 96px;
+  }
+
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --bg: #FAF8F4;
+    --bg-elevated: #FFFFFF;
+    --surface: #FFFFFF;
+    --surface-2: #F2EEE6;
+    --surface-3: #EAE3D6;
+    --text-primary: #1B1A17;
+    --text-secondary: #514F49;
+    --text-muted: #83807A;
+    --border: rgba(20, 18, 15, 0.12);
+    --border-strong: rgba(20, 18, 15, 0.22);
+    --accent: #B5451F;
+    --accent-strong: #9C3B19;
+    --accent-text: #9C3B19;
+    --accent-ink: #FFFFFF;
+    --accent-soft: rgba(181, 69, 31, 0.10);
+    --gold: #8C6A10;
+    --gold-soft: rgba(140, 106, 16, 0.12);
+    --shadow-1: 0 1px 2px rgba(20, 18, 15, 0.06), 0 20px 40px rgba(20, 18, 15, 0.08);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  html, body { max-width: 100%; overflow-x: hidden; }
+  html { background: var(--bg); }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  }
+
+  body {
+    margin: 0;
+    background: transparent;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.25s var(--ease), color 0.25s var(--ease);
+  }
+
+  /* ---------- BACKGROUND PARALLAX (grade cinética) ---------- */
+  #bg-canvas {
+    position: fixed; inset: 0; z-index: -1;
+    width: 100%; height: 100%; display: block; pointer-events: none;
+  }
+
+  img, svg { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  h1, h2, h3, h4 { margin: 0; font-family: var(--font-display); font-weight: 700; letter-spacing: -0.01em; }
+  p { margin: 0; }
+  button { font: inherit; cursor: pointer; }
+
+  :focus-visible {
+    outline: 2px solid var(--accent-text);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  .container { width: 100%; max-width: 1180px; margin: 0 auto; padding: 0 var(--space-5); }
+  section { padding: var(--space-9) 0; }
+  @media (max-width: 640px) { section { padding: var(--space-8) 0; } }
+
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-text);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+  }
+  .kicker::before { content: ""; width: 22px; height: 1px; background: var(--accent); display: inline-block; }
+
+  h2.section-title { font-size: clamp(1.9rem, 1.5rem + 1.8vw, 2.6rem); margin-bottom: var(--space-3); }
+  .section-lead { color: var(--text-secondary); max-width: 620px; font-size: 1.05rem; margin-bottom: var(--space-7); }
+  .accent-word { color: var(--accent-text); }
+  .accent-italic { color: var(--accent-text); font-style: italic; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+    padding: 14px 26px; border-radius: var(--radius-pill); font-weight: 600; font-size: 0.95rem;
+    border: 1px solid transparent; transition: transform 0.2s var(--ease), background 0.2s var(--ease), border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+    min-height: 48px; white-space: nowrap;
+  }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); box-shadow: 0 8px 24px var(--accent-soft); }
+  .btn-primary:hover { background: var(--accent-strong); transform: translateY(-2px); }
+  .btn-outline { background: transparent; color: var(--text-primary); border-color: var(--border-strong); }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent-text); transform: translateY(-2px); }
+  .btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  .icon { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+  /* ---------- NAV ---------- */
+  header.nav {
+    position: sticky; top: 0; z-index: 50;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; padding: var(--space-4) 0; }
+  .logo { display: flex; align-items: center; gap: var(--space-3); }
+  .logo-mark { width: 34px; height: 34px; border-radius: 9px; background: var(--surface-2); border: 1px solid var(--border); padding: 6px; }
+  .logo-mark .icon { width: 100%; height: 100%; stroke: var(--accent); }
+  .logo-text { display: flex; flex-direction: column; line-height: 1.15; }
+  .logo-text strong { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; }
+  .logo-text span { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-muted); letter-spacing: 0.05em; }
+
+  .nav-links { display: flex; align-items: center; gap: var(--space-6); }
+  .nav-links a { font-size: 0.92rem; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--accent-text); }
+  .nav-actions { display: flex; align-items: center; gap: var(--space-3); }
+
+  .theme-toggle {
+    width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border-strong);
+    background: var(--surface-2); display: flex; align-items: center; justify-content: center;
+    color: var(--text-secondary); transition: color 0.2s, border-color 0.2s;
+  }
+  .theme-toggle:hover { color: var(--accent-text); border-color: var(--accent); }
+  .theme-toggle .icon { width: 18px; height: 18px; }
+  .theme-toggle .icon-moon { display: none; }
+  :root[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+  :root[data-theme="light"] .theme-toggle .icon-moon { display: block; }
+
+  .nav-toggle { display: none; width: 44px; height: 44px; align-items: center; justify-content: center; border: 1px solid var(--border-strong); border-radius: 10px; background: var(--surface-2); color: var(--text-primary); }
+  .nav-toggle .icon-close { display: none; }
+  body.nav-open .nav-toggle .icon-menu { display: none; }
+  body.nav-open .nav-toggle .icon-close { display: block; }
+
+  @media (max-width: 860px) {
+    .nav-links { position: fixed; inset: 68px 0 0 0; background: var(--bg); flex-direction: column; justify-content: flex-start; align-items: stretch; gap: 0; padding: var(--space-5); border-top: 1px solid var(--border); transform: translateY(-8px); opacity: 0; pointer-events: none; transition: opacity 0.2s var(--ease), transform 0.2s var(--ease); }
+    body.nav-open .nav-links { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .nav-links a { padding: 16px 4px; border-bottom: 1px solid var(--border); font-size: 1.05rem; }
+    .nav-toggle { display: flex; }
+    .logo-text span { display: none; }
+    .nav-actions { gap: var(--space-2); }
+    .nav-actions > a.btn-primary { display: none; }
+  }
+  @media (max-width: 380px) {
+    .logo-text strong { font-size: 0.95rem; }
+  }
+
+  /* ---------- HERO ---------- */
+  .hero { padding-top: var(--space-9); padding-bottom: var(--space-9); overflow: hidden; }
+  .hero-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: var(--space-8); align-items: center; }
+  @media (max-width: 960px) {
+    .hero-grid { grid-template-columns: 1fr; gap: var(--space-7); }
+    .hero-visual { flex-direction: column; min-height: auto; gap: var(--space-5); padding-top: var(--space-4); }
+  }
+
+  .hero-kicker { font-family: var(--font-mono); color: var(--accent-text); font-size: 0.95rem; margin-bottom: var(--space-4); }
+  .hero h1 { font-size: clamp(2.6rem, 1.9rem + 3.6vw, 4.4rem); line-height: 1.03; margin-bottom: var(--space-3); }
+  .hero-role { font-family: var(--font-mono); font-size: clamp(1rem, 0.9rem + 0.4vw, 1.2rem); color: var(--text-secondary); margin-bottom: var(--space-5); }
+  .hero-role .cursor { color: var(--accent); animation: blink 1.1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .hero-desc { font-size: 1.08rem; color: var(--text-secondary); max-width: 540px; margin-bottom: var(--space-6); }
+  .hero-cta { display: flex; flex-wrap: wrap; gap: var(--space-4); margin-bottom: var(--space-7); }
+  .hero-social { display: flex; gap: var(--space-3); }
+  .social-btn { width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--border-strong); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); transition: all 0.2s var(--ease); }
+  .social-btn:hover { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); transform: translateY(-3px); }
+  .social-btn .icon { width: 18px; height: 18px; }
+
+  .hero-visual { position: relative; display: flex; align-items: center; justify-content: center; min-height: 360px; }
+  .emblem-glow { position: absolute; width: 340px; height: 340px; border-radius: 50%; background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%); filter: blur(4px); }
+  .emblem-ring { position: absolute; border-radius: 50%; border: 1px dashed var(--border-strong); animation: spin 40s linear infinite; }
+  .emblem-ring.r1 { width: 300px; height: 300px; }
+  .emblem-ring.r2 { width: 240px; height: 240px; border-style: solid; border-color: var(--border); animation-direction: reverse; animation-duration: 60s; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .emblem-core { position: relative; width: 190px; height: 190px; }
+  .emblem-core .icon { width: 100%; height: 100%; stroke: var(--accent); stroke-width: 1.1; }
+  .emblem-core .icon circle:last-of-type { fill: var(--gold); stroke: none; }
+
+  .hero-snippet {
+    position: absolute; bottom: -12px; left: -8px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: var(--space-4); font-family: var(--font-mono); font-size: 0.78rem;
+    line-height: 1.65; color: var(--text-secondary); box-shadow: var(--shadow-1); max-width: 260px;
+    white-space: normal; overflow-wrap: break-word; box-sizing: border-box;
+  }
+  @media (max-width: 960px) { .hero-snippet { position: static; margin-top: var(--space-5); max-width: 100%; width: 100%; } }
+  .hero-snippet .tok-kw { color: var(--accent-text); }
+  .hero-snippet .tok-str { color: var(--gold); }
+
+  .hero-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); margin-top: var(--space-8); padding-top: var(--space-7); border-top: 1px solid var(--border); }
+  @media (max-width: 640px) { .hero-stats { grid-template-columns: 1fr; gap: var(--space-4); } }
+  .stat { display: flex; align-items: center; gap: var(--space-4); }
+  .stat-icon { width: 46px; height: 46px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .stat-icon .icon { width: 22px; height: 22px; stroke: var(--accent-text); }
+  .stat-num { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; }
+  .stat-label { font-size: 0.85rem; color: var(--text-muted); }
+
+  /* ---------- ABOUT ---------- */
+  .about-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: var(--space-8); align-items: start; }
+  @media (max-width: 900px) { .about-grid { grid-template-columns: 1fr; } }
+  .about-copy p { color: var(--text-secondary); margin-bottom: var(--space-4); }
+  .about-copy p strong { color: var(--text-primary); }
+
+  .feature-cards { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+  @media (max-width: 520px) { .feature-cards { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: var(--space-5); transition: transform 0.25s var(--ease), border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+  }
+  .card:hover { transform: translateY(-4px); border-color: var(--border-strong); box-shadow: var(--shadow-1); }
+  .card-icon { width: 42px; height: 42px; border-radius: 11px; background: var(--accent-soft); display: flex; align-items: center; justify-content: center; margin-bottom: var(--space-4); }
+  .card-icon .icon { width: 20px; height: 20px; stroke: var(--accent-text); }
+  .card h3 { font-family: var(--font-body); font-size: 1.02rem; font-weight: 700; margin-bottom: var(--space-2); }
+  .card p { color: var(--text-muted); font-size: 0.92rem; }
+
+  /* ---------- SERVICES ---------- */
+  .services-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); }
+  @media (max-width: 960px) { .services-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .services-grid { grid-template-columns: 1fr; } }
+  .service-link { display: inline-flex; align-items: center; gap: 6px; margin-top: var(--space-4); font-size: 0.85rem; font-weight: 600; color: var(--accent-text); }
+  .service-link .icon { width: 15px; height: 15px; transition: transform 0.2s var(--ease); }
+  .card:hover .service-link .icon { transform: translateX(3px); }
+
+  /* ---------- TECH STACK ---------- */
+  .tech-row { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+  .chip {
+    display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: var(--radius-pill);
+    background: var(--surface); border: 1px solid var(--border); font-family: var(--font-mono); font-size: 0.85rem;
+    color: var(--text-secondary); transition: all 0.2s var(--ease);
+  }
+  .chip:hover { border-color: var(--accent); color: var(--text-primary); transform: translateY(-2px); }
+  .chip-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+  /* ---------- PROJECTS ---------- */
+  .projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); }
+  @media (max-width: 780px) { .projects-grid { grid-template-columns: 1fr; } }
+  .project-card {
+    grid-column: span 1; border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column;
+    border: 2px solid transparent; box-sizing: border-box; background-origin: border-box; background-clip: padding-box, border-box;
+    background-image: linear-gradient(var(--surface), var(--surface)),
+      conic-gradient(from var(--rotation, 0deg), var(--accent) 0deg, var(--accent) 90deg, var(--border) 90deg, var(--border) 360deg);
+    transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
+  }
+  .project-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-1); }
+  .project-card.featured { grid-column: span 2; }
+  @media (max-width: 780px) { .project-card.featured { grid-column: span 1; } }
+
+  .project-media {
+    position: relative; padding: var(--space-6) var(--space-5); min-height: 140px;
+    background:
+      radial-gradient(600px 200px at 0% 0%, var(--accent-soft), transparent 60%),
+      linear-gradient(160deg, var(--surface-2), var(--surface-3));
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3);
+  }
+  .project-media .icon { width: 30px; height: 30px; stroke: var(--accent-text); opacity: 0.85; }
+  .badge {
+    font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 5px 12px; border-radius: var(--radius-pill); background: var(--gold-soft); color: var(--gold); border: 1px solid transparent;
+  }
+  .project-body { padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-3); flex: 1; }
+  .project-body h3 { font-size: 1.2rem; font-weight: 700; position: relative; overflow: hidden; padding: 2px 4px; margin: -2px -4px; width: fit-content; }
+  .project-body h3 .tt { position: relative; z-index: 2; transition: color 0.3s ease; }
+  .project-body h3::after {
+    content: ""; position: absolute; left: -4px; right: -4px; top: -4px; bottom: -4px; z-index: 1;
+    background: var(--accent);
+    clip-path: polygon(0 50%, 100% 50%, 100% 50%, 0 50%);
+    transition: clip-path 0.4s cubic-bezier(.1,.5,.5,1);
+  }
+  .project-card:hover .project-body h3::after { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+  .project-card:hover .project-body h3 .tt { color: var(--accent-ink); }
+  .project-body p { color: var(--text-secondary); font-size: 0.94rem; }
+  .tag-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); background: var(--surface-2); border: 1px solid var(--border); padding: 4px 10px; border-radius: var(--radius-pill); }
+  .project-footer { margin-top: auto; padding-top: var(--space-3); display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
+  .project-link { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.9rem; color: var(--accent-text); }
+  .project-link .icon { width: 16px; height: 16px; transition: transform 0.2s var(--ease); }
+  .project-card:hover .project-link .icon { transform: translateX(3px) translateY(-2px); }
+  .project-note { font-size: 0.78rem; color: var(--text-muted); font-family: var(--font-mono); }
+
+  /* ---------- TIMELINE ---------- */
+  .timeline { position: relative; margin-left: var(--space-2); padding-left: var(--space-6); border-left: 1px solid var(--border); }
+  .tl-item { position: relative; padding-bottom: var(--space-7); }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-item::before { content: ""; position: absolute; left: calc(-1 * var(--space-6) - 5px); top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px var(--bg), 0 0 0 5px var(--border-strong); }
+  .tl-item.now::before { background: var(--gold); }
+  .tl-year { font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent-text); margin-bottom: var(--space-1); }
+  .tl-item h3 { font-family: var(--font-body); font-size: 1.05rem; font-weight: 700; margin-bottom: var(--space-1); }
+  .tl-item p { color: var(--text-secondary); font-size: 0.94rem; max-width: 560px; }
+
+  .cert-row { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-8); }
+  .cert-chip { display: flex; align-items: center; gap: var(--space-3); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-3) var(--space-4); font-size: 0.85rem; color: var(--text-secondary); }
+  .cert-chip .icon { width: 18px; height: 18px; stroke: var(--gold); flex-shrink: 0; }
+
+  /* ---------- CONTACT ---------- */
+  .contact-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-8); align-items: center; }
+  @media (max-width: 860px) { .contact-wrap { grid-template-columns: 1fr; } }
+  .contact-copy p { color: var(--text-secondary); margin-bottom: var(--space-6); max-width: 480px; }
+  .contact-cards { display: grid; gap: var(--space-3); }
+  .contact-card { display: flex; align-items: center; gap: var(--space-4); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space-4) var(--space-5); transition: all 0.2s var(--ease); }
+  .contact-card:hover { border-color: var(--accent); transform: translateX(4px); }
+  .contact-card .card-icon { margin-bottom: 0; }
+  .contact-card .label { font-size: 0.78rem; color: var(--text-muted); }
+  .contact-card .value { font-weight: 600; }
+
+  /* ---------- FOOTER ---------- */
+  footer { border-top: 1px solid var(--border); padding: var(--space-7) 0 var(--space-6); }
+  .footer-inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-5); }
+  .footer-tagline { font-family: var(--font-display); font-style: italic; color: var(--text-secondary); font-size: 0.95rem; }
+  .footer-links { display: flex; gap: var(--space-5); flex-wrap: wrap; }
+  .footer-links a { font-size: 0.88rem; color: var(--text-secondary); }
+  .footer-links a:hover { color: var(--accent-text); }
+  .footer-bottom { margin-top: var(--space-6); padding-top: var(--space-5); border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-3); font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono); }
+
+  /* ---------- REVEAL ---------- */
+  .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s var(--ease), transform 0.6s var(--ease); }
+  .reveal.in-view { opacity: 1; transform: translateY(0); }
+
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+<a href="#conteudo" class="sr-only">Pular para o conteúdo</a>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a href="#topo" class="logo" aria-label="Leonardo Manzo — início">
+      <span class="logo-mark">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="4" r="1.6"/><circle cx="5" cy="10" r="1.6"/><circle cx="19" cy="10" r="1.6"/><circle cx="8" cy="19" r="1.6"/><circle cx="16" cy="19" r="1.6"/><circle cx="12" cy="13" r="1.8"/><path d="M12 5.6V11.4M6.3 10.9L10.7 12.6M17.7 10.9L13.3 12.6M9.3 17.8L11.3 14.6M14.7 17.8L12.7 14.6"/></svg>
+      </span>
+      <span class="logo-text"><strong>Leonardo Manzo</strong><span>ENG. DE SOLUÇÕES EM IA</span></span>
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="#sobre">Sobre</a>
+      <a href="#servicos">O que faço</a>
+      <a href="#projetos">Projetos</a>
+      <a href="#trajetoria">Trajetória</a>
+      <a href="#contato">Contato</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="theme-toggle" aria-label="Alternar tema claro/escuro">
+        <svg class="icon icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="icon icon-moon" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 119.5 4 8.5 8.5 0 0020 14.5z"/></svg>
+      </button>
+      <a href="#contato" class="btn btn-primary" style="padding:10px 20px; min-height:40px;">Contato</a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav-links">
+        <svg class="icon icon-menu" viewBox="0 0 24 24"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+        <svg class="icon icon-close" viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="conteudo">
+
+  <!-- ================= HERO ================= -->
+  <section class="hero" id="topo">
+    <div class="container hero-grid">
+      <div>
+        <div class="hero-kicker">&lt; olá, eu sou /&gt;</div>
+        <h1>Leonardo Manzo</h1>
+        <div class="hero-role">AI Solutions Engineer &amp; Gestor Técnico<span class="cursor">_</span></div>
+        <p class="hero-desc">
+          Depois de mais de 10 anos planejando e entregando obras, apliquei a mesma disciplina para
+          construir sistemas de IA. Alguns colegas já me chamam de
+          <span class="accent-italic">"Mago da IA"</span> — não é bem magia, é engenharia bem feita,
+          com um pouco de Python e Claude no meio do caminho.
+        </p>
+        <div class="hero-cta">
+          <a href="#projetos" class="btn btn-primary">
+            Ver projetos
+            <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13,6 19,12 13,18"/></svg>
+          </a>
+          <a href="assets/Leonardo-Manzo-CV.pdf" download class="btn btn-outline">
+            Baixar CV
+            <svg viewBox="0 0 24 24"><path d="M12 3v12"/><polyline points="7,10 12,15 17,10"/><path d="M5 19h14"/></svg>
+          </a>
+        </div>
+        <div class="hero-social">
+          <a class="social-btn" href="mailto:leonardo.r.manzo@gmail.com" aria-label="Enviar e-mail">
+            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3,7 12,13 21,7"/></svg>
+          </a>
+          <a class="social-btn" href="https://wa.me/5511972554234" target="_blank" rel="noopener" aria-label="WhatsApp">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+          </a>
+          <a class="social-btn" href="https://linkedin.com/in/leonardo-manzo-05ab4075" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="7.5" y1="10" x2="7.5" y2="17"/><circle cx="7.5" cy="6.8" r="0.9"/><path d="M11 17v-6.5M11 12c0-1.5 1.2-2.3 2.6-2.3 1.6 0 2.4 1 2.4 3v4.3"/></svg>
+          </a>
+          <a class="social-btn" href="https://github.com/leonardormanzo" target="_blank" rel="noopener" aria-label="GitHub">
+            <svg class="icon" viewBox="0 0 24 24"><polyline points="9,7 4,12 9,17"/><polyline points="15,7 20,12 15,17"/></svg>
+          </a>
+        </div>
+
+        <div class="hero-stats">
+          <div class="stat">
+            <span class="stat-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/><line x1="3" y1="13" x2="21" y2="13"/></svg></span>
+            <span><span class="stat-num">10+</span><br><span class="stat-label">Anos em gestão de obras</span></span>
+          </div>
+          <div class="stat">
+            <span class="stat-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="4" r="1.4"/><circle cx="5" cy="10" r="1.4"/><circle cx="19" cy="10" r="1.4"/><circle cx="8" cy="19" r="1.4"/><circle cx="16" cy="19" r="1.4"/><circle cx="12" cy="13" r="1.6"/><path d="M12 5.4V11.6M6.2 10.8L10.8 12.6M17.8 10.8L13.2 12.6M9.2 17.9L11.2 14.6M14.8 17.9L12.8 14.6"/></svg></span>
+            <span><span class="stat-num">4</span><br><span class="stat-label">Projetos de IA aplicada</span></span>
+          </div>
+          <div class="stat">
+            <span class="stat-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3 2 8l10 5 10-5-10-5z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg></span>
+            <span><span class="stat-num">2026</span><br><span class="stat-label">Pós-graduação em Eng. de IA</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="emblem-glow" aria-hidden="true"></div>
+        <div class="emblem-ring r1" aria-hidden="true"></div>
+        <div class="emblem-ring r2" aria-hidden="true"></div>
+        <div class="emblem-core">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="4" r="1.6"/><circle cx="5" cy="10" r="1.6"/><circle cx="19" cy="10" r="1.6"/>
+            <circle cx="8" cy="19" r="1.6"/><circle cx="16" cy="19" r="1.6"/><circle cx="12" cy="13" r="1.9"/>
+            <path d="M12 5.6V11.4M6.3 10.9L10.7 12.6M17.7 10.9L13.3 12.6M9.3 17.8L11.3 14.6M14.7 17.8L12.7 14.6"/>
+          </svg>
+        </div>
+        <div class="hero-snippet" aria-hidden="true">
+          <span class="tok-kw">class</span> Manzo <span class="tok-kw">extends</span> Engenheiro {<br>
+          &nbsp;&nbsp;origem = <span class="tok-str">"10 anos de obra"</span>;<br>
+          &nbsp;&nbsp;stack = [<span class="tok-str">"Python"</span>, <span class="tok-str">"Claude"</span>, <span class="tok-str">"LLMs"</span>];<br>
+          &nbsp;&nbsp;missao() {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="tok-kw">return</span> <span class="tok-str">"ordem no caos"</span>;<br>
+          &nbsp;&nbsp;}<br>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SOBRE ================= -->
+  <section id="sobre">
+    <div class="container about-grid">
+      <div>
+        <div class="kicker">Sobre mim</div>
+        <h2 class="section-title">Planejar. Construir.<br><span class="accent-word">Automatizar.</span></h2>
+        <div class="about-copy">
+          <p>
+            Sou <strong>arquiteto e gestor de obras</strong> com mais de 10 anos de experiência liderando
+            equipes multidisciplinares — do projeto ao canteiro. Nos últimos anos apontei essa mesma
+            disciplina para outro tipo de estrutura: <strong>sistemas de inteligência artificial</strong>.
+          </p>
+          <p>
+            Concluí a pós-graduação em <strong>Engenharia de IA</strong> e hoje combino visão de negócio,
+            coordenação técnica e conhecimento profundo do setor de construção com Python, LLMs (GPT,
+            Claude), engenharia de prompt e APIs — para transformar processos manuais de obra em
+            ferramentas assistidas por IA.
+          </p>
+        </div>
+      </div>
+      <div class="feature-cards">
+        <div class="card">
+          <span class="card-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></span>
+          <h3>Visão de obra</h3>
+          <p>10+ anos entendendo prazos, riscos, fornecedores e pessoas dentro do canteiro.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="4" r="1.4"/><circle cx="5" cy="10" r="1.4"/><circle cx="19" cy="10" r="1.4"/><circle cx="8" cy="19" r="1.4"/><circle cx="16" cy="19" r="1.4"/><circle cx="12" cy="13" r="1.6"/><path d="M12 5.4V11.6M6.2 10.8L10.8 12.6M17.8 10.8L13.2 12.6M9.2 17.9L11.2 14.6M14.8 17.9L12.8 14.6"/></svg></span>
+          <h3>IA aplicada</h3>
+          <p>Python, LLMs (GPT, Claude), prompt engineering e APIs REST para resolver problemas reais.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/><path d="M11 7.5h4a2 2 0 012 2V13"/></svg></span>
+          <h3>Gestão ponta a ponta</h3>
+          <p>Do levantamento de requisitos à entrega, com indicadores e comunicação clara.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon"><svg class="icon" viewBox="0 0 24 24"><line x1="3" y1="8" x2="21" y2="8"/><polyline points="17,4 21,8 17,12"/><line x1="21" y1="16" x2="3" y2="16"/><polyline points="7,12 3,16 7,20"/></svg></span>
+          <h3>Ponte técnico-negócio</h3>
+          <p>Traduzo necessidade de cliente em solução executável — e de volta.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SERVIÇOS ================= -->
+  <section id="servicos">
+    <div class="container">
+      <div class="kicker">Como posso ajudar</div>
+      <h2 class="section-title">O que eu faço</h2>
+      <p class="section-lead">Da automação de rotinas manuais à gestão de projetos de IA — sempre com um pé na realidade de quem está no campo.</p>
+      <div class="services-grid">
+        <div class="card">
+          <span class="card-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg></span>
+          <h3>Automação com IA</h3>
+          <p>Fluxos manuais de obra e gestão viram sistemas assistidos por LLMs.</p>
+          <a href="#projetos" class="service-link">Ver na prática <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13,6 19,12 13,18"/></svg></a>
+        </div>
+        <div class="card">
+          <span class="card-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><rect x="9" y="2" width="6" height="4" rx="1"/><polyline points="8,13 11,16 16,10"/></svg></span>
+          <h3>Gestão de projetos de IA</h3>
+          <p>Planejamento, escopo, riscos e entrega, aplicados a soluções de inteligência artificial.</p>
+          <a href="#projetos" class="service-link">Ver na prática <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13,6 19,12 13,18"/></svg></a>
+        </div>
+        <div class="card">
+          <span class="card-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2c3 2 5 6 5 10 0 2-1 4-2 5l-3 3-3-3c-1-1-2-3-2-5 0-4 2-8 5-10z"/><circle cx="12" cy="10" r="1.8"/><path d="M9 17l-3 3M15 17l3 3"/></svg></span>
+          <h3>Prototipagem rápida</h3>
+          <p>Do problema ao protótipo funcional em dias, não meses.</p>
+          <a href="#projetos" class="service-link">Ver na prática <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13,6 19,12 13,18"/></svg></a>
+        </div>
+        <div class="card">
+          <span class="card-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><circle cx="12" cy="13.5" r="4"/><path d="M8 7l1.5-2.5h5L16 7"/></svg></span>
+          <h3>Visão computacional aplicada</h3>
+          <p>Análise de imagem e vídeo com modelos multimodais — por exemplo, segurança do trabalho.</p>
+          <a href="#projetos" class="service-link">Ver na prática <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13,6 19,12 13,18"/></svg></a>
+        </div>
+      </div>
+
+      <div style="margin-top: var(--space-8);">
+        <div class="kicker">Minha caixa de ferramentas</div>
+        <div class="tech-row">
+          <span class="chip"><span class="chip-dot"></span>Python</span>
+          <span class="chip"><span class="chip-dot"></span>SQL</span>
+          <span class="chip"><span class="chip-dot"></span>Git &amp; GitHub</span>
+          <span class="chip"><span class="chip-dot"></span>Claude &amp; Claude Code</span>
+          <span class="chip"><span class="chip-dot"></span>GPT &amp; LLMs</span>
+          <span class="chip"><span class="chip-dot"></span>Prompt Engineering</span>
+          <span class="chip"><span class="chip-dot"></span>APIs REST &amp; JSON</span>
+          <span class="chip"><span class="chip-dot"></span>Fundamentos de Cloud</span>
+          <span class="chip"><span class="chip-dot"></span>Power BI</span>
+          <span class="chip"><span class="chip-dot"></span>AutoCAD</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PROJETOS ================= -->
+  <section id="projetos">
+    <div class="container">
+      <div class="kicker">Projetos</div>
+      <h2 class="section-title">Trabalho selecionado</h2>
+      <p class="section-lead">Protótipos que aplicam IA a problemas reais de canteiro de obra — do registro diário à segurança do trabalho.</p>
+
+      <div class="projects-grid">
+
+        <article class="project-card featured">
+          <div class="project-media">
+            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><circle cx="12" cy="13.5" r="4"/><path d="M8 7l1.5-2.5h5L16 7"/></svg>
+            <span class="badge">Destaque</span>
+          </div>
+          <div class="project-body">
+            <h3><span class="tt">Vigia Obra — Segurança do Trabalho com IA</span></h3>
+            <p>
+              Pipeline que analisa vídeos de canteiro, extrai frames e usa o Claude (visão computacional)
+              para sinalizar não-conformidades de segurança do trabalho (NR-18, NR-6, NR-35). Painel de
+              inspeção exibe as ocorrências com timestamp, severidade e confiança.
+            </p>
+            <div class="tag-row">
+              <span class="tag">Claude Vision</span><span class="tag">Python</span><span class="tag">OpenCV</span><span class="tag">NDJSON</span>
+            </div>
+            <div class="project-footer">
+              <a class="project-link" href="../vigia-obra-frontend/index.html" target="_blank" rel="noopener">
+                Ver painel de inspeção
+                <svg class="icon" viewBox="0 0 24 24"><path d="M14 4h6v6"/><line x1="20" y1="4" x2="11" y2="13"/><path d="M20 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1h5"/></svg>
+              </a>
+              <span class="project-note">+ pipeline Python em vigia-obra-seguranca</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-media">
+            <svg class="icon" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><rect x="9" y="2" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="15" y2="16"/></svg>
+          </div>
+          <div class="project-body">
+            <h3><span class="tt">Diário de Obra</span></h3>
+            <p>Registro diário de atividades, clima, mão de obra e ocorrências — classificadas por severidade, com fluxo de rascunho até assinatura.</p>
+            <div class="tag-row"><span class="tag">HTML/CSS/JS</span><span class="tag">Protótipo</span></div>
+            <div class="project-footer">
+              <a class="project-link" href="../diario-de-obra/index.html" target="_blank" rel="noopener">
+                Ver protótipo
+                <svg class="icon" viewBox="0 0 24 24"><path d="M14 4h6v6"/><line x1="20" y1="4" x2="11" y2="13"/><path d="M20 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1h5"/></svg>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-media">
+            <svg class="icon" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><polyline points="8,12 11,15 16,9"/></svg>
+          </div>
+          <div class="project-body">
+            <h3><span class="tt">Checklist de Obra</span></h3>
+            <p>Checklist item a item com comparação de fotos "antes/depois" de reparos — gera comparativo pronto para compartilhar com o cliente.</p>
+            <div class="tag-row"><span class="tag">HTML/CSS/JS</span><span class="tag">Comparativo visual</span></div>
+            <div class="project-footer">
+              <a class="project-link" href="../checklist-de-obra/index.html" target="_blank" rel="noopener">
+                Ver protótipo
+                <svg class="icon" viewBox="0 0 24 24"><path d="M14 4h6v6"/><line x1="20" y1="4" x2="11" y2="13"/><path d="M20 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1h5"/></svg>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-media">
+            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="4" r="1.6"/><circle cx="5" cy="10" r="1.6"/><circle cx="19" cy="10" r="1.6"/><circle cx="8" cy="19" r="1.6"/><circle cx="16" cy="19" r="1.6"/><circle cx="12" cy="13" r="1.9"/><path d="M12 5.6V11.4M6.3 10.9L10.7 12.6M17.7 10.9L13.3 12.6M9.3 17.8L11.3 14.6M14.7 17.8L12.7 14.6"/></svg>
+          </div>
+          <div class="project-body">
+            <h3><span class="tt">Mago da IA</span></h3>
+            <p>Minha marca pessoal para levar IA aplicada ao dia a dia do canteiro de obra — landing page de apresentação e contato.</p>
+            <div class="tag-row"><span class="tag">Landing page</span><span class="tag">Marca própria</span></div>
+            <div class="project-footer">
+              <a class="project-link" href="../../Site/Mago%20da%20IA%20-%20Home%20Standalone.html" target="_blank" rel="noopener">
+                Ver demonstração
+                <svg class="icon" viewBox="0 0 24 24"><path d="M14 4h6v6"/><line x1="20" y1="4" x2="11" y2="13"/><path d="M20 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1h5"/></svg>
+              </a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TRAJETÓRIA ================= -->
+  <section id="trajetoria">
+    <div class="container">
+      <div class="kicker">Trajetória</div>
+      <h2 class="section-title">Da obra ao código</h2>
+      <p class="section-lead">Mais de uma década construindo estruturas físicas antes de começar a construir estruturas de dados.</p>
+
+      <div class="timeline">
+        <div class="tl-item now">
+          <div class="tl-year">2025 — atual</div>
+          <h3>Gestor de Obras · CH3 Incorporadora</h3>
+          <p>Criação, do zero, de aplicativo para gestão de checklists de obra, com métricas para padronizar processos e reduzir custos operacionais.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2026</div>
+          <h3>Pós-graduação em Engenharia de IA · Impacta Digital</h3>
+          <p>Certificações complementares: Google AI Professional Certificate e Claude Platform 101 (Anthropic).</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2024 — 2025</div>
+          <h3>Coordenador de Obras · Blink Reformei</h3>
+          <p>Coordenação ponta a ponta de cronogramas, compras, contratos, compatibilização e interface com clientes.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2023</div>
+          <h3>Pós-graduação em Gestão de Projetos · Anhembi Morumbi</h3>
+          <p>Base formal para planejamento, riscos e indicadores — hoje aplicada também a projetos de IA.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2022 — 2024</div>
+          <h3>Coordenador de Obras · Torão Design</h3>
+          <p>Gestão de planejamento, custos e qualidade; padronização de rotinas e acompanhamento de KPIs.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2013 — 2022</div>
+          <h3>Arquiteto Autônomo &amp; Projetista</h3>
+          <p>Concepção e detalhamento de projetos residenciais e comerciais, do memorial ao acompanhamento de obra.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2007 — 2013</div>
+          <h3>Arquitetura e Urbanismo · Belas Artes SP</h3>
+          <p>Formação inicial que ainda hoje molda a forma como estruturo qualquer projeto — físico ou digital.</p>
+        </div>
+      </div>
+
+      <div class="cert-row">
+        <div class="cert-chip"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2 2 8l10 6 10-6-10-6z"/><path d="M2 8v8l10 6 10-6V8"/></svg>Google AI Professional Certificate</div>
+        <div class="cert-chip"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2 2 8l10 6 10-6-10-6z"/><path d="M2 8v8l10 6 10-6V8"/></svg>Claude Platform 101 — Anthropic</div>
+        <div class="cert-chip"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2 2 8l10 6 10-6-10-6z"/><path d="M2 8v8l10 6 10-6V8"/></svg>Pós-graduação em Engenharia de IA</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONTATO ================= -->
+  <section id="contato">
+    <div class="container contact-wrap">
+      <div class="contact-copy">
+        <div class="kicker">Contato</div>
+        <h2 class="section-title">Vamos construir algo juntos</h2>
+        <p>
+          Aberto a oportunidades como Engenheiro de Soluções em IA, projetos de automação aplicada à
+          construção civil, ou só para trocar uma ideia sobre IA no canteiro de obra.
+        </p>
+        <a href="mailto:leonardo.r.manzo@gmail.com?subject=Vamos%20conversar" class="btn btn-primary">
+          Enviar e-mail
+          <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3,7 12,13 21,7"/></svg>
+        </a>
+      </div>
+      <div class="contact-cards">
+        <a class="contact-card" href="mailto:leonardo.r.manzo@gmail.com">
+          <span class="card-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3,7 12,13 21,7"/></svg></span>
+          <span><span class="label">E-mail</span><br><span class="value">leonardo.r.manzo@gmail.com</span></span>
+        </a>
+        <a class="contact-card" href="https://wa.me/5511972554234" target="_blank" rel="noopener">
+          <span class="card-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg></span>
+          <span><span class="label">WhatsApp</span><br><span class="value">+55 11 97255-4234</span></span>
+        </a>
+        <a class="contact-card" href="https://linkedin.com/in/leonardo-manzo-05ab4075" target="_blank" rel="noopener">
+          <span class="card-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="7.5" y1="10" x2="7.5" y2="17"/><circle cx="7.5" cy="6.8" r="0.9"/><path d="M11 17v-6.5M11 12c0-1.5 1.2-2.3 2.6-2.3 1.6 0 2.4 1 2.4 3v4.3"/></svg></span>
+          <span><span class="label">LinkedIn</span><br><span class="value">linkedin.com/in/leonardo-manzo-05ab4075</span></span>
+        </a>
+        <div class="contact-card" style="cursor:default;">
+          <span class="card-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="9" r="4"/><line x1="12" y1="13" x2="12" y2="21"/></svg></span>
+          <span><span class="label">Localização</span><br><span class="value">São Paulo, SP — disponível para viagens</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="logo">
+        <span class="logo-mark">
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="4" r="1.6"/><circle cx="5" cy="10" r="1.6"/><circle cx="19" cy="10" r="1.6"/><circle cx="8" cy="19" r="1.6"/><circle cx="16" cy="19" r="1.6"/><circle cx="12" cy="13" r="1.8"/><path d="M12 5.6V11.4M6.3 10.9L10.7 12.6M17.7 10.9L13.3 12.6M9.3 17.8L11.3 14.6M14.7 17.8L12.7 14.6"/></svg>
+        </span>
+        <span class="footer-tagline">Engenharia com um toque de magia.</span>
+      </div>
+      <nav class="footer-links">
+        <a href="#sobre">Sobre</a>
+        <a href="#projetos">Projetos</a>
+        <a href="#trajetoria">Trajetória</a>
+        <a href="#contato">Contato</a>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Leonardo Manzo. Todos os direitos reservados.</span>
+      <span>Feito com HTML, CSS, JS — e um pouco de Claude Code.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    "use strict";
+
+    // Theme toggle (persisted)
+    var root = document.documentElement;
+    var toggle = document.getElementById("theme-toggle");
+    var stored = localStorage.getItem("theme");
+    if (stored === "light" || stored === "dark") {
+      root.setAttribute("data-theme", stored);
+    }
+    toggle.addEventListener("click", function () {
+      var current = root.getAttribute("data-theme") === "light" ? "light" : "dark";
+      var next = current === "light" ? "dark" : "light";
+      root.setAttribute("data-theme", next);
+      localStorage.setItem("theme", next);
+    });
+
+    // Mobile nav
+    var navToggle = document.getElementById("nav-toggle");
+    var navLinks = document.getElementById("nav-links");
+    navToggle.addEventListener("click", function () {
+      var isOpen = document.body.classList.toggle("nav-open");
+      navToggle.setAttribute("aria-expanded", String(isOpen));
+    });
+    navLinks.querySelectorAll("a").forEach(function (link) {
+      link.addEventListener("click", function () {
+        document.body.classList.remove("nav-open");
+        navToggle.setAttribute("aria-expanded", "false");
+      });
+    });
+
+    // Reveal on scroll
+    var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var revealTargets = document.querySelectorAll(".card, .project-card, .tl-item, .contact-card");
+    revealTargets.forEach(function (el) { el.classList.add("reveal"); });
+    if (!prefersReduced && "IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in-view");
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: "0px 0px -60px 0px" });
+      revealTargets.forEach(function (el) { io.observe(el); });
+    } else {
+      revealTargets.forEach(function (el) { el.classList.add("in-view"); });
+    }
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Project cards: conic-gradient border rotates to face the cursor.
+    document.querySelectorAll(".project-card").forEach(function (card) {
+      card.addEventListener("mousemove", function (e) {
+        var rect = card.getBoundingClientRect();
+        var x = e.clientX - rect.left - rect.width / 2;
+        var y = e.clientY - rect.top - rect.height / 2;
+        card.style.setProperty("--rotation", Math.atan2(y, x) + "rad");
+      });
+      card.addEventListener("mouseleave", function () {
+        card.style.setProperty("--rotation", "0deg");
+      });
+    });
+
+    // Background parallax — kinetic grid (canvas): warps toward the cursor,
+    // ripples on click, drifts slowly on scroll. Colors read from the site's
+    // own CSS variables so it follows the light/dark theme toggle.
+    (function kineticGrid() {
+      var canvas = document.getElementById("bg-canvas");
+      if (!canvas) return;
+      var ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      var CELL_SIZE = 55;
+      var INFLUENCE_RADIUS = 260;
+      var MAX_WARP = 24;
+      var DOT_SPACING = 28;
+      var LERP_SPEED = 0.08;
+      var LINE_BASE = { r: 255, g: 255, b: 255, a: 0.10 };
+
+      function lerpN(a, b, t) { return a + (b - a) * t; }
+      function hexToRgb(hex) {
+        var m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex.trim());
+        return m ? { r: parseInt(m[1], 16), g: parseInt(m[2], 16), b: parseInt(m[3], 16) } : { r: 240, g: 151, b: 92 };
+      }
+      function lerpColor(base, active, t) {
+        var r = Math.round(lerpN(base.r, active.r, t));
+        var g = Math.round(lerpN(base.g, active.g, t));
+        var b = Math.round(lerpN(base.b, active.b, t));
+        var a = lerpN(base.a, active.a, t);
+        return "rgba(" + r + "," + g + "," + b + "," + a.toFixed(3) + ")";
+      }
+
+      var theme = {};
+      function readTheme() {
+        var cs = getComputedStyle(document.documentElement);
+        var bg = cs.getPropertyValue("--bg").trim();
+        var accent = hexToRgb(cs.getPropertyValue("--accent-text").trim());
+        theme = {
+          bg: bg,
+          lineActive: { r: accent.r, g: accent.g, b: accent.b, a: 0.85 },
+          nodeActive: { r: accent.r, g: accent.g, b: accent.b, a: 1.0 },
+          glow: accent.r + "," + accent.g + "," + accent.b,
+        };
+      }
+      readTheme();
+      var themeToggle = document.getElementById("theme-toggle");
+      if (themeToggle) themeToggle.addEventListener("click", function () { setTimeout(readTheme, 0); });
+
+      var mouse = { x: -9999, y: -9999 };
+      var targetMouse = { x: -9999, y: -9999 };
+      var ripples = [];
+      var size = { w: 0, h: 0 };
+      var scrollOffset = 0;
+
+      function getWarpedPoint(gx, gy, col, row, cols, rows) {
+        var edgeMargin = 1.5;
+        var colPin = Math.min(col / edgeMargin, (cols - 1 - col) / edgeMargin, 1);
+        var rowPin = Math.min(row / edgeMargin, (rows - 1 - row) / edgeMargin, 1);
+        var pinFactor = colPin * colPin * rowPin * rowPin;
+
+        var dx = gx - mouse.x, dy = gy - mouse.y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        var proximity = Math.max(0, 1 - dist / INFLUENCE_RADIUS) * pinFactor;
+
+        var rx = 0, ry = 0;
+        for (var i = 0; i < ripples.length; i++) {
+          var rp = ripples[i];
+          var rdx = gx - rp.x, rdy = gy - rp.y;
+          var rdist = Math.sqrt(rdx * rdx + rdy * rdy);
+          var waveWidth = 55;
+          var diff = rdist - rp.radius;
+          if (Math.abs(diff) < waveWidth) {
+            var strength = (1 - Math.abs(diff) / waveWidth) * rp.opacity * 18 * pinFactor;
+            var angle = Math.atan2(rdy, rdx);
+            var sign = diff < 0 ? -1 : 1;
+            rx += Math.cos(angle) * strength * sign * -1;
+            ry += Math.sin(angle) * strength * sign * -1;
+          }
+        }
+
+        if (dist < INFLUENCE_RADIUS && dist > 0 && pinFactor > 0) {
+          var t = dist / INFLUENCE_RADIUS;
+          var eased = t < 0.01 ? 0 : (1 - t) * (1 - t) * Math.min(1, dist / 60);
+          var warpAmt = eased * MAX_WARP * pinFactor;
+          var a2 = Math.atan2(dy, dx);
+          return { pt: { x: gx - Math.cos(a2) * warpAmt + rx, y: gy - Math.sin(a2) * warpAmt + ry }, proximity: proximity };
+        }
+        return { pt: { x: gx + rx, y: gy + ry }, proximity: proximity };
+      }
+
+      function draw(now) {
+        var W = size.w, H = size.h;
+        ctx.clearRect(0, 0, W, H);
+        ctx.fillStyle = theme.bg;
+        ctx.fillRect(0, 0, W, H);
+
+        ctx.fillStyle = "rgba(255,255,255,0.04)";
+        var dotOffset = scrollOffset % DOT_SPACING;
+        for (var x = DOT_SPACING / 2; x < W; x += DOT_SPACING) {
+          for (var y = DOT_SPACING / 2 - dotOffset; y < H; y += DOT_SPACING) {
+            ctx.beginPath();
+            ctx.arc(x, y, 0.7, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        for (var i = ripples.length - 1; i >= 0; i--) {
+          var rp = ripples[i];
+          var age = (now - rp.born) / 1000;
+          rp.radius = Math.max(0, age * 400);
+          rp.opacity = Math.max(0, 1 - age * 1.2);
+          if (rp.opacity <= 0) ripples.splice(i, 1);
+        }
+
+        var cols = Math.max(2, Math.ceil(W / CELL_SIZE)) + 1;
+        var rows = Math.max(2, Math.ceil(H / CELL_SIZE)) + 1;
+        var cellW = W / (cols - 1);
+        var cellH = H / (rows - 1);
+
+        var pts = [], prox = [];
+        for (var row = 0; row < rows; row++) {
+          pts[row] = []; prox[row] = [];
+          for (var col = 0; col < cols; col++) {
+            var res = getWarpedPoint(col * cellW, row * cellH + (scrollOffset % cellH), col, row, cols, rows);
+            pts[row][col] = res.pt;
+            prox[row][col] = res.proximity;
+          }
+        }
+
+        function drawSeg(p1, p2, pr1, pr2) {
+          var avg = (pr1 + pr2) / 2;
+          var t = avg * avg * (3 - 2 * avg);
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.strokeStyle = lerpColor(LINE_BASE, theme.lineActive, t);
+          ctx.lineWidth = lerpN(0.8, 1.5, t);
+          ctx.stroke();
+        }
+        ctx.lineCap = "butt";
+        for (var row2 = 0; row2 < rows; row2++)
+          for (var col2 = 0; col2 < cols - 1; col2++)
+            drawSeg(pts[row2][col2], pts[row2][col2 + 1], prox[row2][col2], prox[row2][col2 + 1]);
+        for (var col3 = 0; col3 < cols; col3++)
+          for (var row3 = 0; row3 < rows - 1; row3++)
+            drawSeg(pts[row3][col3], pts[row3 + 1][col3], prox[row3][col3], prox[row3 + 1][col3]);
+
+        for (var row4 = 0; row4 < rows; row4++) {
+          for (var col4 = 0; col4 < cols; col4++) {
+            var p = pts[row4][col4];
+            var pr = prox[row4][col4];
+            var t2 = pr * pr * (3 - 2 * pr);
+            var r = lerpN(1.8, 3.2, t2);
+            if (t2 > 0.3) {
+              var glowR = r + lerpN(0, 6, (t2 - 0.3) / 0.7);
+              var grd = ctx.createRadialGradient(p.x, p.y, r * 0.5, p.x, p.y, glowR);
+              grd.addColorStop(0, "rgba(" + theme.glow + "," + (t2 * 0.3).toFixed(3) + ")");
+              grd.addColorStop(1, "rgba(" + theme.glow + ",0)");
+              ctx.beginPath(); ctx.arc(p.x, p.y, glowR, 0, Math.PI * 2); ctx.fillStyle = grd; ctx.fill();
+            }
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+            ctx.fillStyle = lerpColor({ r: 255, g: 255, b: 255, a: 0.16 }, theme.nodeActive, t2);
+            ctx.fill();
+          }
+        }
+
+        for (var ri = 0; ri < ripples.length; ri++) {
+          var rp2 = ripples[ri];
+          var safeRadius = Math.max(0, rp2.radius);
+          ctx.beginPath();
+          ctx.arc(rp2.x, rp2.y, safeRadius, 0, Math.PI * 2);
+          ctx.strokeStyle = "rgba(" + theme.glow + "," + (rp2.opacity * 0.28).toFixed(3) + ")";
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
+      }
+
+      var rafId = 0;
+      function animate(now) {
+        mouse.x = lerpN(mouse.x, targetMouse.x, LERP_SPEED);
+        mouse.y = lerpN(mouse.y, targetMouse.y, LERP_SPEED);
+        draw(now);
+        rafId = requestAnimationFrame(animate);
+      }
+
+      function setSize() {
+        var w = window.innerWidth, h = window.innerHeight;
+        canvas.width = w; canvas.height = h;
+        size = { w: w, h: h };
+      }
+      setSize();
+      window.addEventListener("resize", setSize);
+
+      if (prefersReduced) {
+        // Static single frame: no cursor warp, no ripples, no loop.
+        draw(performance.now());
+        return;
+      }
+
+      window.addEventListener("mousemove", function (e) {
+        targetMouse = { x: e.clientX, y: e.clientY };
+      });
+      window.addEventListener("click", function (e) {
+        ripples.push({ x: e.clientX, y: e.clientY, radius: 0, opacity: 1, born: performance.now() });
+      });
+      var scrollTicking = false;
+      window.addEventListener("scroll", function () {
+        if (scrollTicking) return;
+        scrollTicking = true;
+        requestAnimationFrame(function () {
+          scrollOffset = window.scrollY * 0.12;
+          scrollTicking = false;
+        });
+      }, { passive: true });
+
+      rafId = requestAnimationFrame(animate);
+    })();
+  })();
+</script>
+
+</body>
+</html>
