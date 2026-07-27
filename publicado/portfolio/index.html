@@ -297,15 +297,19 @@
     display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3);
   }
   .project-preview {
-    position: absolute; inset: 0 auto auto 0; width: 200%; height: 360px; border: 0;
-    transform: scale(.5); transform-origin: top left; pointer-events: none;
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; object-position: center top; pointer-events: none;
     background: var(--surface-2);
   }
   .project-media::after {
-    content: ""; position: absolute; inset: 0; pointer-events: none;
+    content: ""; position: absolute; z-index: 1; inset: 0; pointer-events: none;
     background: linear-gradient(180deg, transparent 58%, rgba(11,12,16,.58));
   }
-  .project-media .badge { position: absolute; z-index: 2; top: var(--space-4); right: var(--space-4); }
+  .project-media .badge {
+    position: absolute; z-index: 3; top: var(--space-4); right: var(--space-4);
+    box-shadow: 0 6px 18px rgba(0,0,0,.32);
+    backdrop-filter: blur(8px);
+  }
   .project-media .icon { width: 30px; height: 30px; stroke: var(--accent-text); opacity: 0.85; }
   .badge {
     font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase;
@@ -594,7 +598,7 @@
 
         <article class="project-card featured">
           <div class="project-media">
-            <iframe class="project-preview" src="../vigia-obra-frontend/index.html" title="Miniatura do painel Vigia Obra" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+            <img class="project-preview" src="./assets/projects/vigia-obra.png" alt="Miniatura do painel Vigia Obra" loading="lazy">
             <span class="badge">Destaque</span>
           </div>
           <div class="project-body">
@@ -619,7 +623,7 @@
 
         <article class="project-card">
           <div class="project-media">
-            <iframe class="project-preview" src="../diario-de-obra/index.html" title="Miniatura do Diário de Obra" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+            <img class="project-preview" src="./assets/projects/diario-de-obra.png" alt="Miniatura do Diário de Obra" loading="lazy">
           </div>
           <div class="project-body">
             <h3><span class="tt">Diário de Obra</span></h3>
@@ -637,7 +641,7 @@
 
         <article class="project-card">
           <div class="project-media">
-            <iframe class="project-preview" src="../checklist-de-obra/index.html" title="Miniatura do Checklist de Obra" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+            <img class="project-preview" src="./assets/projects/checklist-de-obra.png" alt="Miniatura do Checklist de Obra" loading="lazy">
           </div>
           <div class="project-body">
             <h3><span class="tt">Checklist de Obra</span></h3>
@@ -655,7 +659,7 @@
 
         <article class="project-card">
           <div class="project-media">
-            <iframe class="project-preview" src="../mago-da-ia/index.html" title="Miniatura do Mago da IA" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+            <img class="project-preview" src="./assets/projects/mago-da-ia.png" alt="Miniatura do Mago da IA" loading="lazy">
           </div>
           <div class="project-body">
             <h3><span class="tt">Mago da IA</span></h3>
@@ -673,7 +677,7 @@
 
         <article class="project-card">
           <div class="project-media">
-            <iframe class="project-preview" src="../sindico-inteligente/index.html" title="Miniatura do Síndico Inteligente" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+            <img class="project-preview" src="./assets/projects/sindico-inteligente.png" alt="Miniatura do Síndico Inteligente" loading="lazy">
             <span class="badge">MVP Desktop</span>
           </div>
           <div class="project-body">
@@ -692,7 +696,7 @@
 
         <article class="project-card">
           <div class="project-media">
-            <iframe class="project-preview" src="../agenda-retratil/index.html" title="Miniatura da Agenda Retrátil" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+            <img class="project-preview" src="./assets/projects/agenda-retratil.png" alt="Miniatura da Agenda Retrátil com o painel aberto" loading="lazy">
             <span class="badge">MVP Desktop</span>
           </div>
           <div class="project-body">
