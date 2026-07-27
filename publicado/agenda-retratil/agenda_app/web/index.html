@@ -1,0 +1,14 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Agenda Retrátil</title><link rel="stylesheet" href="styles.css"></head>
+<body>
+<header><div class="brand"><span>AR</span><div><strong>Agenda Retrátil</strong><small id="syncText">Modo local</small></div></div><div class="head-actions"><button class="icon" id="connect" title="Google Agenda">◉</button><button class="icon" id="collapse" title="Recolher painel">›</button></div></header>
+<main id="main">
+  <section class="hero"><p id="date"></p><h1>Organize sua operação.</h1><div class="command"><input id="command" placeholder="Reunião amanhã às 14h por 1 hora"><button onclick="parseCommand()">Criar</button></div><small>Interpretação local • nenhuma chave de IA necessária</small></section>
+  <nav><button class="active" data-tab="agenda">Agenda</button><button data-tab="goals">Metas</button><button data-tab="suggestions">Sugestões <span id="badge"></span></button></nav>
+  <section id="content"><div class="loading">Carregando sua agenda…</div></section>
+  <footer><button onclick="backup()">Backup</button><button onclick="exportData()">Exportar</button><span>LOCAL-FIRST</span></footer>
+</main>
+<dialog id="preview"><form method="dialog"><p class="eyebrow">PRÉVIA DA AÇÃO</p><h2 id="previewTitle">Revise o compromisso</h2><div id="previewBody"></div><div class="actions"><button value="cancel" class="secondary">Cancelar</button><button type="button" class="primary" id="confirmAction">Confirmar</button></div></form></dialog>
+<dialog id="formDialog"><form method="dialog"><p class="eyebrow" id="formKicker"></p><h2 id="formTitle"></h2><div id="formBody"></div><div class="actions"><button value="cancel" class="secondary">Cancelar</button><button type="button" class="primary" id="formNext">Revisar</button></div></form></dialog>
+<div id="toast"></div><script src="app.js"></script>
+</body></html>
+

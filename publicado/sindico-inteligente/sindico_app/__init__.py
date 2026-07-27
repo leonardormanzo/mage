@@ -1,0 +1,2 @@
+"""Síndico Inteligente desktop application."""
+
