@@ -289,13 +289,23 @@
   @media (max-width: 780px) { .project-card.featured { grid-column: span 1; } }
 
   .project-media {
-    position: relative; padding: var(--space-6) var(--space-5); min-height: 140px;
+    position: relative; padding: 0; min-height: 180px; overflow: hidden;
     background:
       radial-gradient(600px 200px at 0% 0%, var(--accent-soft), transparent 60%),
       linear-gradient(160deg, var(--surface-2), var(--surface-3));
     border-bottom: 1px solid var(--border);
     display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3);
   }
+  .project-preview {
+    position: absolute; inset: 0 auto auto 0; width: 200%; height: 360px; border: 0;
+    transform: scale(.5); transform-origin: top left; pointer-events: none;
+    background: var(--surface-2);
+  }
+  .project-media::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(180deg, transparent 58%, rgba(11,12,16,.58));
+  }
+  .project-media .badge { position: absolute; z-index: 2; top: var(--space-4); right: var(--space-4); }
   .project-media .icon { width: 30px; height: 30px; stroke: var(--accent-text); opacity: 0.85; }
   .badge {
     font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase;
@@ -584,7 +594,7 @@
 
         <article class="project-card featured">
           <div class="project-media">
-            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><circle cx="12" cy="13.5" r="4"/><path d="M8 7l1.5-2.5h5L16 7"/></svg>
+            <iframe class="project-preview" src="../vigia-obra-frontend/index.html" title="Miniatura do painel Vigia Obra" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
             <span class="badge">Destaque</span>
           </div>
           <div class="project-body">
@@ -602,14 +612,14 @@
                 Ver painel de inspeção
                 <svg class="icon" viewBox="0 0 24 24"><path d="M14 4h6v6"/><line x1="20" y1="4" x2="11" y2="13"/><path d="M20 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1h5"/></svg>
               </a>
-              <span class="project-note">+ pipeline Python em vigia-obra-seguranca</span>
+              <a class="project-note" href="https://github.com/leonardormanzo/mage/tree/main/publicado/vigia-obra-seguranca" target="_blank" rel="noopener">GitHub e documentação</a>
             </div>
           </div>
         </article>
 
         <article class="project-card">
           <div class="project-media">
-            <svg class="icon" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><rect x="9" y="2" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="15" y2="16"/></svg>
+            <iframe class="project-preview" src="../diario-de-obra/index.html" title="Miniatura do Diário de Obra" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
           </div>
           <div class="project-body">
             <h3><span class="tt">Diário de Obra</span></h3>
@@ -620,13 +630,14 @@
                 Ver protótipo
                 <svg class="icon" viewBox="0 0 24 24"><path d="M14 4h6v6"/><line x1="20" y1="4" x2="11" y2="13"/><path d="M20 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1h5"/></svg>
               </a>
+              <a class="project-note" href="https://github.com/leonardormanzo/mage/tree/main/publicado/diario-de-obra" target="_blank" rel="noopener">GitHub e documentação</a>
             </div>
           </div>
         </article>
 
         <article class="project-card">
           <div class="project-media">
-            <svg class="icon" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><polyline points="8,12 11,15 16,9"/></svg>
+            <iframe class="project-preview" src="../checklist-de-obra/index.html" title="Miniatura do Checklist de Obra" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
           </div>
           <div class="project-body">
             <h3><span class="tt">Checklist de Obra</span></h3>
@@ -637,30 +648,32 @@
                 Ver protótipo
                 <svg class="icon" viewBox="0 0 24 24"><path d="M14 4h6v6"/><line x1="20" y1="4" x2="11" y2="13"/><path d="M20 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1h5"/></svg>
               </a>
+              <a class="project-note" href="https://github.com/leonardormanzo/mage/tree/main/publicado/checklist-de-obra" target="_blank" rel="noopener">GitHub e documentação</a>
             </div>
           </div>
         </article>
 
         <article class="project-card">
           <div class="project-media">
-            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="4" r="1.6"/><circle cx="5" cy="10" r="1.6"/><circle cx="19" cy="10" r="1.6"/><circle cx="8" cy="19" r="1.6"/><circle cx="16" cy="19" r="1.6"/><circle cx="12" cy="13" r="1.9"/><path d="M12 5.6V11.4M6.3 10.9L10.7 12.6M17.7 10.9L13.3 12.6M9.3 17.8L11.3 14.6M14.7 17.8L12.7 14.6"/></svg>
+            <iframe class="project-preview" src="../mago-da-ia/index.html" title="Miniatura do Mago da IA" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
           </div>
           <div class="project-body">
             <h3><span class="tt">Mago da IA</span></h3>
             <p>Minha marca pessoal para levar IA aplicada ao dia a dia do canteiro de obra — landing page de apresentação e contato.</p>
             <div class="tag-row"><span class="tag">Landing page</span><span class="tag">Marca própria</span></div>
             <div class="project-footer">
-              <a class="project-link" href="../../Site/Mago%20da%20IA%20-%20Home%20Standalone.html" target="_blank" rel="noopener">
+              <a class="project-link" href="../mago-da-ia/index.html" target="_blank" rel="noopener">
                 Ver demonstração
                 <svg class="icon" viewBox="0 0 24 24"><path d="M14 4h6v6"/><line x1="20" y1="4" x2="11" y2="13"/><path d="M20 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1h5"/></svg>
               </a>
+              <a class="project-note" href="https://github.com/leonardormanzo/mage/tree/main/publicado/mago-da-ia" target="_blank" rel="noopener">GitHub e documentação</a>
             </div>
           </div>
         </article>
 
         <article class="project-card">
           <div class="project-media">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M4 21V8l8-5 8 5v13"/><path d="M8 21v-7h8v7"/><path d="M9 10h6"/></svg>
+            <iframe class="project-preview" src="../sindico-inteligente/index.html" title="Miniatura do Síndico Inteligente" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
             <span class="badge">MVP Desktop</span>
           </div>
           <div class="project-body">
@@ -672,14 +685,14 @@
                 Ver demonstração
                 <svg class="icon" viewBox="0 0 24 24"><path d="M14 4h6v6"/><line x1="20" y1="4" x2="11" y2="13"/><path d="M20 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1h5"/></svg>
               </a>
-              <a class="project-note" href="https://github.com/leonardormanzo/mage/tree/main/publicado/sindico-inteligente" target="_blank" rel="noopener">Código e documentação</a>
+              <a class="project-note" href="https://github.com/leonardormanzo/mage/tree/main/publicado/sindico-inteligente" target="_blank" rel="noopener">GitHub e documentação</a>
             </div>
           </div>
         </article>
 
         <article class="project-card">
           <div class="project-media">
-            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/><path d="M8 15h3M13 15h3"/></svg>
+            <iframe class="project-preview" src="../agenda-retratil/index.html" title="Miniatura da Agenda Retrátil" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
             <span class="badge">MVP Desktop</span>
           </div>
           <div class="project-body">
@@ -687,11 +700,11 @@
             <p>Painel Windows local-first com metas, interpretação de compromissos em português e integração segura com Google Calendar mediante confirmação.</p>
             <div class="tag-row"><span class="tag">Python</span><span class="tag">Google Calendar</span><span class="tag">OAuth</span><span class="tag">Windows Credential Manager</span></div>
             <div class="project-footer">
-              <a class="project-link" href="https://github.com/leonardormanzo/mage/tree/main/publicado/agenda-retratil" target="_blank" rel="noopener">
-                Ver código e documentação
+              <a class="project-link" href="../agenda-retratil/index.html" target="_blank" rel="noopener">
+                Ver demonstração
                 <svg class="icon" viewBox="0 0 24 24"><path d="M14 4h6v6"/><line x1="20" y1="4" x2="11" y2="13"/><path d="M20 14v5a1 1 0 01-1 1H5a1 1 0 011-1h5"/></svg>
               </a>
-              <span class="project-note">OAuth real exige credencial do usuário</span>
+              <a class="project-note" href="https://github.com/leonardormanzo/mage/tree/main/publicado/agenda-retratil" target="_blank" rel="noopener">GitHub e documentação</a>
             </div>
           </div>
         </article>
