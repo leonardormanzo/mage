@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Demonstração interativa do Síndico Inteligente, central operacional local-first para condomínios.">
+  <title>Síndico Inteligente — Demonstração</title>
+  <link rel="stylesheet" href="sindico_app/web/styles.css">
+</head>
+<body>
+<aside>
+  <div class="brand"><span class="brand-mark">SI</span><div><strong>Síndico Inteligente</strong><small>Demonstração pública</small></div></div>
+  <nav id="nav">
+    <button class="active" data-view="dashboard"><span>▦</span> Visão geral</button>
+    <button data-view="documents"><span>▤</span> Documentos &amp; IA</button>
+    <button data-view="occurrences"><span>⚠</span> Ocorrências</button>
+    <button data-view="tasks"><span>✓</span> Tarefas</button>
+    <button data-view="announcements"><span>◉</span> Comunicados</button>
+    <button data-view="reservations"><span>▣</span> Reservas</button>
+    <button data-view="contacts"><span>♙</span> Contatos</button>
+  </nav>
+  <div class="side-footer"><span class="status-dot"></span> Dados fictícios nesta demonstração
+    <button class="text-btn" onclick="backup()">Simular backup</button>
+    <button class="text-btn" onclick="exportData()">Simular exportação</button>
+  </div>
+</aside>
+<main>
+  <header><div><p class="eyebrow">CONDOMÍNIO • DEMONSTRAÇÃO INTERATIVA</p><h1 id="pageTitle">Visão geral</h1></div><div class="today" id="today"></div></header>
+  <section id="content"><div class="loading">Preparando demonstração…</div></section>
+</main>
+<dialog id="modal"><form method="dialog"><div class="modal-head"><div><p class="eyebrow" id="modalKicker">NOVA AÇÃO</p><h2 id="modalTitle"></h2></div><button class="icon" value="cancel" aria-label="Fechar">×</button></div><div id="modalBody"></div><div class="modal-actions"><button class="secondary" value="cancel">Cancelar</button><button type="button" class="primary" id="modalConfirm">Revisar e continuar</button></div></form></dialog>
+<dialog id="confirm"><form method="dialog"><p class="eyebrow">CONFIRMAÇÃO OBRIGATÓRIA</p><h2>Revise antes de salvar</h2><div id="confirmBody"></div><div class="modal-actions"><button class="secondary" value="cancel">Voltar</button><button type="button" class="danger" id="commitButton">Confirmar ação</button></div></form></dialog>
+<div id="toast" role="status"></div>
+<script src="demo-api.js"></script>
+<script src="sindico_app/web/app.js"></script>
+</body>
+</html>
+

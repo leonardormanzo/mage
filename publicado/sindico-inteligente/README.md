@@ -3,6 +3,14 @@
 Aplicativo desktop local para gestão operacional de condomínios. O handoff original permanece em
 `design_handoff_sindico_inteligente/`; a aplicação executável está em `sindico_app/`.
 
+## Demonstração pública
+
+Abra `index.html` para usar uma demonstração web com dados inteiramente fictícios. Ela permite
+navegar pelos módulos, consultar fontes documentais simuladas e experimentar cadastros com prévia.
+Os dados existem somente na memória da página e são descartados ao recarregar. Importação de PDF,
+backup e exportação são simulados nessa versão; o aplicativo desktop executa essas operações
+localmente.
+
 ## Recursos
 
 - Painel de ocorrências, tarefas, comunicados, contatos, espaços e reservas.
