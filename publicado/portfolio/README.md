@@ -29,10 +29,10 @@ estático (ex: `npx serve .`).
 
 ## Links dos projetos
 
-Os cards de "Projetos" apontam por caminho relativo para as pastas irmãs em
-`publicado/` (`vigia-obra-frontend`, `diario-de-obra`, `checklist-de-obra`) e para
-`Site/Mago da IA - Home Standalone.html`. Para os links funcionarem, mantenha essa
-estrutura de pastas ao publicar (ex: GitHub Pages servindo a raiz do repositório).
+Os cards de "Projetos" apontam para as demonstrações web nas pastas irmãs e para o
+código/documentação dos MVPs `sindico-inteligente` e `agenda-retratil` neste repositório.
+As descrições diferenciam explicitamente demonstrações visuais, funcionalidades locais
+validadas e integrações que ainda exigem credenciais do usuário.
 
 ## Falta para terminar
 

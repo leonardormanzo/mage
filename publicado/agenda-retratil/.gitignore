@@ -1,0 +1,13 @@
+.venv/
+build/
+dist/
+*.spec
+*.db
+*.sqlite*
+*.json
+__pycache__/
+*.py[cod]
+.env*
+client_secret*.json
+credentials*.json
+

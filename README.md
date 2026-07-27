@@ -11,6 +11,10 @@ somente neste computador.
   - `vigia-obra-frontend/`: painel de inspeção (protótipo de interface) do Vigia Obra.
   - `vigia-obra-seguranca/`: pipeline Python que analisa vídeos de obra e sinaliza
     não-conformidades de segurança via Claude.
+  - `sindico-inteligente/`: MVP desktop local-first para operação de condomínios e
+    consulta documental com fontes.
+  - `agenda-retratil/`: MVP desktop Windows com metas locais e integração segura com
+    Google Calendar.
 - `privado/`: conteúdo exclusivamente local, ignorado pelo Git.
 - `.gitignore`: regras que impedem o envio de arquivos privados e temporários.
 
