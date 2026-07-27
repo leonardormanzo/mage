@@ -3,6 +3,13 @@
 Painel desktop local-first para Windows, com metas locais, interpretação determinística de
 compromissos e integração segura com o Google Calendar.
 
+## Demonstração pública
+
+Abra `index.html` para experimentar a simulação interativa do painel retrátil. Metas, eventos,
+chat e conexão com Google Agenda são simulados em memória nessa página e não acessam uma conta
+real. O aplicativo desktop em `agenda_app/` contém a integração OAuth e exige confirmação antes
+de alterar o calendário.
+
 ## Recursos
 
 - Próximos sete dias do calendário principal do Google.
