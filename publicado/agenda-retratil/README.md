@@ -1,7 +1,9 @@
 # Agenda Retrátil
 
 Painel desktop local-first para Windows, com metas locais, interpretação determinística de
-compromissos e integração segura com o Google Calendar.
+compromissos e integração segura com o Google Calendar. Também publica um **painel público
+somente leitura** (itens em aberto, metas da semana, metas gerais e agenda do gestor) para
+colar o link na descrição de um grupo do WhatsApp.
 
 ## Demonstração pública
 
@@ -16,8 +18,21 @@ de alterar o calendário.
 - Criação, edição e exclusão somente após prévia e confirmação.
 - Proteção contra repetição por `request_id` e contra sobrescrita por `etag`.
 - OAuth para aplicativo desktop; token armazenado no Gerenciador de Credenciais do Windows.
-- Metas e sugestões persistidas em SQLite, com backup e exportação.
+- Itens em aberto, metas da semana, metas gerais e sugestões persistidos em SQLite, com backup e exportação.
 - Nenhuma chave de IA no HTML ou obrigatória para funcionar.
+
+## Painel público (link do WhatsApp)
+
+1. No desktop, preencha **Itens em aberto**, **Metas da semana** e **Metas gerais** e conecte o
+   Google Agenda normalmente — cada sincronização guarda um retrato dos próximos eventos.
+2. Clique em **Publicar painel** no rodapé. Isso gera uma página estática, autocontida (sem
+   backend, sem chave de API), em `publicado/painel-obra/index.html` — pasta irmã de
+   `agenda-retratil` dentro de `publicado/`.
+3. Faça commit e deploy do site (mesmo fluxo estático usado pelas outras demos em `publicado/`).
+   Cole o link de `painel-obra` na descrição do grupo do WhatsApp da obra.
+4. A página pública é somente leitura e reflete a última publicação manual — não é ao vivo. A
+   agenda do gestor mostrada nela é o retrato da última sincronização feita no desktop, não uma
+   consulta direta ao Google (evita duplicar OAuth na web).
 
 ## Executar
 
