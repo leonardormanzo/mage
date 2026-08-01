@@ -257,6 +257,31 @@
 
   .empty { text-align: center; padding: 30px 10px; color: var(--text-muted); font-size: 13.5px; }
 
+  .form-grid { display: flex; flex-direction: column; gap: 9px; }
+  .students-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .count-pill { font-size: 11.5px; font-weight: 700; background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 3px 10px; }
+
+  .student-card {
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 11px 13px; margin-bottom: 9px; background: var(--surface);
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  }
+  .student-info { min-width: 0; }
+  .student-info .name { font-size: 13.5px; font-weight: 600; margin: 0 0 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .student-info .meta { font-size: 11.5px; color: var(--text-muted); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .student-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .status-toggle {
+    font-size: 10.5px; font-weight: 700; padding: 4px 9px; border-radius: 999px;
+    border: 1px solid transparent; cursor: pointer; font-family: inherit;
+  }
+  .status-toggle.active { background: var(--good-soft); color: var(--good); }
+  .status-toggle.inactive { background: var(--surface-2); color: var(--text-muted); border-color: var(--border); }
+  .remove-btn {
+    appearance: none; border: none; background: none; cursor: pointer;
+    color: var(--critical); font-size: 15px; padding: 4px 6px; line-height: 1;
+    border-radius: var(--radius-sm);
+  }
+
   footer.disclaimer {
     font-size: 11.5px; color: var(--text-muted); text-align: center;
     line-height: 1.5; padding: 4px 10px 0;
@@ -366,6 +391,35 @@
       </div>
     </section>
 
+    <!-- ABA 4: ALUNOS -->
+    <section class="view" id="view-alunos">
+      <div class="card">
+        <h2>Cadastro de alunos</h2>
+        <p class="hint">Cadastre os alunos com acesso ao assistente. Fica salvo neste navegador (demo) — não é um banco de dados real ainda.</p>
+
+        <form id="studentForm">
+          <div class="form-grid">
+            <input type="text" id="studentName" placeholder="Nome completo" required />
+            <input type="email" id="studentEmail" placeholder="E-mail institucional" required />
+            <input type="text" id="studentInstitution" placeholder="Instituição (ex: UFMG)" required />
+            <input type="text" id="studentCourse" placeholder="Curso / período (ex: Medicina, 6º período)" />
+          </div>
+          <button type="submit" class="btn btn-primary" style="margin-top:10px;">Cadastrar aluno</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="students-header">
+          <h2 style="margin:0;">Alunos cadastrados</h2>
+          <span class="count-pill" id="studentCount">0</span>
+        </div>
+        <div class="search-row">
+          <input type="text" id="studentQuery" placeholder="Buscar por nome ou instituição..." />
+        </div>
+        <div id="studentList"></div>
+      </div>
+    </section>
+
   </main>
 
   <footer class="disclaimer">
@@ -382,6 +436,9 @@
     <button class="tab-btn" data-view="provas">
       <span class="ic">🗂️</span><span class="lb">Provas</span>
     </button>
+    <button class="tab-btn" data-view="alunos">
+      <span class="ic">🎓</span><span class="lb">Alunos</span>
+    </button>
   </nav>
 
 </div>
@@ -392,7 +449,12 @@
 
   // ---------- Navegação entre abas ----------
   var tabButtons = document.querySelectorAll(".tab-btn");
-  var views = { foto: document.getElementById("view-foto"), estudar: document.getElementById("view-estudar"), provas: document.getElementById("view-provas") };
+  var views = {
+    foto: document.getElementById("view-foto"),
+    estudar: document.getElementById("view-estudar"),
+    provas: document.getElementById("view-provas"),
+    alunos: document.getElementById("view-alunos")
+  };
 
   tabButtons.forEach(function (btn) {
     btn.addEventListener("click", function () {
@@ -684,6 +746,124 @@
     div.textContent = str;
     return div.innerHTML;
   }
+
+  // ================================================================
+  // ABA 4 — CADASTRO DE ALUNOS
+  // Persistido em localStorage — fica só neste navegador/dispositivo.
+  // Não é um banco de dados real (não sincroniza entre dispositivos,
+  // não tem autenticação, qualquer pessoa com acesso ao navegador
+  // pode editar). Serve para validar o fluxo de cadastro antes de
+  // implementar um backend com banco de verdade.
+  // ================================================================
+
+  var STUDENTS_KEY = "estudaMedicina.alunos.v1";
+
+  function loadStudents() {
+    try {
+      var raw = localStorage.getItem(STUDENTS_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function saveStudents(list) {
+    try {
+      localStorage.setItem(STUDENTS_KEY, JSON.stringify(list));
+    } catch (e) {
+      // localStorage indisponível (modo privado, quota cheia, etc.) — ignora silenciosamente
+    }
+  }
+
+  var seedStudents = [
+    { id: "s1", nome: "Beatriz Fontoura", email: "beatriz.fontoura@ufmg.br", instituicao: "UFMG", curso: "Medicina, 6º período", ativo: true },
+    { id: "s2", nome: "Rafael Nogueira", email: "rafael.nogueira@usp.br", instituicao: "USP", curso: "Medicina, 4º período", ativo: true },
+    { id: "s3", nome: "Camila Duarte", email: "camila.duarte@ufrj.br", instituicao: "UFRJ", curso: "Medicina, 8º período", ativo: false }
+  ];
+
+  var students = loadStudents();
+  if (!students) {
+    students = seedStudents;
+    saveStudents(students);
+  }
+
+  var studentForm = document.getElementById("studentForm");
+  var studentNameEl = document.getElementById("studentName");
+  var studentEmailEl = document.getElementById("studentEmail");
+  var studentInstitutionEl = document.getElementById("studentInstitution");
+  var studentCourseEl = document.getElementById("studentCourse");
+  var studentQueryEl = document.getElementById("studentQuery");
+  var studentListEl = document.getElementById("studentList");
+  var studentCountEl = document.getElementById("studentCount");
+
+  function renderStudents() {
+    var q = studentQueryEl.value.trim().toLowerCase();
+    var filtered = !q ? students : students.filter(function (s) {
+      var haystack = (s.nome + " " + s.instituicao + " " + s.curso).toLowerCase();
+      return haystack.indexOf(q) !== -1;
+    });
+
+    var ativos = students.filter(function (s) { return s.ativo; }).length;
+    studentCountEl.textContent = ativos + " ativo" + (ativos === 1 ? "" : "s") + " de " + students.length;
+
+    if (filtered.length === 0) {
+      studentListEl.innerHTML = '<div class="empty">Nenhum aluno cadastrado ainda. Use o formulário acima.</div>';
+      return;
+    }
+
+    studentListEl.innerHTML = filtered.map(function (s) {
+      return '<div class="student-card" data-id="' + s.id + '">' +
+        '<div class="student-info">' +
+          '<p class="name">' + escapeHtml(s.nome) + '</p>' +
+          '<p class="meta">' + escapeHtml(s.instituicao) + (s.curso ? " · " + escapeHtml(s.curso) : "") + '</p>' +
+        '</div>' +
+        '<div class="student-actions">' +
+          '<button type="button" class="status-toggle ' + (s.ativo ? "active" : "inactive") + '" data-action="toggle" data-id="' + s.id + '">' + (s.ativo ? "Ativo" : "Inativo") + '</button>' +
+          '<button type="button" class="remove-btn" data-action="remove" data-id="' + s.id + '" aria-label="Remover aluno">✕</button>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  }
+
+  studentForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var nome = studentNameEl.value.trim();
+    var email = studentEmailEl.value.trim();
+    var instituicao = studentInstitutionEl.value.trim();
+    var curso = studentCourseEl.value.trim();
+    if (!nome || !email || !instituicao) return;
+
+    students.unshift({
+      id: "s" + Date.now(),
+      nome: nome,
+      email: email,
+      instituicao: instituicao,
+      curso: curso,
+      ativo: true
+    });
+    saveStudents(students);
+    studentForm.reset();
+    renderStudents();
+  });
+
+  studentListEl.addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-action]");
+    if (!btn) return;
+    var id = btn.dataset.id;
+    var action = btn.dataset.action;
+
+    if (action === "toggle") {
+      students = students.map(function (s) { return s.id === id ? Object.assign({}, s, { ativo: !s.ativo }) : s; });
+    } else if (action === "remove") {
+      students = students.filter(function (s) { return s.id !== id; });
+    }
+    saveStudents(students);
+    renderStudents();
+  });
+
+  studentQueryEl.addEventListener("input", renderStudents);
+
+  renderStudents();
 })();
 </script>
 </body>

@@ -1,9 +1,10 @@
 # Estuda Medicina
 
 Assistente de estudos para alunos de medicina: lê questões por foto e explica a
-resposta, ajuda a estudar buscando em conteúdo indexado (RAG) e permite buscar
-provas antigas de um banco de questões. Página única, sem backend — pensado
-mobile-first para funcionar bem no navegador do celular.
+resposta, ajuda a estudar buscando em conteúdo indexado (RAG), permite buscar
+provas antigas de um banco de questões e cadastra os alunos com acesso. Página
+única, sem backend — pensado mobile-first para funcionar bem no navegador do
+celular.
 
 ## Como abrir
 
@@ -21,6 +22,9 @@ npx serve .
 - **Busca nos materiais de estudo (RAG)**: a etapa de recuperação — encontrar
   os trechos relevantes para a pergunta do aluno — roda de verdade no
   navegador, sobre 5 textos de exemplo (`studyDocs`).
+- **Cadastro de alunos**: cadastrar, ativar/inativar e remover aluno funciona
+  de verdade e persiste entre recarregamentos — mas só neste navegador, via
+  `localStorage` (ver limites abaixo).
 - Interface completa, responsiva, com tema claro/escuro automático.
 
 ## O que é simulado (modo demonstração)
@@ -40,6 +44,13 @@ npx serve .
   tempo real exige infraestrutura de streaming + um modelo multimodal com
   suporte a vídeo, o que é mais caro e complexo que a leitura de foto — fica
   documentado como próxima fase.
+- **Cadastro de alunos** funciona, mas com as limitações de rodar só no
+  navegador: não sincroniza entre dispositivos (o mesmo aluno cadastrado no
+  computador da secretaria não aparece no celular de outra pessoa), não tem
+  login/autenticação, qualquer pessoa com acesso ao navegador pode
+  editar/apagar cadastros, e os dados somem se o usuário limpar os dados do
+  site. Serve para validar o fluxo (campos, ativar/inativar, busca) antes de
+  ligar a um banco de dados de verdade.
 
 ## Como conectar a IA de verdade
 
@@ -54,6 +65,24 @@ npx serve .
 3. Trocar `mockAnalyzeQuestionPhoto()`, `mockSynthesizeAnswer()` e o
    `examBank` por chamadas reais à API / ao banco de dados de provas da
    instituição.
+
+## Proposta de banco de dados real de alunos
+
+Quando o backend existir, o cadastro de alunos deixa de ser `localStorage` e
+vira tabelas de verdade (ex: Postgres/SQLite). Estrutura mínima sugerida:
+
+- **instituicoes**: `id`, `nome`, `plano` (define limite de interações/mês),
+  `status` (ativa/inativa).
+- **alunos**: `id`, `instituicao_id`, `nome`, `email` (único, idealmente
+  validado pelo domínio institucional), `curso`, `periodo`, `status`
+  (ativo/inativo/pendente), `criado_em`.
+- **uso_mensal** (ou log de interações): `aluno_id`, `tipo` (foto/estudo),
+  `tokens_entrada`, `tokens_saida`, `custo_estimado`, `criado_em` — essa
+  tabela é o que transforma a "proposta de precificação" abaixo em uma
+  cobrança real, medida por instituição.
+
+Autenticação pode começar simples (login por e-mail institucional + link
+mágico, sem senha) já que o público é fechado (alunos matriculados).
 
 ## Proposta de precificação institucional
 
@@ -95,3 +124,6 @@ terminar").
   suporte a vídeo antes de priorizar essa fase.
 - Cobrança institucional: hoje é só a proposta de valor acima, em texto —
   ainda não há gateway de pagamento nem medição de uso real no código.
+- Cadastro de alunos: migrar de `localStorage` para o banco de dados real
+  (schema proposto acima), com autenticação e sincronização entre
+  dispositivos — hoje é só uma demonstração local do fluxo.
