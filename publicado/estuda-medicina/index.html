@@ -253,7 +253,14 @@
   }
   .exam-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
   .meta-tag { font-size: 10.5px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--surface-2); color: var(--text-secondary); }
-  .exam-card p.q { font-size: 13.5px; margin: 0; line-height: 1.5; }
+  .exam-card h3 { font-size: 14px; margin: 0 0 5px; }
+  .exam-card p.q { font-size: 13px; color: var(--text-secondary); margin: 0 0 10px; line-height: 1.5; }
+  .exam-link {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 12.5px; font-weight: 600; color: var(--accent);
+    text-decoration: none;
+  }
+  .exam-link:active { opacity: 0.7; }
 
   .empty { text-align: center; padding: 30px 10px; color: var(--text-muted); font-size: 13.5px; }
 
@@ -380,10 +387,10 @@
     <section class="view" id="view-provas">
       <div class="card">
         <h2>Provas antigas</h2>
-        <p class="hint">Busque questões de provas anteriores por disciplina, instituição ou palavra-chave. Base de exemplo — pronta para receber seu banco real de provas.</p>
+        <p class="hint">Catálogo real de provas e gabaritos oficiais de residência médica e revalidação de diploma. Toque em um card para abrir o PDF oficial da fonte — nenhuma questão aqui é inventada.</p>
 
         <div class="search-row">
-          <input type="text" id="examQuery" placeholder="Ex: cardiologia, UFMG, 2023..." />
+          <input type="text" id="examQuery" placeholder="Ex: residência, revalida, enare..." />
           <button class="btn btn-primary" id="btnExamSearch">Buscar</button>
         </div>
 
@@ -696,17 +703,48 @@
 
   // ================================================================
   // ABA 3 — PROVAS ANTIGAS
-  // Base de exemplo em memória. Em produção, isso viria do banco de
-  // dados real de provas que a instituição já possui.
+  // Catálogo REAL de fontes oficiais de provas de residência médica e
+  // revalidação de diploma — pesquisado na web em ago/2026. Cada item
+  // aponta para a página/PDF oficial do órgão responsável; nenhuma
+  // questão é reproduzida ou inventada aqui, só a referência da fonte.
+  // Confira sempre o link oficial, que pode ganhar edições mais novas
+  // com o tempo. Para incluir o banco de provas próprio da instituição,
+  // ver "Falta para terminar" no README.
   // ================================================================
 
   var examBank = [
-    { ano: 2023, instituicao: "UFMG", disciplina: "Cardiologia", enunciado: "Paciente com fibrilação atrial crônica e CHA2DS2-VASc de 3 pontos — qual a conduta anticoagulante mais indicada?" },
-    { ano: 2022, instituicao: "USP", disciplina: "Farmacologia", enunciado: "Sobre os inibidores da bomba de prótons, assinale a alternativa correta quanto ao mecanismo de ação e principais interações medicamentosas." },
-    { ano: 2024, instituicao: "UFRJ", disciplina: "Pediatria", enunciado: "Lactente de 8 meses com quadro de bronquiolite viral aguda — qual o principal agente etiológico e a conduta inicial recomendada?" },
-    { ano: 2021, instituicao: "UFMG", disciplina: "Cirurgia Geral", enunciado: "Paciente com abdome agudo inflamatório e sinal de Blumberg positivo em fossa ilíaca direita — hipótese diagnóstica e conduta." },
-    { ano: 2023, instituicao: "UNICAMP", disciplina: "Endocrinologia", enunciado: "Sobre o diagnóstico diferencial de diabetes mellitus tipo 1 e tipo 2 em adolescentes, assinale a alternativa correta." },
-    { ano: 2024, instituicao: "USP", disciplina: "Microbiologia", enunciado: "Qual classe de antimicrobianos é a primeira escolha para infecção urinária não complicada em mulher adulta, segundo diretrizes atuais?" }
+    {
+      orgao: "FUVEST · USP",
+      tipo: "Residência Médica",
+      titulo: "Provas e gabaritos — Residência Médica USP",
+      descricao: "Processo seletivo de residência médica dos hospitais da USP (HC-FMUSP, Instituto da Criança, Instituto do Coração etc.), organizado pela Fuvest.",
+      url: "https://www.fuvest.br/residencia-medica-provas-e-gabarito/",
+      tags: ["residência médica", "usp", "fuvest", "hospital das clínicas"]
+    },
+    {
+      orgao: "INEP / MEC",
+      tipo: "Revalidação de diploma",
+      titulo: "Provas e gabaritos oficiais — Revalida",
+      descricao: "Exame Nacional de Revalidação de Diplomas Médicos expedidos por instituições estrangeiras. 100 questões objetivas cobrindo Clínica Médica, Cirurgia, Pediatria, Ginecologia/Obstetrícia e Medicina de Família e Comunidade.",
+      url: "https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/revalida/provas-e-gabaritos",
+      tags: ["revalida", "revalidação de diploma", "clínica médica", "cirurgia", "pediatria", "ginecologia", "obstetrícia", "medicina de família"]
+    },
+    {
+      orgao: "ENARE · FGV / EBSERH",
+      tipo: "Residência Médica nacional",
+      titulo: "Provas e gabaritos — ENARE (todas as edições)",
+      descricao: "Exame Nacional de Residência, usado por dezenas de hospitais universitários federais da rede EBSERH para seleção de residência médica.",
+      url: "https://mapa-vagas-enare-ebserh.conhecimento.fgv.br/provas-gabaritos-medica.html",
+      tags: ["enare", "residência médica", "ebserh", "hospital universitário"]
+    },
+    {
+      orgao: "ENARE · FGV / EBSERH",
+      tipo: "Residência Médica nacional — edição 2024",
+      titulo: "Gabarito definitivo — ENARE 2024 (médica)",
+      descricao: "PDF oficial do gabarito definitivo da prova médica do ENARE 2024, publicado pela FGV/EBSERH.",
+      url: "https://mapa-vagas-enare-ebserh.conhecimento.fgv.br/provas-gabaritos/medica/ENARE%202024%20Gabarito%20Definitivo%20-%20Medica.pdf",
+      tags: ["enare", "2024", "gabarito", "residência médica"]
+    }
   ];
 
   var examQueryEl = document.getElementById("examQuery");
@@ -716,30 +754,31 @@
   function runExamSearch() {
     var q = examQueryEl.value.trim().toLowerCase();
     var results = !q ? examBank : examBank.filter(function (ex) {
-      var haystack = (ex.instituicao + " " + ex.disciplina + " " + ex.enunciado + " " + ex.ano).toLowerCase();
+      var haystack = (ex.orgao + " " + ex.tipo + " " + ex.titulo + " " + ex.descricao + " " + ex.tags.join(" ")).toLowerCase();
       return q.split(/\s+/).some(function (term) { return term.length > 1 && haystack.indexOf(term) !== -1; });
     });
 
     if (results.length === 0) {
-      examResultsEl.innerHTML = '<div class="empty">Nenhuma prova de exemplo encontrada para "' + escapeHtml(examQueryEl.value) + '".</div>';
+      examResultsEl.innerHTML = '<div class="empty">Nenhuma fonte encontrada para "' + escapeHtml(examQueryEl.value) + '". Experimente "residência", "revalida" ou "enare".</div>';
       return;
     }
 
     examResultsEl.innerHTML = results.map(function (ex) {
       return '<div class="exam-card">' +
         '<div class="exam-meta">' +
-          '<span class="meta-tag">' + ex.instituicao + '</span>' +
-          '<span class="meta-tag">' + ex.disciplina + '</span>' +
-          '<span class="meta-tag">' + ex.ano + '</span>' +
+          '<span class="meta-tag">' + escapeHtml(ex.orgao) + '</span>' +
+          '<span class="meta-tag">' + escapeHtml(ex.tipo) + '</span>' +
         '</div>' +
-        '<p class="q">' + escapeHtml(ex.enunciado) + '</p>' +
+        '<h3>' + escapeHtml(ex.titulo) + '</h3>' +
+        '<p class="q">' + escapeHtml(ex.descricao) + '</p>' +
+        '<a class="exam-link" href="' + ex.url + '" target="_blank" rel="noopener noreferrer">Abrir prova/gabarito oficial ↗</a>' +
       '</div>';
     }).join("");
   }
 
   btnExamSearch.addEventListener("click", runExamSearch);
   examQueryEl.addEventListener("keydown", function (e) { if (e.key === "Enter") runExamSearch(); });
-  runExamSearch(); // mostra a base de exemplo completa ao abrir a aba
+  runExamSearch(); // mostra o catálogo completo de fontes ao abrir a aba
 
   function escapeHtml(str) {
     var div = document.createElement("div");

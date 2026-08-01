@@ -1,10 +1,10 @@
 # Estuda Medicina
 
 Assistente de estudos para alunos de medicina: lê questões por foto e explica a
-resposta, ajuda a estudar buscando em conteúdo indexado (RAG), permite buscar
-provas antigas de um banco de questões e cadastra os alunos com acesso. Página
-única, sem backend — pensado mobile-first para funcionar bem no navegador do
-celular.
+resposta, ajuda a estudar buscando em conteúdo indexado (RAG), reúne um
+catálogo real de provas e gabaritos oficiais (residência médica, Revalida,
+ENARE) e cadastra os alunos com acesso. Página única, sem backend — pensado
+mobile-first para funcionar bem no navegador do celular.
 
 ## Como abrir
 
@@ -17,8 +17,17 @@ npx serve .
 
 ## O que já funciona de verdade nesta demo
 
-- **Busca de provas antigas**: filtra o banco de exemplo (`examBank`, dentro
-  do próprio `index.html`) por instituição, disciplina, ano ou palavra-chave.
+- **Provas antigas**: catálogo real (`examBank`, dentro do próprio
+  `index.html`) com links diretos para provas e gabaritos **oficiais** —
+  pesquisado na web, não inventado. Fontes atuais:
+  - [Residência Médica USP — Fuvest](https://www.fuvest.br/residencia-medica-provas-e-gabarito/)
+  - [Revalida — provas e gabaritos oficiais (INEP/MEC)](https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/revalida/provas-e-gabaritos)
+  - [ENARE — provas e gabaritos, todas as edições (FGV/EBSERH)](https://mapa-vagas-enare-ebserh.conhecimento.fgv.br/provas-gabaritos-medica.html)
+  - [ENARE 2024 — gabarito definitivo médica (PDF)](https://mapa-vagas-enare-ebserh.conhecimento.fgv.br/provas-gabaritos/medica/ENARE%202024%20Gabarito%20Definitivo%20-%20Medica.pdf)
+
+  A busca filtra por órgão, tipo de exame ou palavra-chave; cada card abre o
+  PDF/página oficial da fonte em nova aba — nenhuma questão é reproduzida ou
+  inventada no app.
 - **Busca nos materiais de estudo (RAG)**: a etapa de recuperação — encontrar
   os trechos relevantes para a pergunta do aluno — roda de verdade no
   navegador, sobre 5 textos de exemplo (`studyDocs`).
@@ -62,9 +71,10 @@ npx serve .
    menor que o topo de linha. Para casos mais difíceis (provas dissertativas
    longas, questões ambíguas), considerar **Claude Opus 5** (`claude-opus-5`)
    como opção de maior qualidade.
-3. Trocar `mockAnalyzeQuestionPhoto()`, `mockSynthesizeAnswer()` e o
-   `examBank` por chamadas reais à API / ao banco de dados de provas da
-   instituição.
+3. Trocar `mockAnalyzeQuestionPhoto()` e `mockSynthesizeAnswer()` por
+   chamadas reais à API. O `examBank` (aba Provas) já usa fontes reais —
+   trocar/complementar apenas se a instituição tiver seu próprio banco de
+   questões para indexar.
 
 ## Proposta de banco de dados real de alunos
 
@@ -139,8 +149,14 @@ terminar").
 - Indexar conteúdo médico real (apostilas, resumos atualizados) em vez dos 5
   textos de exemplo, e gerar a síntese final com o modelo em vez de recorte
   de texto.
-- Plugar o banco de dados real de provas antigas da instituição no lugar do
-  `examBank` de exemplo.
+- Provas antigas: hoje é um catálogo de links para fontes públicas oficiais
+  (não o banco de questões próprio da instituição). Se a faculdade tiver seu
+  próprio banco de provas anteriores, complementar o `examBank` com essas
+  fontes — e, se quiser mostrar o enunciado inline em vez de linkar o PDF,
+  vale considerar direitos de reprodução do conteúdo.
+- Revisar periodicamente os links do `examBank`: sites de bancas mudam de
+  endereço e novas edições saem todo ano — os links atuais foram
+  confirmados por pesquisa na web em agosto de 2026.
 - Vídeo ao vivo: avaliar viabilidade e custo de um modelo multimodal com
   suporte a vídeo antes de priorizar essa fase.
 - Cobrança institucional: hoje é só a proposta de valor acima, em texto —
