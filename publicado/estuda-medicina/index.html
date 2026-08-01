@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Estuda Medicina — assistente de estudos com IA</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f3f6f6;
+    --surface: #ffffff;
+    --surface-2: #eaf1f0;
+    --surface-3: #dde8e6;
+    --text-primary: #12201e;
+    --text-secondary: #4c5b58;
+    --text-muted: #85938f;
+    --border: rgba(18, 32, 30, 0.12);
+    --border-strong: rgba(18, 32, 30, 0.24);
+    --accent: #0f766e;
+    --accent-strong: #0b544e;
+    --accent-ink: #ffffff;
+    --accent-soft: rgba(15, 118, 110, 0.12);
+    --good: #1a8f4c;
+    --good-soft: rgba(26, 143, 76, 0.12);
+    --warning: #b9760a;
+    --warning-soft: rgba(185, 118, 10, 0.14);
+    --critical: #c23b3b;
+    --critical-soft: rgba(194, 59, 59, 0.12);
+    --radius: 14px;
+    --radius-sm: 9px;
+    --shadow-1: 0 1px 2px rgba(18, 32, 30, 0.06), 0 8px 24px rgba(18, 32, 30, 0.06);
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --bg: #0e1413;
+      --surface: #161d1c;
+      --surface-2: #1c2423;
+      --surface-3: #26302e;
+      --text-primary: #eef3f2;
+      --text-secondary: #b7c2bf;
+      --text-muted: #86928f;
+      --border: rgba(255, 255, 255, 0.1);
+      --border-strong: rgba(255, 255, 255, 0.2);
+      --accent: #2fbfa8;
+      --accent-strong: #6fd9c8;
+      --accent-ink: #04211d;
+      --accent-soft: rgba(47, 191, 168, 0.16);
+      --good: #3ecb7b;
+      --good-soft: rgba(62, 203, 123, 0.18);
+      --warning: #e0a63a;
+      --warning-soft: rgba(224, 166, 58, 0.18);
+      --critical: #e57373;
+      --critical-soft: rgba(229, 115, 115, 0.18);
+      --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0e1413;
+    --surface: #161d1c;
+    --surface-2: #1c2423;
+    --surface-3: #26302e;
+    --text-primary: #eef3f2;
+    --text-secondary: #b7c2bf;
+    --text-muted: #86928f;
+    --border: rgba(255, 255, 255, 0.1);
+    --border-strong: rgba(255, 255, 255, 0.2);
+    --accent: #2fbfa8;
+    --accent-strong: #6fd9c8;
+    --accent-ink: #04211d;
+    --accent-soft: rgba(47, 191, 168, 0.16);
+    --good: #3ecb7b;
+    --good-soft: rgba(62, 203, 123, 0.18);
+    --warning: #e0a63a;
+    --warning-soft: rgba(224, 166, 58, 0.18);
+    --critical: #e57373;
+    --critical-soft: rgba(229, 115, 115, 0.18);
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100dvh;
+  }
+
+  .app {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+  }
+
+  header.top {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 18px calc(12px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  header.top .brand { display: flex; align-items: center; gap: 10px; }
+  header.top .logo {
+    width: 34px; height: 34px; border-radius: 10px;
+    background: var(--accent); color: var(--accent-ink);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 15px; flex-shrink: 0;
+  }
+  header.top h1 { font-size: 15.5px; margin: 0; line-height: 1.15; }
+  header.top .sub { font-size: 11.5px; color: var(--text-muted); margin: 1px 0 0; }
+  .demo-pill {
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.02em;
+    color: var(--warning); background: var(--warning-soft);
+    border-radius: 999px; padding: 4px 9px; white-space: nowrap;
+  }
+
+  main { flex: 1; padding: 16px 16px calc(96px + var(--safe-bottom)); }
+
+  .view { display: none; animation: fade .15s ease; }
+  .view.active { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-1);
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+
+  .card h2 { font-size: 16px; margin: 0 0 6px; }
+  .card p.hint { color: var(--text-secondary); font-size: 13px; margin: 0 0 14px; line-height: 1.5; }
+
+  .btn {
+    appearance: none; border: none; cursor: pointer;
+    border-radius: var(--radius-sm);
+    font-size: 14.5px; font-weight: 600;
+    padding: 12px 16px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%;
+    transition: transform .08s ease, opacity .15s ease;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-secondary { background: var(--surface-2); color: var(--text-primary); border: 1px solid var(--border); }
+  .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+  input[type="file"] { display: none; }
+
+  .photo-drop {
+    border: 1.5px dashed var(--border-strong);
+    border-radius: var(--radius);
+    padding: 26px 16px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 13.5px;
+    cursor: pointer;
+    background: var(--surface-2);
+  }
+  .photo-drop .icon { font-size: 26px; display: block; margin-bottom: 8px; }
+  .preview-wrap { margin-top: 12px; }
+  .preview-wrap img {
+    width: 100%; max-height: 220px; object-fit: cover;
+    border-radius: var(--radius-sm); border: 1px solid var(--border);
+    display: block;
+  }
+
+  .actions-row { display: flex; gap: 10px; margin-top: 12px; }
+  .actions-row .btn { width: auto; flex: 1; }
+
+  textarea, input[type="text"] {
+    width: 100%; font-size: 14.5px; font-family: inherit;
+    background: var(--surface-2); color: var(--text-primary);
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 11px 13px; resize: vertical;
+  }
+  textarea:focus, input[type="text"]:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .loading {
+    display: flex; align-items: center; gap: 10px;
+    color: var(--text-secondary); font-size: 13.5px;
+    padding: 14px 2px;
+  }
+  .spinner {
+    width: 16px; height: 16px; border-radius: 50%;
+    border: 2.5px solid var(--border-strong); border-top-color: var(--accent);
+    animation: spin .7s linear infinite; flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .result { margin-top: 14px; }
+  .badge {
+    display: inline-block; font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.03em; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 999px; margin-bottom: 10px;
+  }
+  .badge-demo { background: var(--warning-soft); color: var(--warning); }
+  .badge-good { background: var(--good-soft); color: var(--good); }
+
+  .qtext {
+    background: var(--surface-2); border-radius: var(--radius-sm);
+    padding: 12px 13px; font-size: 14px; line-height: 1.55;
+    margin-bottom: 10px; border: 1px solid var(--border);
+  }
+  .alt-list { list-style: none; padding: 0; margin: 0 0 12px; display: flex; flex-direction: column; gap: 7px; }
+  .alt-list li {
+    font-size: 13.5px; padding: 9px 11px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border); background: var(--surface);
+  }
+  .alt-list li.correct { border-color: var(--good); background: var(--good-soft); font-weight: 600; }
+  .explain { font-size: 13.5px; line-height: 1.6; color: var(--text-secondary); }
+  .explain strong { color: var(--text-primary); }
+
+  .search-row { display: flex; gap: 8px; margin-bottom: 14px; }
+  .search-row input { flex: 1; }
+  .search-row .btn { width: auto; padding: 11px 16px; }
+
+  .chip-row { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; }
+  .chip {
+    font-size: 12px; padding: 6px 12px; border-radius: 999px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--text-secondary); cursor: pointer;
+  }
+  .chip.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+
+  .doc-card {
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 12px 13px; margin-bottom: 10px; background: var(--surface);
+  }
+  .doc-card .tag { font-size: 10.5px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .03em; }
+  .doc-card h3 { font-size: 14px; margin: 4px 0 5px; }
+  .doc-card p { font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.5; }
+
+  .exam-card {
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 12px 13px; margin-bottom: 10px; background: var(--surface);
+  }
+  .exam-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+  .meta-tag { font-size: 10.5px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--surface-2); color: var(--text-secondary); }
+  .exam-card p.q { font-size: 13.5px; margin: 0; line-height: 1.5; }
+
+  .empty { text-align: center; padding: 30px 10px; color: var(--text-muted); font-size: 13.5px; }
+
+  footer.disclaimer {
+    font-size: 11.5px; color: var(--text-muted); text-align: center;
+    line-height: 1.5; padding: 4px 10px 0;
+  }
+
+  nav.tabbar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+    max-width: 480px; margin: 0 auto;
+    background: var(--surface); border-top: 1px solid var(--border);
+    display: flex; padding: 6px 8px calc(6px + var(--safe-bottom));
+    box-shadow: 0 -4px 18px rgba(0,0,0,0.06);
+  }
+  nav.tabbar button {
+    flex: 1; appearance: none; background: none; border: none; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 8px 4px; border-radius: var(--radius-sm);
+    color: var(--text-muted); font-family: inherit;
+  }
+  nav.tabbar button .ic { font-size: 19px; line-height: 1; }
+  nav.tabbar button .lb { font-size: 10.5px; font-weight: 600; }
+  nav.tabbar button.active { color: var(--accent); }
+  nav.tabbar button.active .ic { transform: scale(1.05); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="top">
+    <div class="brand">
+      <div class="logo">Rx</div>
+      <div>
+        <h1>Estuda Medicina</h1>
+        <p class="sub">Assistente de estudos com IA</p>
+      </div>
+    </div>
+    <span class="demo-pill">MVP · demo</span>
+  </header>
+
+  <main>
+
+    <!-- ABA 1: FOTO -->
+    <section class="view active" id="view-foto">
+      <div class="card">
+        <h2>Tire uma foto da questão</h2>
+        <p class="hint">Fotografe uma questão de prova (múltipla escolha ou dissertativa) e receba a resposta explicada. Funciona pela câmera do celular ou por upload de imagem.</p>
+
+        <label class="photo-drop" id="photoDrop">
+          <span class="icon">📷</span>
+          Toque para tirar uma foto ou escolher da galeria
+          <input type="file" id="photoInput" accept="image/*" capture="environment" />
+        </label>
+
+        <div class="preview-wrap" id="previewWrap" hidden>
+          <img id="previewImg" alt="Prévia da foto enviada" />
+          <div class="actions-row">
+            <button class="btn btn-secondary" id="btnRetake">Trocar foto</button>
+            <button class="btn btn-primary" id="btnAnalyze">Analisar questão</button>
+          </div>
+        </div>
+
+        <div id="photoLoading" class="loading" hidden>
+          <span class="spinner"></span> Lendo a imagem e montando a explicação…
+        </div>
+
+        <div id="photoResult" class="result" hidden></div>
+      </div>
+
+      <div class="card" style="margin-top:0;">
+        <h2 style="font-size:14px;">📹 Vídeo ao vivo</h2>
+        <p class="hint" style="margin-bottom:0;">Responder por vídeo em tempo real ainda não está nesta versão — fica para a próxima fase, junto da leitura de foto que já funciona aqui em modo demonstração. Veja o motivo no README do projeto.</p>
+      </div>
+    </section>
+
+    <!-- ABA 2: ESTUDAR -->
+    <section class="view" id="view-estudar">
+      <div class="card">
+        <h2>Estudar com conteúdo atualizado</h2>
+        <p class="hint">Pergunte sobre um tema e a IA busca nos materiais de estudo indexados (RAG) antes de responder. Nesta demo, a busca nos trechos é real; a síntese final é simulada.</p>
+
+        <div class="search-row">
+          <input type="text" id="studyQuery" placeholder="Ex: insuficiência cardíaca, farmacocinética..." />
+          <button class="btn btn-primary" id="btnStudySearch">Buscar</button>
+        </div>
+
+        <div class="chip-row" id="studyChips"></div>
+
+        <div id="studyLoading" class="loading" hidden>
+          <span class="spinner"></span> Buscando nos materiais e gerando resposta…
+        </div>
+
+        <div id="studyResult"></div>
+      </div>
+    </section>
+
+    <!-- ABA 3: PROVAS -->
+    <section class="view" id="view-provas">
+      <div class="card">
+        <h2>Provas antigas</h2>
+        <p class="hint">Busque questões de provas anteriores por disciplina, instituição ou palavra-chave. Base de exemplo — pronta para receber seu banco real de provas.</p>
+
+        <div class="search-row">
+          <input type="text" id="examQuery" placeholder="Ex: cardiologia, UFMG, 2023..." />
+          <button class="btn btn-primary" id="btnExamSearch">Buscar</button>
+        </div>
+
+        <div id="examResults"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="disclaimer">
+    Protótipo educacional — respostas de IA marcadas "demo" são exemplos simulados,<br />não geradas por um modelo real nesta versão.
+  </footer>
+
+  <nav class="tabbar">
+    <button class="tab-btn active" data-view="foto">
+      <span class="ic">📷</span><span class="lb">Foto</span>
+    </button>
+    <button class="tab-btn" data-view="estudar">
+      <span class="ic">📚</span><span class="lb">Estudar</span>
+    </button>
+    <button class="tab-btn" data-view="provas">
+      <span class="ic">🗂️</span><span class="lb">Provas</span>
+    </button>
+  </nav>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------- Navegação entre abas ----------
+  var tabButtons = document.querySelectorAll(".tab-btn");
+  var views = { foto: document.getElementById("view-foto"), estudar: document.getElementById("view-estudar"), provas: document.getElementById("view-provas") };
+
+  tabButtons.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      tabButtons.forEach(function (b) { b.classList.remove("active"); });
+      btn.classList.add("active");
+      Object.keys(views).forEach(function (k) { views[k].classList.remove("active"); });
+      views[btn.dataset.view].classList.add("active");
+    });
+  });
+
+  // ================================================================
+  // ABA 1 — FOTO DA QUESTÃO
+  // Em produção: a foto seria enviada para um backend (ex: função
+  // serverless) que chama a API da Claude (visão) com a imagem e
+  // devolve a leitura da questão + resposta + explicação.
+  // Aqui, mockAnalyzeQuestionPhoto() simula essa chamada.
+  // ================================================================
+
+  var photoInput = document.getElementById("photoInput");
+  var photoDrop = document.getElementById("photoDrop");
+  var previewWrap = document.getElementById("previewWrap");
+  var previewImg = document.getElementById("previewImg");
+  var btnRetake = document.getElementById("btnRetake");
+  var btnAnalyze = document.getElementById("btnAnalyze");
+  var photoLoading = document.getElementById("photoLoading");
+  var photoResult = document.getElementById("photoResult");
+
+  var demoQuestionBank = [
+    {
+      questao: "(Exemplo) Paciente de 62 anos, hipertenso, apresenta dispneia progressiva, edema de membros inferiores e turgência jugular. Qual o mecanismo fisiopatológico mais associado ao quadro?",
+      alternativas: [
+        "Aumento da pré-carga por retenção de sódio e água",
+        "Broncoconstrição mediada por histamina",
+        "Vasodilatação periférica por queda do tônus simpático",
+        "Redução isolada da frequência cardíaca"
+      ],
+      correta: 0,
+      explicacao: "O quadro descrito é típico de <strong>insuficiência cardíaca congestiva</strong>. A queda do débito cardíaco ativa o sistema renina-angiotensina-aldosterona, retendo sódio e água — o que aumenta a pré-carga e agrava a congestão sistêmica (edema, turgência jugular) e pulmonar (dispneia)."
+    },
+    {
+      questao: "(Exemplo) Qual classe de antibióticos tem seu mecanismo de ação baseado na inibição da síntese da parede celular bacteriana, ligando-se às PBPs (penicillin-binding proteins)?",
+      alternativas: [
+        "Betalactâmicos",
+        "Macrolídeos",
+        "Aminoglicosídeos",
+        "Fluoroquinolonas"
+      ],
+      correta: 0,
+      explicacao: "Os <strong>betalactâmicos</strong> (penicilinas, cefalosporinas, carbapenêmicos) inibem as PBPs, enzimas responsáveis pela transpeptidação final da parede celular bacteriana, levando à lise da bactéria — especialmente eficaz contra bactérias em multiplicação ativa."
+    },
+    {
+      questao: "(Exemplo) Homem de 45 anos com dor lombar súbita irradiando para a região inguinal, hematúria microscópica e náuseas. Qual a hipótese diagnóstica mais provável?",
+      alternativas: [
+        "Litíase renal (cólica nefrética)",
+        "Pielonefrite crônica",
+        "Hérnia de disco lombar",
+        "Apendicite aguda"
+      ],
+      correta: 0,
+      explicacao: "Dor lombar súbita e intensa irradiando para a região inguinal, associada a hematúria, é o quadro clássico de <strong>cólica nefrética por litíase urinária</strong> — o cálculo obstrui o trajeto ureteral, causando distensão e dor referida."
+    }
+  ];
+  var photoCallCount = 0;
+
+  function mockAnalyzeQuestionPhoto() {
+    // Simula latência de uma chamada real de API de visão.
+    return new Promise(function (resolve) {
+      setTimeout(function () {
+        var item = demoQuestionBank[photoCallCount % demoQuestionBank.length];
+        photoCallCount++;
+        resolve(item);
+      }, 1500);
+    });
+  }
+
+  photoDrop.addEventListener("click", function () { photoInput.click(); });
+
+  photoInput.addEventListener("change", function () {
+    var file = photoInput.files && photoInput.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      previewImg.src = e.target.result;
+      photoDrop.hidden = true;
+      previewWrap.hidden = false;
+      photoResult.hidden = true;
+      photoResult.innerHTML = "";
+    };
+    reader.readAsDataURL(file);
+  });
+
+  btnRetake.addEventListener("click", function () {
+    photoInput.value = "";
+    previewWrap.hidden = true;
+    photoDrop.hidden = false;
+    photoResult.hidden = true;
+    photoResult.innerHTML = "";
+  });
+
+  btnAnalyze.addEventListener("click", function () {
+    btnAnalyze.disabled = true;
+    photoLoading.hidden = false;
+    photoResult.hidden = true;
+
+    mockAnalyzeQuestionPhoto().then(function (item) {
+      photoLoading.hidden = true;
+      btnAnalyze.disabled = false;
+
+      var altsHtml = item.alternativas.map(function (alt, i) {
+        return '<li class="' + (i === item.correta ? "correct" : "") + '">' + alt + "</li>";
+      }).join("");
+
+      photoResult.innerHTML =
+        '<span class="badge badge-demo">Resposta de exemplo (demo)</span>' +
+        '<div class="qtext">' + item.questao + "</div>" +
+        '<ul class="alt-list">' + altsHtml + "</ul>" +
+        '<div class="explain"><strong>Explicação:</strong> ' + item.explicacao + "</div>";
+      photoResult.hidden = false;
+    });
+  });
+
+  // ================================================================
+  // ABA 2 — ESTUDAR (RAG)
+  // A busca por palavra-chave nos trechos abaixo é real (roda no
+  // navegador). A "resposta gerada pela IA" que junta os trechos é
+  // simulada — em produção viria de uma chamada à API da Claude com
+  // os trechos recuperados como contexto.
+  // ================================================================
+
+  var studyDocs = [
+    {
+      tema: "Cardiologia",
+      titulo: "Insuficiência cardíaca — fisiopatologia e manejo inicial",
+      texto: "A insuficiência cardíaca (IC) resulta da incapacidade do coração de bombear sangue suficiente para atender às demandas metabólicas. Os mecanismos compensatórios — ativação neuro-hormonal (SRAA, sistema simpático) e remodelamento ventricular — inicialmente mantêm o débito cardíaco, mas cronicamente pioram o quadro. O manejo inicial envolve IECA/BRA, betabloqueadores e diuréticos, conforme a classificação funcional NYHA.",
+      atualizadoEm: "2026"
+    },
+    {
+      tema: "Farmacologia",
+      titulo: "Farmacocinética básica: absorção, distribuição, metabolismo e excreção",
+      texto: "A farmacocinética descreve o percurso do fármaco no organismo (ADME). A biodisponibilidade depende da via de administração e do metabolismo de primeira passagem hepático. O volume de distribuição indica se o fármaco fica concentrado no plasma ou se distribui amplamente pelos tecidos, e a meia-vida determina o intervalo entre doses para manter a concentração terapêutica.",
+      atualizadoEm: "2026"
+    },
+    {
+      tema: "Fisiologia",
+      titulo: "Fisiologia renal: filtração glomerular e regulação do equilíbrio hidroeletrolítico",
+      texto: "O néfron regula volume e composição dos fluidos corporais através de filtração glomerular, reabsorção e secreção tubular. A taxa de filtração glomerular (TFG) é o principal marcador de função renal. O sistema renina-angiotensina-aldosterona e o hormônio antidiurético (ADH) ajustam a reabsorção de sódio e água conforme o estado volêmico do paciente.",
+      atualizadoEm: "2025"
+    },
+    {
+      tema: "Semiologia",
+      titulo: "Semiologia respiratória: ausculta pulmonar e principais achados",
+      texto: "A ausculta pulmonar identifica sons normais (murmúrio vesicular) e adventícios (estertores, sibilos, roncos). Estertores crepitantes finos ao final da inspiração sugerem processo alveolar (ex: fibrose, edema pulmonar); sibilos indicam obstrução das vias aéreas de pequeno calibre, como na asma e na DPOC.",
+      atualizadoEm: "2026"
+    },
+    {
+      tema: "Microbiologia",
+      titulo: "Mecanismos de resistência bacteriana a antibióticos",
+      texto: "As bactérias desenvolvem resistência por produção de enzimas inativadoras (ex: betalactamases), alteração do sítio-alvo, redução da permeabilidade de membrana e bombas de efluxo. O uso racional de antibióticos e a antibioticoterapia guiada por cultura e antibiograma são centrais para conter a disseminação de cepas multirresistentes.",
+      atualizadoEm: "2026"
+    }
+  ];
+
+  var studyChipsEl = document.getElementById("studyChips");
+  var studyQueryEl = document.getElementById("studyQuery");
+  var btnStudySearch = document.getElementById("btnStudySearch");
+  var studyLoading = document.getElementById("studyLoading");
+  var studyResultEl = document.getElementById("studyResult");
+
+  var temas = Array.from(new Set(studyDocs.map(function (d) { return d.tema; })));
+  temas.forEach(function (tema) {
+    var chip = document.createElement("span");
+    chip.className = "chip";
+    chip.textContent = tema;
+    chip.addEventListener("click", function () {
+      studyQueryEl.value = tema;
+      runStudySearch();
+    });
+    studyChipsEl.appendChild(chip);
+  });
+
+  function retrieveDocs(query) {
+    var q = query.trim().toLowerCase();
+    if (!q) return [];
+    return studyDocs.filter(function (d) {
+      var haystack = (d.tema + " " + d.titulo + " " + d.texto).toLowerCase();
+      return q.split(/\s+/).some(function (term) { return term.length > 2 && haystack.indexOf(term) !== -1; });
+    });
+  }
+
+  function mockSynthesizeAnswer(query, docs) {
+    return new Promise(function (resolve) {
+      setTimeout(function () {
+        if (docs.length === 0) {
+          resolve(null);
+          return;
+        }
+        var base = docs[0];
+        var resumo = "Com base nos materiais indexados sobre <strong>" + base.tema.toLowerCase() + "</strong>, o ponto central é: " +
+          base.texto.split(".").slice(0, 2).join(".") + ". " +
+          (docs.length > 1 ? "Os outros " + (docs.length - 1) + " trecho(s) abaixo também são relevantes para aprofundar." : "");
+        resolve(resumo);
+      }, 1100);
+    });
+  }
+
+  function runStudySearch() {
+    var query = studyQueryEl.value;
+    var docs = retrieveDocs(query);
+
+    studyResultEl.innerHTML = "";
+    studyLoading.hidden = false;
+
+    mockSynthesizeAnswer(query, docs).then(function (resumo) {
+      studyLoading.hidden = true;
+
+      if (!query.trim()) {
+        studyResultEl.innerHTML = '<div class="empty">Digite um tema ou toque em uma das categorias acima.</div>';
+        return;
+      }
+
+      if (docs.length === 0) {
+        studyResultEl.innerHTML = '<div class="empty">Nenhum material de exemplo encontrado para "' + escapeHtml(query) + '". Experimente um dos temas sugeridos.</div>';
+        return;
+      }
+
+      var docsHtml = docs.map(function (d) {
+        return '<div class="doc-card"><span class="tag">' + d.tema + " · atualizado em " + d.atualizadoEm + '</span><h3>' + d.titulo + "</h3><p>" + d.texto + "</p></div>";
+      }).join("");
+
+      studyResultEl.innerHTML =
+        '<span class="badge badge-good">Busca real nos trechos abaixo</span>' +
+        '<div class="explain" style="margin-bottom:14px;"><strong>Resposta (síntese simulada):</strong> ' + resumo + "</div>" +
+        docsHtml;
+    });
+  }
+
+  btnStudySearch.addEventListener("click", runStudySearch);
+  studyQueryEl.addEventListener("keydown", function (e) { if (e.key === "Enter") runStudySearch(); });
+
+  // ================================================================
+  // ABA 3 — PROVAS ANTIGAS
+  // Base de exemplo em memória. Em produção, isso viria do banco de
+  // dados real de provas que a instituição já possui.
+  // ================================================================
+
+  var examBank = [
+    { ano: 2023, instituicao: "UFMG", disciplina: "Cardiologia", enunciado: "Paciente com fibrilação atrial crônica e CHA2DS2-VASc de 3 pontos — qual a conduta anticoagulante mais indicada?" },
+    { ano: 2022, instituicao: "USP", disciplina: "Farmacologia", enunciado: "Sobre os inibidores da bomba de prótons, assinale a alternativa correta quanto ao mecanismo de ação e principais interações medicamentosas." },
+    { ano: 2024, instituicao: "UFRJ", disciplina: "Pediatria", enunciado: "Lactente de 8 meses com quadro de bronquiolite viral aguda — qual o principal agente etiológico e a conduta inicial recomendada?" },
+    { ano: 2021, instituicao: "UFMG", disciplina: "Cirurgia Geral", enunciado: "Paciente com abdome agudo inflamatório e sinal de Blumberg positivo em fossa ilíaca direita — hipótese diagnóstica e conduta." },
+    { ano: 2023, instituicao: "UNICAMP", disciplina: "Endocrinologia", enunciado: "Sobre o diagnóstico diferencial de diabetes mellitus tipo 1 e tipo 2 em adolescentes, assinale a alternativa correta." },
+    { ano: 2024, instituicao: "USP", disciplina: "Microbiologia", enunciado: "Qual classe de antimicrobianos é a primeira escolha para infecção urinária não complicada em mulher adulta, segundo diretrizes atuais?" }
+  ];
+
+  var examQueryEl = document.getElementById("examQuery");
+  var btnExamSearch = document.getElementById("btnExamSearch");
+  var examResultsEl = document.getElementById("examResults");
+
+  function runExamSearch() {
+    var q = examQueryEl.value.trim().toLowerCase();
+    var results = !q ? examBank : examBank.filter(function (ex) {
+      var haystack = (ex.instituicao + " " + ex.disciplina + " " + ex.enunciado + " " + ex.ano).toLowerCase();
+      return q.split(/\s+/).some(function (term) { return term.length > 1 && haystack.indexOf(term) !== -1; });
+    });
+
+    if (results.length === 0) {
+      examResultsEl.innerHTML = '<div class="empty">Nenhuma prova de exemplo encontrada para "' + escapeHtml(examQueryEl.value) + '".</div>';
+      return;
+    }
+
+    examResultsEl.innerHTML = results.map(function (ex) {
+      return '<div class="exam-card">' +
+        '<div class="exam-meta">' +
+          '<span class="meta-tag">' + ex.instituicao + '</span>' +
+          '<span class="meta-tag">' + ex.disciplina + '</span>' +
+          '<span class="meta-tag">' + ex.ano + '</span>' +
+        '</div>' +
+        '<p class="q">' + escapeHtml(ex.enunciado) + '</p>' +
+      '</div>';
+    }).join("");
+  }
+
+  btnExamSearch.addEventListener("click", runExamSearch);
+  examQueryEl.addEventListener("keydown", function (e) { if (e.key === "Enter") runExamSearch(); });
+  runExamSearch(); // mostra a base de exemplo completa ao abrir a aba
+
+  function escapeHtml(str) {
+    var div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+  }
+})();
+</script>
+</body>
+</html>
