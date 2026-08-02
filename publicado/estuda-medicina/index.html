@@ -184,13 +184,15 @@
   .actions-row { display: flex; gap: 10px; margin-top: 12px; }
   .actions-row .btn { width: auto; flex: 1; }
 
-  textarea, input[type="text"] {
+  textarea, input[type="text"], input[type="email"], input[type="time"], select {
     width: 100%; font-size: 14.5px; font-family: inherit;
     background: var(--surface-2); color: var(--text-primary);
     border: 1px solid var(--border); border-radius: var(--radius-sm);
     padding: 11px 13px; resize: vertical;
   }
-  textarea:focus, input[type="text"]:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  textarea:focus, input[type="text"]:focus, input[type="email"]:focus,
+  input[type="time"]:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  select { appearance: none; }
 
   .loading {
     display: flex; align-items: center; gap: 10px;
@@ -289,6 +291,30 @@
     border-radius: var(--radius-sm);
   }
 
+  .trilha-result { margin-top: 12px; }
+  .trilha-result .ciclo-tag { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .03em; margin-bottom: 8px; display: block; }
+  .trilha-chip-list { display: flex; flex-wrap: wrap; gap: 7px; }
+  .trilha-chip {
+    font-size: 12.5px; padding: 7px 13px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent); border: 1px solid transparent;
+    cursor: pointer; font-weight: 600;
+  }
+
+  .notif-status-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .notif-status-row .badge { margin: 0; }
+  .badge-denied { background: var(--critical-soft); color: var(--critical); }
+  .badge-neutral { background: var(--surface-2); color: var(--text-muted); }
+
+  .schedule-day-group { margin-bottom: 12px; }
+  .schedule-day-group .day-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .03em; margin: 0 0 6px 2px; }
+  .schedule-item {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 10px 12px; margin-bottom: 7px; background: var(--surface);
+  }
+  .schedule-item .time { font-weight: 700; font-size: 13.5px; color: var(--accent); min-width: 44px; }
+  .schedule-item .topic { font-size: 13.5px; flex: 1; }
+
   footer.disclaimer {
     font-size: 11.5px; color: var(--text-muted); text-align: center;
     line-height: 1.5; padding: 4px 10px 0;
@@ -365,6 +391,17 @@
     <!-- ABA 2: ESTUDAR -->
     <section class="view" id="view-estudar">
       <div class="card">
+        <h2>Trilha por período</h2>
+        <p class="hint">Escolha seu período e veja os temas sugeridos para essa fase da faculdade. Trilha de exemplo — o mapeamento completo por período depende do currículo de cada instituição.</p>
+
+        <select id="periodSelect">
+          <option value="">Selecione seu período...</option>
+        </select>
+
+        <div id="trilhaResult" class="trilha-result" hidden></div>
+      </div>
+
+      <div class="card">
         <h2>Estudar com conteúdo atualizado</h2>
         <p class="hint">Pergunte sobre um tema e a IA busca nos materiais de estudo indexados (RAG) antes de responder. Nesta demo, a busca nos trechos é real; a síntese final é simulada.</p>
 
@@ -398,7 +435,48 @@
       </div>
     </section>
 
-    <!-- ABA 4: ALUNOS -->
+    <!-- ABA 4: ROTINA (CRONOGRAMA + NOTIFICAÇÃO) -->
+    <section class="view" id="view-rotina">
+      <div class="card">
+        <h2>Lembretes no navegador</h2>
+        <p class="hint" id="notifHint">Ative para receber um aviso no celular na hora marcada do cronograma. Funciona de verdade, mas só enquanto este app estiver aberto no navegador — ver limite abaixo.</p>
+        <div class="notif-status-row">
+          <span class="badge" id="notifBadge">Verificando suporte…</span>
+          <button class="btn btn-secondary" id="btnNotifPermission" style="width:auto;">Ativar lembretes</button>
+        </div>
+        <button class="btn btn-secondary" id="btnNotifTest" style="margin-top:8px;">Testar notificação agora</button>
+      </div>
+
+      <div class="card">
+        <h2>Novo lembrete de estudo</h2>
+        <form id="scheduleForm">
+          <div class="form-grid">
+            <select id="scheduleDay" required>
+              <option value="seg">Segunda-feira</option>
+              <option value="ter">Terça-feira</option>
+              <option value="qua">Quarta-feira</option>
+              <option value="qui">Quinta-feira</option>
+              <option value="sex">Sexta-feira</option>
+              <option value="sab">Sábado</option>
+              <option value="dom">Domingo</option>
+            </select>
+            <input type="time" id="scheduleTime" value="19:00" required />
+            <input type="text" id="scheduleTopic" placeholder="Tema (ex: Cardiologia, revisão de provas...)" required />
+          </div>
+          <button type="submit" class="btn btn-primary" style="margin-top:10px;">Adicionar ao cronograma</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="students-header">
+          <h2 style="margin:0;">Seu cronograma</h2>
+          <span class="count-pill" id="scheduleCount">0</span>
+        </div>
+        <div id="scheduleList"></div>
+      </div>
+    </section>
+
+    <!-- ABA 5: ALUNOS -->
     <section class="view" id="view-alunos">
       <div class="card">
         <h2>Cadastro de alunos</h2>
@@ -443,6 +521,9 @@
     <button class="tab-btn" data-view="provas">
       <span class="ic">🗂️</span><span class="lb">Provas</span>
     </button>
+    <button class="tab-btn" data-view="rotina">
+      <span class="ic">🗓️</span><span class="lb">Rotina</span>
+    </button>
     <button class="tab-btn" data-view="alunos">
       <span class="ic">🎓</span><span class="lb">Alunos</span>
     </button>
@@ -460,6 +541,7 @@
     foto: document.getElementById("view-foto"),
     estudar: document.getElementById("view-estudar"),
     provas: document.getElementById("view-provas"),
+    rotina: document.getElementById("view-rotina"),
     alunos: document.getElementById("view-alunos")
   };
 
@@ -642,6 +724,74 @@
     studyChipsEl.appendChild(chip);
   });
 
+  // ---- Trilha de estudo por período ----
+  // Mapeamento de exemplo (período -> ciclo + temas sugeridos). O currículo
+  // real varia por instituição — isso é um ponto de partida, não a grade
+  // curricular oficial de nenhuma faculdade específica.
+  var trilhaPorPeriodo = {
+    1: { ciclo: "Ciclo Básico", temas: ["Fisiologia"] },
+    2: { ciclo: "Ciclo Básico", temas: ["Fisiologia", "Farmacologia"] },
+    3: { ciclo: "Ciclo Básico", temas: ["Farmacologia"] },
+    4: { ciclo: "Ciclo Básico", temas: ["Farmacologia", "Microbiologia"] },
+    5: { ciclo: "Ciclo Clínico", temas: ["Microbiologia", "Semiologia"] },
+    6: { ciclo: "Ciclo Clínico", temas: ["Semiologia"] },
+    7: { ciclo: "Ciclo Clínico", temas: ["Semiologia", "Cardiologia"] },
+    8: { ciclo: "Ciclo Clínico", temas: ["Cardiologia"] },
+    9: { ciclo: "Internato", temas: ["Cardiologia", "Semiologia"] },
+    10: { ciclo: "Internato", temas: ["Cardiologia", "Farmacologia"] },
+    11: { ciclo: "Internato", temas: ["Microbiologia", "Cardiologia"] },
+    12: { ciclo: "Internato", temas: ["Cardiologia", "Semiologia", "Microbiologia"] }
+  };
+
+  var periodSelectEl = document.getElementById("periodSelect");
+  var trilhaResultEl = document.getElementById("trilhaResult");
+
+  for (var p = 1; p <= 12; p++) {
+    var periodOption = document.createElement("option");
+    periodOption.value = String(p);
+    periodOption.textContent = p + "º período";
+    periodSelectEl.appendChild(periodOption);
+  }
+
+  function renderTrilha(periodo) {
+    var info = trilhaPorPeriodo[periodo];
+    if (!info) {
+      trilhaResultEl.hidden = true;
+      trilhaResultEl.innerHTML = "";
+      return;
+    }
+    var chipsHtml = info.temas.map(function (tema) {
+      return '<span class="trilha-chip" data-tema="' + escapeHtml(tema) + '">' + escapeHtml(tema) + '</span>';
+    }).join("");
+    trilhaResultEl.innerHTML =
+      '<span class="ciclo-tag">' + info.ciclo + " · " + periodo + "º período</span>" +
+      '<div class="trilha-chip-list">' + chipsHtml + "</div>";
+    trilhaResultEl.hidden = false;
+  }
+
+  periodSelectEl.addEventListener("change", function () {
+    renderTrilha(periodSelectEl.value);
+    try { localStorage.setItem("estudaMedicina.periodo", periodSelectEl.value); } catch (e) { /* localStorage indisponível */ }
+  });
+
+  trilhaResultEl.addEventListener("click", function (e) {
+    var chip = e.target.closest(".trilha-chip");
+    if (!chip) return;
+    studyQueryEl.value = chip.dataset.tema;
+    runStudySearch();
+    studyQueryEl.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+
+  (function restoreSavedPeriodo() {
+    try {
+      var saved = localStorage.getItem("estudaMedicina.periodo");
+      if (saved) {
+        periodSelectEl.value = saved;
+        renderTrilha(saved);
+      }
+    } catch (e) { /* localStorage indisponível */ }
+  })();
+
   function retrieveDocs(query) {
     var q = query.trim().toLowerCase();
     if (!q) return [];
@@ -787,7 +937,7 @@
   }
 
   // ================================================================
-  // ABA 4 — CADASTRO DE ALUNOS
+  // ABA 5 — CADASTRO DE ALUNOS
   // Persistido em localStorage — fica só neste navegador/dispositivo.
   // Não é um banco de dados real (não sincroniza entre dispositivos,
   // não tem autenticação, qualquer pessoa com acesso ao navegador
@@ -903,6 +1053,202 @@
   studentQueryEl.addEventListener("input", renderStudents);
 
   renderStudents();
+
+  // ================================================================
+  // ABA 4 (ROTINA) — CRONOGRAMA + NOTIFICAÇÕES
+  // O cronograma é real, persistido em localStorage (mesma limitação
+  // de dispositivo único da aba Alunos). A notificação TAMBÉM é real —
+  // usa a Notification API do navegador de verdade — mas só dispara
+  // enquanto este site estiver aberto em uma aba/app no celular: o
+  // navegador precisa estar rodando para o relógio interno checar o
+  // cronograma a cada ~20s. Fechar o navegador ou "matar" o app
+  // interrompe os lembretes. Notificação que chega mesmo com o app
+  // totalmente fechado (push de verdade) exige Web Push + um backend
+  // que dispara o aviso no horário certo — está fora do escopo deste
+  // MVP estático (ver "Falta para terminar" no README).
+  // ================================================================
+
+  var SCHEDULE_KEY = "estudaMedicina.cronograma.v1";
+  var DAY_ORDER = ["seg", "ter", "qua", "qui", "sex", "sab", "dom"];
+  var DAY_LABELS = { seg: "Segunda-feira", ter: "Terça-feira", qua: "Quarta-feira", qui: "Quinta-feira", sex: "Sexta-feira", sab: "Sábado", dom: "Domingo" };
+  var DAY_CODE_BY_JS_INDEX = ["dom", "seg", "ter", "qua", "qui", "sex", "sab"];
+
+  function loadSchedule() {
+    try {
+      var raw = localStorage.getItem(SCHEDULE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function saveSchedule(list) {
+    try {
+      localStorage.setItem(SCHEDULE_KEY, JSON.stringify(list));
+    } catch (e) { /* localStorage indisponível */ }
+  }
+
+  var schedule = loadSchedule();
+  if (!schedule) {
+    schedule = [
+      { id: "c1", dia: "ter", horario: "19:00", tema: "Cardiologia" },
+      { id: "c2", dia: "qui", horario: "20:00", tema: "Revisão de provas antigas" }
+    ];
+    saveSchedule(schedule);
+  }
+
+  var scheduleForm = document.getElementById("scheduleForm");
+  var scheduleDayEl = document.getElementById("scheduleDay");
+  var scheduleTimeEl = document.getElementById("scheduleTime");
+  var scheduleTopicEl = document.getElementById("scheduleTopic");
+  var scheduleListEl = document.getElementById("scheduleList");
+  var scheduleCountEl = document.getElementById("scheduleCount");
+
+  function renderSchedule() {
+    scheduleCountEl.textContent = String(schedule.length);
+
+    if (schedule.length === 0) {
+      scheduleListEl.innerHTML = '<div class="empty">Nenhum lembrete ainda. Adicione um acima.</div>';
+      return;
+    }
+
+    var byDay = {};
+    schedule.forEach(function (item) {
+      (byDay[item.dia] = byDay[item.dia] || []).push(item);
+    });
+    Object.keys(byDay).forEach(function (dia) {
+      byDay[dia].sort(function (a, b) { return a.horario.localeCompare(b.horario); });
+    });
+
+    scheduleListEl.innerHTML = DAY_ORDER.filter(function (d) { return byDay[d]; }).map(function (dia) {
+      var itemsHtml = byDay[dia].map(function (item) {
+        return '<div class="schedule-item">' +
+          '<span class="time">' + escapeHtml(item.horario) + '</span>' +
+          '<span class="topic">' + escapeHtml(item.tema) + '</span>' +
+          '<button type="button" class="remove-btn" data-id="' + item.id + '" aria-label="Remover lembrete">✕</button>' +
+        '</div>';
+      }).join("");
+      return '<div class="schedule-day-group"><p class="day-label">' + DAY_LABELS[dia] + '</p>' + itemsHtml + '</div>';
+    }).join("");
+  }
+
+  scheduleForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var dia = scheduleDayEl.value;
+    var horario = scheduleTimeEl.value;
+    var tema = scheduleTopicEl.value.trim();
+    if (!dia || !horario || !tema) return;
+
+    schedule.push({ id: "c" + Date.now(), dia: dia, horario: horario, tema: tema });
+    saveSchedule(schedule);
+    scheduleForm.reset();
+    scheduleTimeEl.value = "19:00";
+    renderSchedule();
+  });
+
+  scheduleListEl.addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-id]");
+    if (!btn) return;
+    schedule = schedule.filter(function (item) { return item.id !== btn.dataset.id; });
+    saveSchedule(schedule);
+    renderSchedule();
+  });
+
+  renderSchedule();
+
+  // ---- Notificações reais do navegador ----
+
+  var notifBadge = document.getElementById("notifBadge");
+  var btnNotifPermission = document.getElementById("btnNotifPermission");
+  var btnNotifTest = document.getElementById("btnNotifTest");
+  var swRegistration = null;
+
+  // Service worker só é permitido em HTTPS ou localhost — em file:// (abrir
+  // o index.html direto) ele não registra, e o app segue funcionando sem
+  // notificação de fundo (o botão de teste ainda tenta a Notification API
+  // direta, que funciona em alguns navegadores desktop).
+  if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+    navigator.serviceWorker.register("sw.js")
+      .then(function (reg) { swRegistration = reg; })
+      .catch(function () { /* segue sem service worker */ });
+  }
+
+  function updateNotifBadge() {
+    if (!("Notification" in window)) {
+      notifBadge.textContent = "Não suportado neste navegador";
+      notifBadge.className = "badge badge-neutral";
+      btnNotifPermission.disabled = true;
+      return;
+    }
+    var perm = Notification.permission;
+    if (perm === "granted") {
+      notifBadge.textContent = "Lembretes ativados";
+      notifBadge.className = "badge badge-good";
+      btnNotifPermission.textContent = "Ativado ✓";
+      btnNotifPermission.disabled = true;
+    } else if (perm === "denied") {
+      notifBadge.textContent = "Bloqueado nas permissões do navegador";
+      notifBadge.className = "badge badge-denied";
+      btnNotifPermission.textContent = "Bloqueado";
+      btnNotifPermission.disabled = true;
+    } else {
+      notifBadge.textContent = "Ainda não ativado";
+      notifBadge.className = "badge badge-neutral";
+      btnNotifPermission.textContent = "Ativar lembretes";
+      btnNotifPermission.disabled = false;
+    }
+  }
+
+  function showStudyReminder(title, body) {
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
+    var options = { body: body, tag: "estuda-medicina-lembrete" };
+    if (swRegistration && swRegistration.showNotification) {
+      swRegistration.showNotification(title, options);
+    } else {
+      try { new Notification(title, options); } catch (e) { /* alguns navegadores móveis exigem service worker para notificar */ }
+    }
+  }
+
+  btnNotifPermission.addEventListener("click", function () {
+    if (!("Notification" in window)) return;
+    Notification.requestPermission().then(function () { updateNotifBadge(); });
+  });
+
+  btnNotifTest.addEventListener("click", function () {
+    if (!("Notification" in window)) return;
+    if (Notification.permission === "granted") {
+      showStudyReminder("Hora de estudar! (teste)", "É assim que o lembrete do seu cronograma vai aparecer.");
+    } else {
+      Notification.requestPermission().then(function (perm) {
+        updateNotifBadge();
+        if (perm === "granted") showStudyReminder("Hora de estudar! (teste)", "É assim que o lembrete do seu cronograma vai aparecer.");
+      });
+    }
+  });
+
+  updateNotifBadge();
+
+  var lastCheckedMinuteKey = null;
+
+  function checkScheduleForNotifications() {
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
+    var now = new Date();
+    var todayCode = DAY_CODE_BY_JS_INDEX[now.getDay()];
+    var hh = String(now.getHours()).padStart(2, "0");
+    var mm = String(now.getMinutes()).padStart(2, "0");
+    var currentTime = hh + ":" + mm;
+    var minuteKey = now.toDateString() + " " + currentTime;
+    if (minuteKey === lastCheckedMinuteKey) return; // já checado neste minuto
+    lastCheckedMinuteKey = minuteKey;
+
+    schedule.forEach(function (item) {
+      if (item.dia === todayCode && item.horario === currentTime) {
+        showStudyReminder("Hora de estudar: " + item.tema, "Cronograma de " + DAY_LABELS[item.dia] + " às " + item.horario + ".");
+      }
+    });
+  }
+
+  setInterval(checkScheduleForNotifications, 20000);
 })();
 </script>
 </body>

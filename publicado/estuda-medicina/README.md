@@ -1,10 +1,12 @@
 # Estuda Medicina
 
 Assistente de estudos para alunos de medicina: lê questões por foto e explica a
-resposta, ajuda a estudar buscando em conteúdo indexado (RAG), reúne um
-catálogo real de provas e gabaritos oficiais (residência médica, Revalida,
-ENARE) e cadastra os alunos com acesso. Página única, sem backend — pensado
-mobile-first para funcionar bem no navegador do celular.
+resposta, ajuda a estudar buscando em conteúdo indexado (RAG) com trilha
+sugerida por período da faculdade, reúne um catálogo real de provas e
+gabaritos oficiais (residência médica, Revalida, ENARE), deixa o aluno montar
+um cronograma de estudos com lembrete por notificação, e cadastra os alunos
+com acesso. Página única, sem backend — pensado mobile-first para funcionar
+bem no navegador do celular.
 
 ## Como abrir
 
@@ -31,6 +33,16 @@ npx serve .
 - **Busca nos materiais de estudo (RAG)**: a etapa de recuperação — encontrar
   os trechos relevantes para a pergunta do aluno — roda de verdade no
   navegador, sobre 5 textos de exemplo (`studyDocs`).
+- **Trilha por período**: o aluno escolhe seu período (1º ao 12º) e vê os
+  temas sugeridos para essa fase, com atalho direto para a busca de estudo.
+  O mapeamento período → temas (`trilhaPorPeriodo`) é curado à mão como
+  exemplo — não é a grade curricular oficial de nenhuma faculdade.
+- **Cronograma de estudos**: o aluno monta lembretes (dia da semana + horário
+  + tema), que ficam salvos e organizados por dia. CRUD completo e real.
+- **Notificação do cronograma**: usa a Notification API real do navegador —
+  ao ativar, o app dispara mesmo um aviso de verdade no horário marcado.
+  Só funciona **enquanto o navegador/app estiver aberto** (ver limite
+  abaixo) — não é um push que chega com o app fechado.
 - **Cadastro de alunos**: cadastrar, ativar/inativar e remover aluno funciona
   de verdade e persiste entre recarregamentos — mas só neste navegador, via
   `localStorage` (ver limites abaixo).
@@ -60,6 +72,21 @@ npx serve .
   editar/apagar cadastros, e os dados somem se o usuário limpar os dados do
   site. Serve para validar o fluxo (campos, ativar/inativar, busca) antes de
   ligar a um banco de dados de verdade.
+- **Notificação do cronograma — a limitação mais importante do MVP:** a
+  notificação em si **não é simulada**, é a Notification API de verdade do
+  navegador, mas ela só consegue disparar enquanto este site estiver aberto
+  em uma aba (ou app instalado) no celular — um relógio interno checa o
+  cronograma a cada ~20s enquanto o app está rodando. Se o aluno fechar o
+  navegador ou o sistema "matar" a aba em segundo plano (comum no Android
+  para economizar bateria), o lembrete não dispara. Um lembrete que chega
+  mesmo com o app **totalmente fechado** é "push" de verdade, e isso exige
+  Web Push (chaves VAPID) + um backend que agenda e dispara o aviso no
+  horário certo — infraestrutura fora do escopo deste MVP estático, listada
+  em "Falta para terminar". Também: notificação depende de HTTPS (ou
+  `localhost`) — abrindo `index.html` direto do disco (`file://`), o
+  service worker (`sw.js`) não registra e a notificação pode não funcionar
+  em navegadores móveis (o botão "Testar notificação agora" ajuda a
+  verificar isso em cada dispositivo).
 
 ## Como conectar a IA de verdade
 
@@ -90,6 +117,12 @@ vira tabelas de verdade (ex: Postgres/SQLite). Estrutura mínima sugerida:
   `tokens_entrada`, `tokens_saida`, `custo_estimado`, `criado_em` — essa
   tabela é o que transforma a "proposta de precificação" abaixo em uma
   cobrança real, medida por instituição.
+- **cronograma**: `id`, `aluno_id`, `dia` (seg–dom), `horario`, `tema`,
+  `ativo`, `criado_em`.
+- **push_subscriptions**: `id`, `aluno_id`, `endpoint`, `keys` (p256dh/auth),
+  `criado_em` — guarda a inscrição de push de cada dispositivo do aluno,
+  necessária para o backend disparar notificação mesmo com o app fechado
+  (ver "Falta para terminar").
 
 Autenticação pode começar simples (login por e-mail institucional + link
 mágico, sem senha) já que o público é fechado (alunos matriculados).
@@ -164,3 +197,14 @@ terminar").
 - Cadastro de alunos: migrar de `localStorage` para o banco de dados real
   (schema proposto acima), com autenticação e sincronização entre
   dispositivos — hoje é só uma demonstração local do fluxo.
+- Notificação de verdade com app fechado: implementar Web Push (gerar
+  chaves VAPID, guardar a inscrição `PushSubscription` de cada aluno no
+  backend) + um agendador no servidor que dispara o push no horário exato
+  de cada item do cronograma. Sem isso, o lembrete só funciona com o
+  navegador aberto, como documentado acima.
+- Trilha por período: hoje é um mapeamento de exemplo (`trilhaPorPeriodo`)
+  com só 5 temas. Substituir pela grade curricular real da instituição
+  (disciplinas por período) e ligar aos materiais de estudo de verdade.
+- Cronograma: hoje é local por navegador, como o cadastro de alunos — migrar
+  para o banco de dados real (tabela `cronograma`: `aluno_id`, `dia`,
+  `horario`, `tema`) junto da migração de alunos.
