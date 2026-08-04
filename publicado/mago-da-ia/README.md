@@ -1,41 +1,35 @@
 # Mago da IA — Construção Inteligente
 
-## Experiência visual
+Site institucional de página única para apresentar o Mago da IA a
+construtoras, engenheiros e arquitetos: serviços com preços, projetos reais,
+transparência sobre protótipo/MVP/produção e contato direto por WhatsApp.
 
-- `index.html`: entrada simples inspirada no modelo standalone.
-- `magia.html`: experiência imersiva aberta pelo botão **Faça magia**.
-- `assets/magia.css`: identidade visual, parallax e responsividade.
-- `assets/magia.js`: transição entre páginas, parallax, revelação e menu móvel.
-- `assets/mago-da-ia-animacao.mp4`: animação original fornecida pelo usuário.
-- `assets/logo-animacao.png`: símbolo extraído do quadro de 6 segundos da animação.
-- `arquivo/site-profissional-2026-07-28.html`: versão anterior preservada.
+## Estrutura
 
-Site estático multipágina para apresentar serviços, projetos e um briefing
-inicial voltado a profissionais e pequenas empresas da construção.
-
-## Páginas
-
-- `index.html`: proposta de valor e funil de entrada.
-- `servicos.html`: ofertas e preços iniciais.
-- `projetos.html`: portfólio com o estágio real de cada projeto.
-- `briefing.html`: formulário local com exportação em TXT, JSON e PDF.
-
-## Funcionamento do briefing
-
-O briefing é processado no navegador. Nenhum dado é enviado automaticamente.
-O botão de e-mail abre o aplicativo configurado no dispositivo com a mensagem
-preenchida. O logotipo selecionado permanece local e deve ser anexado
-manualmente ao e-mail.
+- `index.html`: site completo, autocontido (CSS e JS inline, mesma base de
+  design do `publicado/portfolio/index.html` — tema claro/escuro, fundo em
+  grade cinética reativa ao cursor, orbe 3D com Three.js que abre um guia de
+  perguntas rápidas).
+- `assets/logo.png`: logotipo usado no header, footer e orbe.
+- `assets/logo-mago-da-ia-runas.png`: logotipo da versão anterior, mantido
+  por referência.
+- `arquivo/`: versões anteriores do site, preservadas para histórico.
 
 ## Limites
 
-- Não há backend, banco de dados ou armazenamento de anexos.
-- O envio depende de um aplicativo de e-mail configurado.
+- O guia flutuante responde com um conjunto fixo de respostas (sem chamada a
+  IA generativa) e encaminha para o WhatsApp perguntas fora desse conjunto.
 - Os preços são valores iniciais e dependem do escopo.
-- Protótipos, MVPs e funcionalidades conectadas são identificados separadamente.
+- Protótipos, MVPs e funcionalidades conectadas são identificados
+  separadamente na seção de transparência.
 
-## Versão anterior
+## Versões anteriores
 
-A página substituída foi preservada em:
+Preservadas em `arquivo/`:
 
-`arquivo/site-anterior-2026-07-28.html`
+- `arquivo/site-anterior-2026-07-28.html`
+- `arquivo/site-profissional-2026-07-28.html`
+
+A versão multipágina anterior (`servicos.html`, `projetos.html`,
+`magia.html`, `briefing.html`) foi substituída por este site de página única
+em 2026-08-04.
