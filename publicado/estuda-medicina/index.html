@@ -1,0 +1,1255 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Estuda Medicina — assistente de estudos com IA</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f3f6f6;
+    --surface: #ffffff;
+    --surface-2: #eaf1f0;
+    --surface-3: #dde8e6;
+    --text-primary: #12201e;
+    --text-secondary: #4c5b58;
+    --text-muted: #85938f;
+    --border: rgba(18, 32, 30, 0.12);
+    --border-strong: rgba(18, 32, 30, 0.24);
+    --accent: #0f766e;
+    --accent-strong: #0b544e;
+    --accent-ink: #ffffff;
+    --accent-soft: rgba(15, 118, 110, 0.12);
+    --good: #1a8f4c;
+    --good-soft: rgba(26, 143, 76, 0.12);
+    --warning: #b9760a;
+    --warning-soft: rgba(185, 118, 10, 0.14);
+    --critical: #c23b3b;
+    --critical-soft: rgba(194, 59, 59, 0.12);
+    --radius: 14px;
+    --radius-sm: 9px;
+    --shadow-1: 0 1px 2px rgba(18, 32, 30, 0.06), 0 8px 24px rgba(18, 32, 30, 0.06);
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --bg: #0e1413;
+      --surface: #161d1c;
+      --surface-2: #1c2423;
+      --surface-3: #26302e;
+      --text-primary: #eef3f2;
+      --text-secondary: #b7c2bf;
+      --text-muted: #86928f;
+      --border: rgba(255, 255, 255, 0.1);
+      --border-strong: rgba(255, 255, 255, 0.2);
+      --accent: #2fbfa8;
+      --accent-strong: #6fd9c8;
+      --accent-ink: #04211d;
+      --accent-soft: rgba(47, 191, 168, 0.16);
+      --good: #3ecb7b;
+      --good-soft: rgba(62, 203, 123, 0.18);
+      --warning: #e0a63a;
+      --warning-soft: rgba(224, 166, 58, 0.18);
+      --critical: #e57373;
+      --critical-soft: rgba(229, 115, 115, 0.18);
+      --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0e1413;
+    --surface: #161d1c;
+    --surface-2: #1c2423;
+    --surface-3: #26302e;
+    --text-primary: #eef3f2;
+    --text-secondary: #b7c2bf;
+    --text-muted: #86928f;
+    --border: rgba(255, 255, 255, 0.1);
+    --border-strong: rgba(255, 255, 255, 0.2);
+    --accent: #2fbfa8;
+    --accent-strong: #6fd9c8;
+    --accent-ink: #04211d;
+    --accent-soft: rgba(47, 191, 168, 0.16);
+    --good: #3ecb7b;
+    --good-soft: rgba(62, 203, 123, 0.18);
+    --warning: #e0a63a;
+    --warning-soft: rgba(224, 166, 58, 0.18);
+    --critical: #e57373;
+    --critical-soft: rgba(229, 115, 115, 0.18);
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100dvh;
+  }
+
+  .app {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+  }
+
+  header.top {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 18px calc(12px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  header.top .brand { display: flex; align-items: center; gap: 10px; }
+  header.top .logo {
+    width: 34px; height: 34px; border-radius: 10px;
+    background: var(--accent); color: var(--accent-ink);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 15px; flex-shrink: 0;
+  }
+  header.top h1 { font-size: 15.5px; margin: 0; line-height: 1.15; }
+  header.top .sub { font-size: 11.5px; color: var(--text-muted); margin: 1px 0 0; }
+  .demo-pill {
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.02em;
+    color: var(--warning); background: var(--warning-soft);
+    border-radius: 999px; padding: 4px 9px; white-space: nowrap;
+  }
+
+  main { flex: 1; padding: 16px 16px calc(96px + var(--safe-bottom)); }
+
+  .view { display: none; animation: fade .15s ease; }
+  .view.active { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-1);
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+
+  .card h2 { font-size: 16px; margin: 0 0 6px; }
+  .card p.hint { color: var(--text-secondary); font-size: 13px; margin: 0 0 14px; line-height: 1.5; }
+
+  .btn {
+    appearance: none; border: none; cursor: pointer;
+    border-radius: var(--radius-sm);
+    font-size: 14.5px; font-weight: 600;
+    padding: 12px 16px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%;
+    transition: transform .08s ease, opacity .15s ease;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-secondary { background: var(--surface-2); color: var(--text-primary); border: 1px solid var(--border); }
+  .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+  input[type="file"] { display: none; }
+
+  .photo-drop {
+    border: 1.5px dashed var(--border-strong);
+    border-radius: var(--radius);
+    padding: 26px 16px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 13.5px;
+    cursor: pointer;
+    background: var(--surface-2);
+  }
+  .photo-drop .icon { font-size: 26px; display: block; margin-bottom: 8px; }
+  .preview-wrap { margin-top: 12px; }
+  .preview-wrap img {
+    width: 100%; max-height: 220px; object-fit: cover;
+    border-radius: var(--radius-sm); border: 1px solid var(--border);
+    display: block;
+  }
+
+  .actions-row { display: flex; gap: 10px; margin-top: 12px; }
+  .actions-row .btn { width: auto; flex: 1; }
+
+  textarea, input[type="text"], input[type="email"], input[type="time"], select {
+    width: 100%; font-size: 14.5px; font-family: inherit;
+    background: var(--surface-2); color: var(--text-primary);
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 11px 13px; resize: vertical;
+  }
+  textarea:focus, input[type="text"]:focus, input[type="email"]:focus,
+  input[type="time"]:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  select { appearance: none; }
+
+  .loading {
+    display: flex; align-items: center; gap: 10px;
+    color: var(--text-secondary); font-size: 13.5px;
+    padding: 14px 2px;
+  }
+  .spinner {
+    width: 16px; height: 16px; border-radius: 50%;
+    border: 2.5px solid var(--border-strong); border-top-color: var(--accent);
+    animation: spin .7s linear infinite; flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .result { margin-top: 14px; }
+  .badge {
+    display: inline-block; font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.03em; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 999px; margin-bottom: 10px;
+  }
+  .badge-demo { background: var(--warning-soft); color: var(--warning); }
+  .badge-good { background: var(--good-soft); color: var(--good); }
+
+  .qtext {
+    background: var(--surface-2); border-radius: var(--radius-sm);
+    padding: 12px 13px; font-size: 14px; line-height: 1.55;
+    margin-bottom: 10px; border: 1px solid var(--border);
+  }
+  .alt-list { list-style: none; padding: 0; margin: 0 0 12px; display: flex; flex-direction: column; gap: 7px; }
+  .alt-list li {
+    font-size: 13.5px; padding: 9px 11px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border); background: var(--surface);
+  }
+  .alt-list li.correct { border-color: var(--good); background: var(--good-soft); font-weight: 600; }
+  .explain { font-size: 13.5px; line-height: 1.6; color: var(--text-secondary); }
+  .explain strong { color: var(--text-primary); }
+
+  .search-row { display: flex; gap: 8px; margin-bottom: 14px; }
+  .search-row input { flex: 1; }
+  .search-row .btn { width: auto; padding: 11px 16px; }
+
+  .chip-row { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; }
+  .chip {
+    font-size: 12px; padding: 6px 12px; border-radius: 999px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--text-secondary); cursor: pointer;
+  }
+  .chip.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+
+  .doc-card {
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 12px 13px; margin-bottom: 10px; background: var(--surface);
+  }
+  .doc-card .tag { font-size: 10.5px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .03em; }
+  .doc-card h3 { font-size: 14px; margin: 4px 0 5px; }
+  .doc-card p { font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.5; }
+
+  .exam-card {
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 12px 13px; margin-bottom: 10px; background: var(--surface);
+  }
+  .exam-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+  .meta-tag { font-size: 10.5px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--surface-2); color: var(--text-secondary); }
+  .exam-card h3 { font-size: 14px; margin: 0 0 5px; }
+  .exam-card p.q { font-size: 13px; color: var(--text-secondary); margin: 0 0 10px; line-height: 1.5; }
+  .exam-link {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 12.5px; font-weight: 600; color: var(--accent);
+    text-decoration: none;
+  }
+  .exam-link:active { opacity: 0.7; }
+
+  .empty { text-align: center; padding: 30px 10px; color: var(--text-muted); font-size: 13.5px; }
+
+  .form-grid { display: flex; flex-direction: column; gap: 9px; }
+  .students-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .count-pill { font-size: 11.5px; font-weight: 700; background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 3px 10px; }
+
+  .student-card {
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 11px 13px; margin-bottom: 9px; background: var(--surface);
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  }
+  .student-info { min-width: 0; }
+  .student-info .name { font-size: 13.5px; font-weight: 600; margin: 0 0 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .student-info .meta { font-size: 11.5px; color: var(--text-muted); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .student-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .status-toggle {
+    font-size: 10.5px; font-weight: 700; padding: 4px 9px; border-radius: 999px;
+    border: 1px solid transparent; cursor: pointer; font-family: inherit;
+  }
+  .status-toggle.active { background: var(--good-soft); color: var(--good); }
+  .status-toggle.inactive { background: var(--surface-2); color: var(--text-muted); border-color: var(--border); }
+  .remove-btn {
+    appearance: none; border: none; background: none; cursor: pointer;
+    color: var(--critical); font-size: 15px; padding: 4px 6px; line-height: 1;
+    border-radius: var(--radius-sm);
+  }
+
+  .trilha-result { margin-top: 12px; }
+  .trilha-result .ciclo-tag { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .03em; margin-bottom: 8px; display: block; }
+  .trilha-chip-list { display: flex; flex-wrap: wrap; gap: 7px; }
+  .trilha-chip {
+    font-size: 12.5px; padding: 7px 13px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent); border: 1px solid transparent;
+    cursor: pointer; font-weight: 600;
+  }
+
+  .notif-status-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .notif-status-row .badge { margin: 0; }
+  .badge-denied { background: var(--critical-soft); color: var(--critical); }
+  .badge-neutral { background: var(--surface-2); color: var(--text-muted); }
+
+  .schedule-day-group { margin-bottom: 12px; }
+  .schedule-day-group .day-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .03em; margin: 0 0 6px 2px; }
+  .schedule-item {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 10px 12px; margin-bottom: 7px; background: var(--surface);
+  }
+  .schedule-item .time { font-weight: 700; font-size: 13.5px; color: var(--accent); min-width: 44px; }
+  .schedule-item .topic { font-size: 13.5px; flex: 1; }
+
+  footer.disclaimer {
+    font-size: 11.5px; color: var(--text-muted); text-align: center;
+    line-height: 1.5; padding: 4px 10px 0;
+  }
+
+  nav.tabbar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+    max-width: 480px; margin: 0 auto;
+    background: var(--surface); border-top: 1px solid var(--border);
+    display: flex; padding: 6px 8px calc(6px + var(--safe-bottom));
+    box-shadow: 0 -4px 18px rgba(0,0,0,0.06);
+  }
+  nav.tabbar button {
+    flex: 1; appearance: none; background: none; border: none; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 8px 4px; border-radius: var(--radius-sm);
+    color: var(--text-muted); font-family: inherit;
+  }
+  nav.tabbar button .ic { font-size: 19px; line-height: 1; }
+  nav.tabbar button .lb { font-size: 10.5px; font-weight: 600; }
+  nav.tabbar button.active { color: var(--accent); }
+  nav.tabbar button.active .ic { transform: scale(1.05); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="top">
+    <div class="brand">
+      <div class="logo">Rx</div>
+      <div>
+        <h1>Estuda Medicina</h1>
+        <p class="sub">Assistente de estudos com IA</p>
+      </div>
+    </div>
+    <span class="demo-pill">MVP · demo</span>
+  </header>
+
+  <main>
+
+    <!-- ABA 1: FOTO -->
+    <section class="view active" id="view-foto">
+      <div class="card">
+        <h2>Tire uma foto da questão</h2>
+        <p class="hint">Fotografe uma questão de prova (múltipla escolha ou dissertativa) e receba a resposta explicada. Funciona pela câmera do celular ou por upload de imagem.</p>
+
+        <label class="photo-drop" id="photoDrop">
+          <span class="icon">📷</span>
+          Toque para tirar uma foto ou escolher da galeria
+          <input type="file" id="photoInput" accept="image/*" capture="environment" />
+        </label>
+
+        <div class="preview-wrap" id="previewWrap" hidden>
+          <img id="previewImg" alt="Prévia da foto enviada" />
+          <div class="actions-row">
+            <button class="btn btn-secondary" id="btnRetake">Trocar foto</button>
+            <button class="btn btn-primary" id="btnAnalyze">Analisar questão</button>
+          </div>
+        </div>
+
+        <div id="photoLoading" class="loading" hidden>
+          <span class="spinner"></span> Lendo a imagem e montando a explicação…
+        </div>
+
+        <div id="photoResult" class="result" hidden></div>
+      </div>
+
+      <div class="card" style="margin-top:0;">
+        <h2 style="font-size:14px;">📹 Vídeo ao vivo</h2>
+        <p class="hint" style="margin-bottom:0;">Responder por vídeo em tempo real ainda não está nesta versão — fica para a próxima fase, junto da leitura de foto que já funciona aqui em modo demonstração. Veja o motivo no README do projeto.</p>
+      </div>
+    </section>
+
+    <!-- ABA 2: ESTUDAR -->
+    <section class="view" id="view-estudar">
+      <div class="card">
+        <h2>Trilha por período</h2>
+        <p class="hint">Escolha seu período e veja os temas sugeridos para essa fase da faculdade. Trilha de exemplo — o mapeamento completo por período depende do currículo de cada instituição.</p>
+
+        <select id="periodSelect">
+          <option value="">Selecione seu período...</option>
+        </select>
+
+        <div id="trilhaResult" class="trilha-result" hidden></div>
+      </div>
+
+      <div class="card">
+        <h2>Estudar com conteúdo atualizado</h2>
+        <p class="hint">Pergunte sobre um tema e a IA busca nos materiais de estudo indexados (RAG) antes de responder. Nesta demo, a busca nos trechos é real; a síntese final é simulada.</p>
+
+        <div class="search-row">
+          <input type="text" id="studyQuery" placeholder="Ex: insuficiência cardíaca, farmacocinética..." />
+          <button class="btn btn-primary" id="btnStudySearch">Buscar</button>
+        </div>
+
+        <div class="chip-row" id="studyChips"></div>
+
+        <div id="studyLoading" class="loading" hidden>
+          <span class="spinner"></span> Buscando nos materiais e gerando resposta…
+        </div>
+
+        <div id="studyResult"></div>
+      </div>
+    </section>
+
+    <!-- ABA 3: PROVAS -->
+    <section class="view" id="view-provas">
+      <div class="card">
+        <h2>Provas antigas</h2>
+        <p class="hint">Catálogo real de provas e gabaritos oficiais de residência médica e revalidação de diploma. Toque em um card para abrir o PDF oficial da fonte — nenhuma questão aqui é inventada.</p>
+
+        <div class="search-row">
+          <input type="text" id="examQuery" placeholder="Ex: residência, revalida, enare..." />
+          <button class="btn btn-primary" id="btnExamSearch">Buscar</button>
+        </div>
+
+        <div id="examResults"></div>
+      </div>
+    </section>
+
+    <!-- ABA 4: ROTINA (CRONOGRAMA + NOTIFICAÇÃO) -->
+    <section class="view" id="view-rotina">
+      <div class="card">
+        <h2>Lembretes no navegador</h2>
+        <p class="hint" id="notifHint">Ative para receber um aviso no celular na hora marcada do cronograma. Funciona de verdade, mas só enquanto este app estiver aberto no navegador — ver limite abaixo.</p>
+        <div class="notif-status-row">
+          <span class="badge" id="notifBadge">Verificando suporte…</span>
+          <button class="btn btn-secondary" id="btnNotifPermission" style="width:auto;">Ativar lembretes</button>
+        </div>
+        <button class="btn btn-secondary" id="btnNotifTest" style="margin-top:8px;">Testar notificação agora</button>
+      </div>
+
+      <div class="card">
+        <h2>Novo lembrete de estudo</h2>
+        <form id="scheduleForm">
+          <div class="form-grid">
+            <select id="scheduleDay" required>
+              <option value="seg">Segunda-feira</option>
+              <option value="ter">Terça-feira</option>
+              <option value="qua">Quarta-feira</option>
+              <option value="qui">Quinta-feira</option>
+              <option value="sex">Sexta-feira</option>
+              <option value="sab">Sábado</option>
+              <option value="dom">Domingo</option>
+            </select>
+            <input type="time" id="scheduleTime" value="19:00" required />
+            <input type="text" id="scheduleTopic" placeholder="Tema (ex: Cardiologia, revisão de provas...)" required />
+          </div>
+          <button type="submit" class="btn btn-primary" style="margin-top:10px;">Adicionar ao cronograma</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="students-header">
+          <h2 style="margin:0;">Seu cronograma</h2>
+          <span class="count-pill" id="scheduleCount">0</span>
+        </div>
+        <div id="scheduleList"></div>
+      </div>
+    </section>
+
+    <!-- ABA 5: ALUNOS -->
+    <section class="view" id="view-alunos">
+      <div class="card">
+        <h2>Cadastro de alunos</h2>
+        <p class="hint">Cadastre os alunos com acesso ao assistente. Fica salvo neste navegador (demo) — não é um banco de dados real ainda.</p>
+
+        <form id="studentForm">
+          <div class="form-grid">
+            <input type="text" id="studentName" placeholder="Nome completo" required />
+            <input type="email" id="studentEmail" placeholder="E-mail institucional" required />
+            <input type="text" id="studentInstitution" placeholder="Instituição (ex: UFMG)" required />
+            <input type="text" id="studentCourse" placeholder="Curso / período (ex: Medicina, 6º período)" />
+          </div>
+          <button type="submit" class="btn btn-primary" style="margin-top:10px;">Cadastrar aluno</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="students-header">
+          <h2 style="margin:0;">Alunos cadastrados</h2>
+          <span class="count-pill" id="studentCount">0</span>
+        </div>
+        <div class="search-row">
+          <input type="text" id="studentQuery" placeholder="Buscar por nome ou instituição..." />
+        </div>
+        <div id="studentList"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="disclaimer">
+    Protótipo educacional — respostas de IA marcadas "demo" são exemplos simulados,<br />não geradas por um modelo real nesta versão.
+  </footer>
+
+  <nav class="tabbar">
+    <button class="tab-btn active" data-view="foto">
+      <span class="ic">📷</span><span class="lb">Foto</span>
+    </button>
+    <button class="tab-btn" data-view="estudar">
+      <span class="ic">📚</span><span class="lb">Estudar</span>
+    </button>
+    <button class="tab-btn" data-view="provas">
+      <span class="ic">🗂️</span><span class="lb">Provas</span>
+    </button>
+    <button class="tab-btn" data-view="rotina">
+      <span class="ic">🗓️</span><span class="lb">Rotina</span>
+    </button>
+    <button class="tab-btn" data-view="alunos">
+      <span class="ic">🎓</span><span class="lb">Alunos</span>
+    </button>
+  </nav>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------- Navegação entre abas ----------
+  var tabButtons = document.querySelectorAll(".tab-btn");
+  var views = {
+    foto: document.getElementById("view-foto"),
+    estudar: document.getElementById("view-estudar"),
+    provas: document.getElementById("view-provas"),
+    rotina: document.getElementById("view-rotina"),
+    alunos: document.getElementById("view-alunos")
+  };
+
+  tabButtons.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      tabButtons.forEach(function (b) { b.classList.remove("active"); });
+      btn.classList.add("active");
+      Object.keys(views).forEach(function (k) { views[k].classList.remove("active"); });
+      views[btn.dataset.view].classList.add("active");
+    });
+  });
+
+  // ================================================================
+  // ABA 1 — FOTO DA QUESTÃO
+  // Em produção: a foto seria enviada para um backend (ex: função
+  // serverless) que chama a API da Claude (visão) com a imagem e
+  // devolve a leitura da questão + resposta + explicação.
+  // Aqui, mockAnalyzeQuestionPhoto() simula essa chamada.
+  // ================================================================
+
+  var photoInput = document.getElementById("photoInput");
+  var photoDrop = document.getElementById("photoDrop");
+  var previewWrap = document.getElementById("previewWrap");
+  var previewImg = document.getElementById("previewImg");
+  var btnRetake = document.getElementById("btnRetake");
+  var btnAnalyze = document.getElementById("btnAnalyze");
+  var photoLoading = document.getElementById("photoLoading");
+  var photoResult = document.getElementById("photoResult");
+
+  var demoQuestionBank = [
+    {
+      questao: "(Exemplo) Paciente de 62 anos, hipertenso, apresenta dispneia progressiva, edema de membros inferiores e turgência jugular. Qual o mecanismo fisiopatológico mais associado ao quadro?",
+      alternativas: [
+        "Aumento da pré-carga por retenção de sódio e água",
+        "Broncoconstrição mediada por histamina",
+        "Vasodilatação periférica por queda do tônus simpático",
+        "Redução isolada da frequência cardíaca"
+      ],
+      correta: 0,
+      explicacao: "O quadro descrito é típico de <strong>insuficiência cardíaca congestiva</strong>. A queda do débito cardíaco ativa o sistema renina-angiotensina-aldosterona, retendo sódio e água — o que aumenta a pré-carga e agrava a congestão sistêmica (edema, turgência jugular) e pulmonar (dispneia)."
+    },
+    {
+      questao: "(Exemplo) Qual classe de antibióticos tem seu mecanismo de ação baseado na inibição da síntese da parede celular bacteriana, ligando-se às PBPs (penicillin-binding proteins)?",
+      alternativas: [
+        "Betalactâmicos",
+        "Macrolídeos",
+        "Aminoglicosídeos",
+        "Fluoroquinolonas"
+      ],
+      correta: 0,
+      explicacao: "Os <strong>betalactâmicos</strong> (penicilinas, cefalosporinas, carbapenêmicos) inibem as PBPs, enzimas responsáveis pela transpeptidação final da parede celular bacteriana, levando à lise da bactéria — especialmente eficaz contra bactérias em multiplicação ativa."
+    },
+    {
+      questao: "(Exemplo) Homem de 45 anos com dor lombar súbita irradiando para a região inguinal, hematúria microscópica e náuseas. Qual a hipótese diagnóstica mais provável?",
+      alternativas: [
+        "Litíase renal (cólica nefrética)",
+        "Pielonefrite crônica",
+        "Hérnia de disco lombar",
+        "Apendicite aguda"
+      ],
+      correta: 0,
+      explicacao: "Dor lombar súbita e intensa irradiando para a região inguinal, associada a hematúria, é o quadro clássico de <strong>cólica nefrética por litíase urinária</strong> — o cálculo obstrui o trajeto ureteral, causando distensão e dor referida."
+    }
+  ];
+  var photoCallCount = 0;
+
+  function mockAnalyzeQuestionPhoto() {
+    // Simula latência de uma chamada real de API de visão.
+    return new Promise(function (resolve) {
+      setTimeout(function () {
+        var item = demoQuestionBank[photoCallCount % demoQuestionBank.length];
+        photoCallCount++;
+        resolve(item);
+      }, 1500);
+    });
+  }
+
+  photoDrop.addEventListener("click", function () { photoInput.click(); });
+
+  photoInput.addEventListener("change", function () {
+    var file = photoInput.files && photoInput.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      previewImg.src = e.target.result;
+      photoDrop.hidden = true;
+      previewWrap.hidden = false;
+      photoResult.hidden = true;
+      photoResult.innerHTML = "";
+    };
+    reader.readAsDataURL(file);
+  });
+
+  btnRetake.addEventListener("click", function () {
+    photoInput.value = "";
+    previewWrap.hidden = true;
+    photoDrop.hidden = false;
+    photoResult.hidden = true;
+    photoResult.innerHTML = "";
+  });
+
+  btnAnalyze.addEventListener("click", function () {
+    btnAnalyze.disabled = true;
+    photoLoading.hidden = false;
+    photoResult.hidden = true;
+
+    mockAnalyzeQuestionPhoto().then(function (item) {
+      photoLoading.hidden = true;
+      btnAnalyze.disabled = false;
+
+      var altsHtml = item.alternativas.map(function (alt, i) {
+        return '<li class="' + (i === item.correta ? "correct" : "") + '">' + alt + "</li>";
+      }).join("");
+
+      photoResult.innerHTML =
+        '<span class="badge badge-demo">Resposta de exemplo (demo)</span>' +
+        '<div class="qtext">' + item.questao + "</div>" +
+        '<ul class="alt-list">' + altsHtml + "</ul>" +
+        '<div class="explain"><strong>Explicação:</strong> ' + item.explicacao + "</div>";
+      photoResult.hidden = false;
+    });
+  });
+
+  // ================================================================
+  // ABA 2 — ESTUDAR (RAG)
+  // A busca por palavra-chave nos trechos abaixo é real (roda no
+  // navegador). A "resposta gerada pela IA" que junta os trechos é
+  // simulada — em produção viria de uma chamada à API da Claude com
+  // os trechos recuperados como contexto.
+  // ================================================================
+
+  var studyDocs = [
+    {
+      tema: "Cardiologia",
+      titulo: "Insuficiência cardíaca — fisiopatologia e manejo inicial",
+      texto: "A insuficiência cardíaca (IC) resulta da incapacidade do coração de bombear sangue suficiente para atender às demandas metabólicas. Os mecanismos compensatórios — ativação neuro-hormonal (SRAA, sistema simpático) e remodelamento ventricular — inicialmente mantêm o débito cardíaco, mas cronicamente pioram o quadro. O manejo inicial envolve IECA/BRA, betabloqueadores e diuréticos, conforme a classificação funcional NYHA.",
+      atualizadoEm: "2026"
+    },
+    {
+      tema: "Farmacologia",
+      titulo: "Farmacocinética básica: absorção, distribuição, metabolismo e excreção",
+      texto: "A farmacocinética descreve o percurso do fármaco no organismo (ADME). A biodisponibilidade depende da via de administração e do metabolismo de primeira passagem hepático. O volume de distribuição indica se o fármaco fica concentrado no plasma ou se distribui amplamente pelos tecidos, e a meia-vida determina o intervalo entre doses para manter a concentração terapêutica.",
+      atualizadoEm: "2026"
+    },
+    {
+      tema: "Fisiologia",
+      titulo: "Fisiologia renal: filtração glomerular e regulação do equilíbrio hidroeletrolítico",
+      texto: "O néfron regula volume e composição dos fluidos corporais através de filtração glomerular, reabsorção e secreção tubular. A taxa de filtração glomerular (TFG) é o principal marcador de função renal. O sistema renina-angiotensina-aldosterona e o hormônio antidiurético (ADH) ajustam a reabsorção de sódio e água conforme o estado volêmico do paciente.",
+      atualizadoEm: "2025"
+    },
+    {
+      tema: "Semiologia",
+      titulo: "Semiologia respiratória: ausculta pulmonar e principais achados",
+      texto: "A ausculta pulmonar identifica sons normais (murmúrio vesicular) e adventícios (estertores, sibilos, roncos). Estertores crepitantes finos ao final da inspiração sugerem processo alveolar (ex: fibrose, edema pulmonar); sibilos indicam obstrução das vias aéreas de pequeno calibre, como na asma e na DPOC.",
+      atualizadoEm: "2026"
+    },
+    {
+      tema: "Microbiologia",
+      titulo: "Mecanismos de resistência bacteriana a antibióticos",
+      texto: "As bactérias desenvolvem resistência por produção de enzimas inativadoras (ex: betalactamases), alteração do sítio-alvo, redução da permeabilidade de membrana e bombas de efluxo. O uso racional de antibióticos e a antibioticoterapia guiada por cultura e antibiograma são centrais para conter a disseminação de cepas multirresistentes.",
+      atualizadoEm: "2026"
+    }
+  ];
+
+  var studyChipsEl = document.getElementById("studyChips");
+  var studyQueryEl = document.getElementById("studyQuery");
+  var btnStudySearch = document.getElementById("btnStudySearch");
+  var studyLoading = document.getElementById("studyLoading");
+  var studyResultEl = document.getElementById("studyResult");
+
+  var temas = Array.from(new Set(studyDocs.map(function (d) { return d.tema; })));
+  temas.forEach(function (tema) {
+    var chip = document.createElement("span");
+    chip.className = "chip";
+    chip.textContent = tema;
+    chip.addEventListener("click", function () {
+      studyQueryEl.value = tema;
+      runStudySearch();
+    });
+    studyChipsEl.appendChild(chip);
+  });
+
+  // ---- Trilha de estudo por período ----
+  // Mapeamento de exemplo (período -> ciclo + temas sugeridos). O currículo
+  // real varia por instituição — isso é um ponto de partida, não a grade
+  // curricular oficial de nenhuma faculdade específica.
+  var trilhaPorPeriodo = {
+    1: { ciclo: "Ciclo Básico", temas: ["Fisiologia"] },
+    2: { ciclo: "Ciclo Básico", temas: ["Fisiologia", "Farmacologia"] },
+    3: { ciclo: "Ciclo Básico", temas: ["Farmacologia"] },
+    4: { ciclo: "Ciclo Básico", temas: ["Farmacologia", "Microbiologia"] },
+    5: { ciclo: "Ciclo Clínico", temas: ["Microbiologia", "Semiologia"] },
+    6: { ciclo: "Ciclo Clínico", temas: ["Semiologia"] },
+    7: { ciclo: "Ciclo Clínico", temas: ["Semiologia", "Cardiologia"] },
+    8: { ciclo: "Ciclo Clínico", temas: ["Cardiologia"] },
+    9: { ciclo: "Internato", temas: ["Cardiologia", "Semiologia"] },
+    10: { ciclo: "Internato", temas: ["Cardiologia", "Farmacologia"] },
+    11: { ciclo: "Internato", temas: ["Microbiologia", "Cardiologia"] },
+    12: { ciclo: "Internato", temas: ["Cardiologia", "Semiologia", "Microbiologia"] }
+  };
+
+  var periodSelectEl = document.getElementById("periodSelect");
+  var trilhaResultEl = document.getElementById("trilhaResult");
+
+  for (var p = 1; p <= 12; p++) {
+    var periodOption = document.createElement("option");
+    periodOption.value = String(p);
+    periodOption.textContent = p + "º período";
+    periodSelectEl.appendChild(periodOption);
+  }
+
+  function renderTrilha(periodo) {
+    var info = trilhaPorPeriodo[periodo];
+    if (!info) {
+      trilhaResultEl.hidden = true;
+      trilhaResultEl.innerHTML = "";
+      return;
+    }
+    var chipsHtml = info.temas.map(function (tema) {
+      return '<span class="trilha-chip" data-tema="' + escapeHtml(tema) + '">' + escapeHtml(tema) + '</span>';
+    }).join("");
+    trilhaResultEl.innerHTML =
+      '<span class="ciclo-tag">' + info.ciclo + " · " + periodo + "º período</span>" +
+      '<div class="trilha-chip-list">' + chipsHtml + "</div>";
+    trilhaResultEl.hidden = false;
+  }
+
+  periodSelectEl.addEventListener("change", function () {
+    renderTrilha(periodSelectEl.value);
+    try { localStorage.setItem("estudaMedicina.periodo", periodSelectEl.value); } catch (e) { /* localStorage indisponível */ }
+  });
+
+  trilhaResultEl.addEventListener("click", function (e) {
+    var chip = e.target.closest(".trilha-chip");
+    if (!chip) return;
+    studyQueryEl.value = chip.dataset.tema;
+    runStudySearch();
+    studyQueryEl.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+
+  (function restoreSavedPeriodo() {
+    try {
+      var saved = localStorage.getItem("estudaMedicina.periodo");
+      if (saved) {
+        periodSelectEl.value = saved;
+        renderTrilha(saved);
+      }
+    } catch (e) { /* localStorage indisponível */ }
+  })();
+
+  function retrieveDocs(query) {
+    var q = query.trim().toLowerCase();
+    if (!q) return [];
+    return studyDocs.filter(function (d) {
+      var haystack = (d.tema + " " + d.titulo + " " + d.texto).toLowerCase();
+      return q.split(/\s+/).some(function (term) { return term.length > 2 && haystack.indexOf(term) !== -1; });
+    });
+  }
+
+  function mockSynthesizeAnswer(query, docs) {
+    return new Promise(function (resolve) {
+      setTimeout(function () {
+        if (docs.length === 0) {
+          resolve(null);
+          return;
+        }
+        var base = docs[0];
+        var resumo = "Com base nos materiais indexados sobre <strong>" + base.tema.toLowerCase() + "</strong>, o ponto central é: " +
+          base.texto.split(".").slice(0, 2).join(".") + ". " +
+          (docs.length > 1 ? "Os outros " + (docs.length - 1) + " trecho(s) abaixo também são relevantes para aprofundar." : "");
+        resolve(resumo);
+      }, 1100);
+    });
+  }
+
+  function runStudySearch() {
+    var query = studyQueryEl.value;
+    var docs = retrieveDocs(query);
+
+    studyResultEl.innerHTML = "";
+    studyLoading.hidden = false;
+
+    mockSynthesizeAnswer(query, docs).then(function (resumo) {
+      studyLoading.hidden = true;
+
+      if (!query.trim()) {
+        studyResultEl.innerHTML = '<div class="empty">Digite um tema ou toque em uma das categorias acima.</div>';
+        return;
+      }
+
+      if (docs.length === 0) {
+        studyResultEl.innerHTML = '<div class="empty">Nenhum material de exemplo encontrado para "' + escapeHtml(query) + '". Experimente um dos temas sugeridos.</div>';
+        return;
+      }
+
+      var docsHtml = docs.map(function (d) {
+        return '<div class="doc-card"><span class="tag">' + d.tema + " · atualizado em " + d.atualizadoEm + '</span><h3>' + d.titulo + "</h3><p>" + d.texto + "</p></div>";
+      }).join("");
+
+      studyResultEl.innerHTML =
+        '<span class="badge badge-good">Busca real nos trechos abaixo</span>' +
+        '<div class="explain" style="margin-bottom:14px;"><strong>Resposta (síntese simulada):</strong> ' + resumo + "</div>" +
+        docsHtml;
+    });
+  }
+
+  btnStudySearch.addEventListener("click", runStudySearch);
+  studyQueryEl.addEventListener("keydown", function (e) { if (e.key === "Enter") runStudySearch(); });
+
+  // ================================================================
+  // ABA 3 — PROVAS ANTIGAS
+  // Catálogo REAL de fontes oficiais de provas de residência médica e
+  // revalidação de diploma — pesquisado na web em ago/2026. Cada item
+  // aponta para a página/PDF oficial do órgão responsável; nenhuma
+  // questão é reproduzida ou inventada aqui, só a referência da fonte.
+  // Confira sempre o link oficial, que pode ganhar edições mais novas
+  // com o tempo. Para incluir o banco de provas próprio da instituição,
+  // ver "Falta para terminar" no README.
+  // ================================================================
+
+  var examBank = [
+    {
+      orgao: "FUVEST · USP",
+      tipo: "Residência Médica",
+      titulo: "Provas e gabaritos — Residência Médica USP",
+      descricao: "Processo seletivo de residência médica dos hospitais da USP (HC-FMUSP, Instituto da Criança, Instituto do Coração etc.), organizado pela Fuvest.",
+      url: "https://www.fuvest.br/residencia-medica-provas-e-gabarito/",
+      tags: ["residência médica", "usp", "fuvest", "hospital das clínicas"]
+    },
+    {
+      orgao: "INEP / MEC",
+      tipo: "Revalidação de diploma",
+      titulo: "Provas e gabaritos oficiais — Revalida",
+      descricao: "Exame Nacional de Revalidação de Diplomas Médicos expedidos por instituições estrangeiras. 100 questões objetivas cobrindo Clínica Médica, Cirurgia, Pediatria, Ginecologia/Obstetrícia e Medicina de Família e Comunidade.",
+      url: "https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/revalida/provas-e-gabaritos",
+      tags: ["revalida", "revalidação de diploma", "clínica médica", "cirurgia", "pediatria", "ginecologia", "obstetrícia", "medicina de família"]
+    },
+    {
+      orgao: "ENARE · FGV / EBSERH",
+      tipo: "Residência Médica nacional",
+      titulo: "Provas e gabaritos — ENARE (todas as edições)",
+      descricao: "Exame Nacional de Residência, usado por dezenas de hospitais universitários federais da rede EBSERH para seleção de residência médica.",
+      url: "https://mapa-vagas-enare-ebserh.conhecimento.fgv.br/provas-gabaritos-medica.html",
+      tags: ["enare", "residência médica", "ebserh", "hospital universitário"]
+    },
+    {
+      orgao: "ENARE · FGV / EBSERH",
+      tipo: "Residência Médica nacional — edição 2024",
+      titulo: "Gabarito definitivo — ENARE 2024 (médica)",
+      descricao: "PDF oficial do gabarito definitivo da prova médica do ENARE 2024, publicado pela FGV/EBSERH.",
+      url: "https://mapa-vagas-enare-ebserh.conhecimento.fgv.br/provas-gabaritos/medica/ENARE%202024%20Gabarito%20Definitivo%20-%20Medica.pdf",
+      tags: ["enare", "2024", "gabarito", "residência médica"]
+    }
+  ];
+
+  var examQueryEl = document.getElementById("examQuery");
+  var btnExamSearch = document.getElementById("btnExamSearch");
+  var examResultsEl = document.getElementById("examResults");
+
+  function runExamSearch() {
+    var q = examQueryEl.value.trim().toLowerCase();
+    var results = !q ? examBank : examBank.filter(function (ex) {
+      var haystack = (ex.orgao + " " + ex.tipo + " " + ex.titulo + " " + ex.descricao + " " + ex.tags.join(" ")).toLowerCase();
+      return q.split(/\s+/).some(function (term) { return term.length > 1 && haystack.indexOf(term) !== -1; });
+    });
+
+    if (results.length === 0) {
+      examResultsEl.innerHTML = '<div class="empty">Nenhuma fonte encontrada para "' + escapeHtml(examQueryEl.value) + '". Experimente "residência", "revalida" ou "enare".</div>';
+      return;
+    }
+
+    examResultsEl.innerHTML = results.map(function (ex) {
+      return '<div class="exam-card">' +
+        '<div class="exam-meta">' +
+          '<span class="meta-tag">' + escapeHtml(ex.orgao) + '</span>' +
+          '<span class="meta-tag">' + escapeHtml(ex.tipo) + '</span>' +
+        '</div>' +
+        '<h3>' + escapeHtml(ex.titulo) + '</h3>' +
+        '<p class="q">' + escapeHtml(ex.descricao) + '</p>' +
+        '<a class="exam-link" href="' + ex.url + '" target="_blank" rel="noopener noreferrer">Abrir prova/gabarito oficial ↗</a>' +
+      '</div>';
+    }).join("");
+  }
+
+  btnExamSearch.addEventListener("click", runExamSearch);
+  examQueryEl.addEventListener("keydown", function (e) { if (e.key === "Enter") runExamSearch(); });
+  runExamSearch(); // mostra o catálogo completo de fontes ao abrir a aba
+
+  function escapeHtml(str) {
+    var div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // ================================================================
+  // ABA 5 — CADASTRO DE ALUNOS
+  // Persistido em localStorage — fica só neste navegador/dispositivo.
+  // Não é um banco de dados real (não sincroniza entre dispositivos,
+  // não tem autenticação, qualquer pessoa com acesso ao navegador
+  // pode editar). Serve para validar o fluxo de cadastro antes de
+  // implementar um backend com banco de verdade.
+  // ================================================================
+
+  var STUDENTS_KEY = "estudaMedicina.alunos.v1";
+
+  function loadStudents() {
+    try {
+      var raw = localStorage.getItem(STUDENTS_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function saveStudents(list) {
+    try {
+      localStorage.setItem(STUDENTS_KEY, JSON.stringify(list));
+    } catch (e) {
+      // localStorage indisponível (modo privado, quota cheia, etc.) — ignora silenciosamente
+    }
+  }
+
+  var seedStudents = [
+    { id: "s1", nome: "Beatriz Fontoura", email: "beatriz.fontoura@ufmg.br", instituicao: "UFMG", curso: "Medicina, 6º período", ativo: true },
+    { id: "s2", nome: "Rafael Nogueira", email: "rafael.nogueira@usp.br", instituicao: "USP", curso: "Medicina, 4º período", ativo: true },
+    { id: "s3", nome: "Camila Duarte", email: "camila.duarte@ufrj.br", instituicao: "UFRJ", curso: "Medicina, 8º período", ativo: false }
+  ];
+
+  var students = loadStudents();
+  if (!students) {
+    students = seedStudents;
+    saveStudents(students);
+  }
+
+  var studentForm = document.getElementById("studentForm");
+  var studentNameEl = document.getElementById("studentName");
+  var studentEmailEl = document.getElementById("studentEmail");
+  var studentInstitutionEl = document.getElementById("studentInstitution");
+  var studentCourseEl = document.getElementById("studentCourse");
+  var studentQueryEl = document.getElementById("studentQuery");
+  var studentListEl = document.getElementById("studentList");
+  var studentCountEl = document.getElementById("studentCount");
+
+  function renderStudents() {
+    var q = studentQueryEl.value.trim().toLowerCase();
+    var filtered = !q ? students : students.filter(function (s) {
+      var haystack = (s.nome + " " + s.instituicao + " " + s.curso).toLowerCase();
+      return haystack.indexOf(q) !== -1;
+    });
+
+    var ativos = students.filter(function (s) { return s.ativo; }).length;
+    studentCountEl.textContent = ativos + " ativo" + (ativos === 1 ? "" : "s") + " de " + students.length;
+
+    if (filtered.length === 0) {
+      studentListEl.innerHTML = '<div class="empty">Nenhum aluno cadastrado ainda. Use o formulário acima.</div>';
+      return;
+    }
+
+    studentListEl.innerHTML = filtered.map(function (s) {
+      return '<div class="student-card" data-id="' + s.id + '">' +
+        '<div class="student-info">' +
+          '<p class="name">' + escapeHtml(s.nome) + '</p>' +
+          '<p class="meta">' + escapeHtml(s.instituicao) + (s.curso ? " · " + escapeHtml(s.curso) : "") + '</p>' +
+        '</div>' +
+        '<div class="student-actions">' +
+          '<button type="button" class="status-toggle ' + (s.ativo ? "active" : "inactive") + '" data-action="toggle" data-id="' + s.id + '">' + (s.ativo ? "Ativo" : "Inativo") + '</button>' +
+          '<button type="button" class="remove-btn" data-action="remove" data-id="' + s.id + '" aria-label="Remover aluno">✕</button>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  }
+
+  studentForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var nome = studentNameEl.value.trim();
+    var email = studentEmailEl.value.trim();
+    var instituicao = studentInstitutionEl.value.trim();
+    var curso = studentCourseEl.value.trim();
+    if (!nome || !email || !instituicao) return;
+
+    students.unshift({
+      id: "s" + Date.now(),
+      nome: nome,
+      email: email,
+      instituicao: instituicao,
+      curso: curso,
+      ativo: true
+    });
+    saveStudents(students);
+    studentForm.reset();
+    renderStudents();
+  });
+
+  studentListEl.addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-action]");
+    if (!btn) return;
+    var id = btn.dataset.id;
+    var action = btn.dataset.action;
+
+    if (action === "toggle") {
+      students = students.map(function (s) { return s.id === id ? Object.assign({}, s, { ativo: !s.ativo }) : s; });
+    } else if (action === "remove") {
+      students = students.filter(function (s) { return s.id !== id; });
+    }
+    saveStudents(students);
+    renderStudents();
+  });
+
+  studentQueryEl.addEventListener("input", renderStudents);
+
+  renderStudents();
+
+  // ================================================================
+  // ABA 4 (ROTINA) — CRONOGRAMA + NOTIFICAÇÕES
+  // O cronograma é real, persistido em localStorage (mesma limitação
+  // de dispositivo único da aba Alunos). A notificação TAMBÉM é real —
+  // usa a Notification API do navegador de verdade — mas só dispara
+  // enquanto este site estiver aberto em uma aba/app no celular: o
+  // navegador precisa estar rodando para o relógio interno checar o
+  // cronograma a cada ~20s. Fechar o navegador ou "matar" o app
+  // interrompe os lembretes. Notificação que chega mesmo com o app
+  // totalmente fechado (push de verdade) exige Web Push + um backend
+  // que dispara o aviso no horário certo — está fora do escopo deste
+  // MVP estático (ver "Falta para terminar" no README).
+  // ================================================================
+
+  var SCHEDULE_KEY = "estudaMedicina.cronograma.v1";
+  var DAY_ORDER = ["seg", "ter", "qua", "qui", "sex", "sab", "dom"];
+  var DAY_LABELS = { seg: "Segunda-feira", ter: "Terça-feira", qua: "Quarta-feira", qui: "Quinta-feira", sex: "Sexta-feira", sab: "Sábado", dom: "Domingo" };
+  var DAY_CODE_BY_JS_INDEX = ["dom", "seg", "ter", "qua", "qui", "sex", "sab"];
+
+  function loadSchedule() {
+    try {
+      var raw = localStorage.getItem(SCHEDULE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function saveSchedule(list) {
+    try {
+      localStorage.setItem(SCHEDULE_KEY, JSON.stringify(list));
+    } catch (e) { /* localStorage indisponível */ }
+  }
+
+  var schedule = loadSchedule();
+  if (!schedule) {
+    schedule = [
+      { id: "c1", dia: "ter", horario: "19:00", tema: "Cardiologia" },
+      { id: "c2", dia: "qui", horario: "20:00", tema: "Revisão de provas antigas" }
+    ];
+    saveSchedule(schedule);
+  }
+
+  var scheduleForm = document.getElementById("scheduleForm");
+  var scheduleDayEl = document.getElementById("scheduleDay");
+  var scheduleTimeEl = document.getElementById("scheduleTime");
+  var scheduleTopicEl = document.getElementById("scheduleTopic");
+  var scheduleListEl = document.getElementById("scheduleList");
+  var scheduleCountEl = document.getElementById("scheduleCount");
+
+  function renderSchedule() {
+    scheduleCountEl.textContent = String(schedule.length);
+
+    if (schedule.length === 0) {
+      scheduleListEl.innerHTML = '<div class="empty">Nenhum lembrete ainda. Adicione um acima.</div>';
+      return;
+    }
+
+    var byDay = {};
+    schedule.forEach(function (item) {
+      (byDay[item.dia] = byDay[item.dia] || []).push(item);
+    });
+    Object.keys(byDay).forEach(function (dia) {
+      byDay[dia].sort(function (a, b) { return a.horario.localeCompare(b.horario); });
+    });
+
+    scheduleListEl.innerHTML = DAY_ORDER.filter(function (d) { return byDay[d]; }).map(function (dia) {
+      var itemsHtml = byDay[dia].map(function (item) {
+        return '<div class="schedule-item">' +
+          '<span class="time">' + escapeHtml(item.horario) + '</span>' +
+          '<span class="topic">' + escapeHtml(item.tema) + '</span>' +
+          '<button type="button" class="remove-btn" data-id="' + item.id + '" aria-label="Remover lembrete">✕</button>' +
+        '</div>';
+      }).join("");
+      return '<div class="schedule-day-group"><p class="day-label">' + DAY_LABELS[dia] + '</p>' + itemsHtml + '</div>';
+    }).join("");
+  }
+
+  scheduleForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var dia = scheduleDayEl.value;
+    var horario = scheduleTimeEl.value;
+    var tema = scheduleTopicEl.value.trim();
+    if (!dia || !horario || !tema) return;
+
+    schedule.push({ id: "c" + Date.now(), dia: dia, horario: horario, tema: tema });
+    saveSchedule(schedule);
+    scheduleForm.reset();
+    scheduleTimeEl.value = "19:00";
+    renderSchedule();
+  });
+
+  scheduleListEl.addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-id]");
+    if (!btn) return;
+    schedule = schedule.filter(function (item) { return item.id !== btn.dataset.id; });
+    saveSchedule(schedule);
+    renderSchedule();
+  });
+
+  renderSchedule();
+
+  // ---- Notificações reais do navegador ----
+
+  var notifBadge = document.getElementById("notifBadge");
+  var btnNotifPermission = document.getElementById("btnNotifPermission");
+  var btnNotifTest = document.getElementById("btnNotifTest");
+  var swRegistration = null;
+
+  // Service worker só é permitido em HTTPS ou localhost — em file:// (abrir
+  // o index.html direto) ele não registra, e o app segue funcionando sem
+  // notificação de fundo (o botão de teste ainda tenta a Notification API
+  // direta, que funciona em alguns navegadores desktop).
+  if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+    navigator.serviceWorker.register("sw.js")
+      .then(function (reg) { swRegistration = reg; })
+      .catch(function () { /* segue sem service worker */ });
+  }
+
+  function updateNotifBadge() {
+    if (!("Notification" in window)) {
+      notifBadge.textContent = "Não suportado neste navegador";
+      notifBadge.className = "badge badge-neutral";
+      btnNotifPermission.disabled = true;
+      return;
+    }
+    var perm = Notification.permission;
+    if (perm === "granted") {
+      notifBadge.textContent = "Lembretes ativados";
+      notifBadge.className = "badge badge-good";
+      btnNotifPermission.textContent = "Ativado ✓";
+      btnNotifPermission.disabled = true;
+    } else if (perm === "denied") {
+      notifBadge.textContent = "Bloqueado nas permissões do navegador";
+      notifBadge.className = "badge badge-denied";
+      btnNotifPermission.textContent = "Bloqueado";
+      btnNotifPermission.disabled = true;
+    } else {
+      notifBadge.textContent = "Ainda não ativado";
+      notifBadge.className = "badge badge-neutral";
+      btnNotifPermission.textContent = "Ativar lembretes";
+      btnNotifPermission.disabled = false;
+    }
+  }
+
+  function showStudyReminder(title, body) {
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
+    var options = { body: body, tag: "estuda-medicina-lembrete" };
+    if (swRegistration && swRegistration.showNotification) {
+      swRegistration.showNotification(title, options);
+    } else {
+      try { new Notification(title, options); } catch (e) { /* alguns navegadores móveis exigem service worker para notificar */ }
+    }
+  }
+
+  btnNotifPermission.addEventListener("click", function () {
+    if (!("Notification" in window)) return;
+    Notification.requestPermission().then(function () { updateNotifBadge(); });
+  });
+
+  btnNotifTest.addEventListener("click", function () {
+    if (!("Notification" in window)) return;
+    if (Notification.permission === "granted") {
+      showStudyReminder("Hora de estudar! (teste)", "É assim que o lembrete do seu cronograma vai aparecer.");
+    } else {
+      Notification.requestPermission().then(function (perm) {
+        updateNotifBadge();
+        if (perm === "granted") showStudyReminder("Hora de estudar! (teste)", "É assim que o lembrete do seu cronograma vai aparecer.");
+      });
+    }
+  });
+
+  updateNotifBadge();
+
+  var lastCheckedMinuteKey = null;
+
+  function checkScheduleForNotifications() {
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
+    var now = new Date();
+    var todayCode = DAY_CODE_BY_JS_INDEX[now.getDay()];
+    var hh = String(now.getHours()).padStart(2, "0");
+    var mm = String(now.getMinutes()).padStart(2, "0");
+    var currentTime = hh + ":" + mm;
+    var minuteKey = now.toDateString() + " " + currentTime;
+    if (minuteKey === lastCheckedMinuteKey) return; // já checado neste minuto
+    lastCheckedMinuteKey = minuteKey;
+
+    schedule.forEach(function (item) {
+      if (item.dia === todayCode && item.horario === currentTime) {
+        showStudyReminder("Hora de estudar: " + item.tema, "Cronograma de " + DAY_LABELS[item.dia] + " às " + item.horario + ".");
+      }
+    });
+  }
+
+  setInterval(checkScheduleForNotifications, 20000);
+})();
+</script>
+</body>
+</html>
