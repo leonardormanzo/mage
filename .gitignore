@@ -31,3 +31,9 @@ CLAUDE.md.backup-local
 # Saída de análise do graphify e scratch de trabalho — não fazem parte de nenhum projeto
 /graphify-out/
 /tmp/
+
+# Artefatos de automação de navegador (screenshots/logs/snapshots temporários)
+/.playwright-mcp/
+
+# Cache de testes Python (cada projeto Python usa o seu local)
+**/.pytest_cache/
