@@ -1,0 +1,14 @@
+{
+  "name": "vigia-obra-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Servidor local que serve o frontend do Vigia Obra e roda o pipeline Python (vigia-obra-seguranca) via subprocess, repassando o NDJSON em tempo real.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "multer": "^2.2.0"
+  }
+}

@@ -38,8 +38,9 @@ Parâmetros:
 ## Protocolo para integração com um frontend local
 
 O `stdout` do processo emite **NDJSON** (uma linha JSON por evento) — pensado
-para um frontend local (Electron/Tauri/backend Node) rodar isto via
-`child_process`/subprocess e ler a saída linha a linha em tempo real:
+para um frontend local rodar isto via `child_process`/subprocess e ler a
+saída linha a linha em tempo real. É exatamente o que o servidor Node em
+[`../vigia-obra-frontend/server`](../vigia-obra-frontend/server) faz:
 
 ```json
 {"type": "start", "total_frames_estimate": 12, "interval": 5.0, "model": "claude-opus-5"}
