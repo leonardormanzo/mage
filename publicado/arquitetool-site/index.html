@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arquitetool — Curadoria de Reformas de Alto Padrão</title>
+<meta name="description" content="Arquitetool conecta clientes, profissionais e fornecedores em um único processo de reforma: transparente, sob medida e sem imprevistos. Conceito de redesign não-oficial.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="format-detection" content="telephone=no">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Josefin+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0906;
+    --bg-alt: #14110b;
+    --bg-card: #1b1610;
+    --ink: #f3eee2;
+    --ink-dim: #b7af9d;
+    --ink-faint: #766f60;
+    --gold: #c9a24b;
+    --gold-bright: #e4c285;
+    --gold-dim: rgba(201,162,75,.28);
+    --blue-structure: #8ea3b8;
+    --line: #2c2618;
+    --radius: 2px;
+    --ease: cubic-bezier(.16,1,.3,1);
+    --font-display: 'Cinzel', serif;
+    --font-body: 'Josefin Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+  }
+  img, svg { max-width: 100%; display: block; }
+  a { color: inherit; }
+  .container { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+  .eyebrow {
+    display: inline-block; font-family: var(--font-body); font-weight: 600;
+    letter-spacing: .28em; text-transform: uppercase; font-size: .72rem;
+    color: var(--gold); margin-bottom: 18px;
+  }
+  h1, h2, h3 {
+    font-family: var(--font-display); font-weight: 500; color: var(--ink);
+    letter-spacing: .01em;
+  }
+  .skip-link {
+    position: absolute; left: -999px; top: 0; background: var(--gold); color: #0b0906;
+    padding: 12px 20px; z-index: 300; font-weight: 700;
+  }
+  .skip-link:focus { left: 12px; top: 12px; }
+  :focus-visible { outline: 2px solid var(--gold-bright); outline-offset: 3px; }
+
+  /* ---------- Header ---------- */
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    background: linear-gradient(to bottom, rgba(11,9,6,.92), rgba(11,9,6,0));
+    backdrop-filter: blur(6px);
+    transition: background .3s var(--ease);
+  }
+  header.scrolled { background: rgba(11,9,6,.88); box-shadow: 0 1px 0 var(--line); }
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 0;
+  }
+  .logo {
+    font-family: var(--font-display); font-size: 1.05rem; letter-spacing: .22em;
+    text-decoration: none; color: var(--ink); text-transform: uppercase;
+  }
+  .logo span { color: var(--gold); }
+  .nav-links {
+    display: flex; gap: 40px; list-style: none; font-size: .85rem;
+    letter-spacing: .04em;
+  }
+  .nav-links a {
+    text-decoration: none; color: var(--ink-dim); transition: color .25s var(--ease);
+    position: relative; padding-bottom: 4px;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; left: 0; right: 100%; bottom: 0; height: 1px;
+    background: var(--gold); transition: right .3s var(--ease);
+  }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-links a:hover::after { right: 0; }
+  .nav-cta {
+    border: 1px solid var(--gold); color: var(--gold); padding: 11px 24px;
+    font-size: .8rem; letter-spacing: .08em; text-decoration: none; white-space: nowrap;
+    transition: background .25s var(--ease), color .25s var(--ease);
+  }
+  .nav-cta:hover { background: var(--gold); color: #0b0906; }
+  .nav-toggle {
+    display: none; background: none; border: 1px solid var(--line); color: var(--ink);
+    width: 44px; height: 44px; align-items: center; justify-content: center; cursor: pointer;
+  }
+  .nav-toggle svg { width: 20px; height: 20px; }
+
+  @media (max-width: 860px) {
+    .nav-links { display: none; }
+    .nav-cta { display: none; }
+    .nav-toggle { display: flex; }
+    .mobile-menu {
+      position: fixed; inset: 0; background: var(--bg); z-index: 190;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 28px; transform: translateY(-100%); transition: transform .35s var(--ease);
+    }
+    .mobile-menu.open { transform: translateY(0); }
+    .mobile-menu a {
+      font-family: var(--font-display); font-size: 1.4rem; text-decoration: none; color: var(--ink);
+      letter-spacing: .05em;
+    }
+    .mobile-menu .nav-cta { display: inline-block; margin-top: 12px; }
+  }
+
+  /* ---------- Hero / Parallax deconstruction ---------- */
+  .hero-pin {
+    position: relative;
+    height: 340vh;
+  }
+  .hero-stage {
+    position: sticky; top: 0; height: 100vh; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(ellipse at 50% 30%, #171208 0%, var(--bg) 65%);
+  }
+  .hero-glow {
+    position: absolute; width: 60vw; height: 60vw; max-width: 700px; max-height: 700px;
+    border-radius: 50%; background: radial-gradient(circle, var(--gold-dim), transparent 70%);
+    filter: blur(10px); pointer-events: none; will-change: transform;
+  }
+  .hero-illustration {
+    position: relative; width: min(60vw, 560px); aspect-ratio: 4/3;
+    z-index: 2; transform: translateY(20%);
+  }
+  .hero-illustration svg { width: 100%; height: 100%; overflow: visible; }
+  .peel-layer { transition: none; will-change: transform, opacity; }
+  .hero-copy {
+    position: absolute; z-index: 5; text-align: center; padding: 48px 32px 40px;
+    max-width: 760px; left: 50%; top: 8%; transform: translateX(-50%);
+    background: radial-gradient(ellipse 70% 100% at 50% 40%, rgba(11,9,6,.82) 0%, rgba(11,9,6,.55) 65%, transparent 100%);
+  }
+  .hero-copy h1 {
+    font-size: clamp(2rem, 5vw, 3.4rem); line-height: 1.18; margin-bottom: 22px;
+    text-transform: uppercase; letter-spacing: .02em;
+  }
+  .hero-copy p {
+    color: var(--ink-dim); font-size: 1.05rem; max-width: 46ch; margin: 0 auto 30px;
+  }
+  .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px; padding: 15px 30px;
+    font-size: .82rem; letter-spacing: .1em; text-transform: uppercase; text-decoration: none;
+    border: 1px solid transparent; cursor: pointer; transition: transform .2s var(--ease), background .25s var(--ease), border-color .25s var(--ease), color .25s var(--ease);
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-primary { background: var(--gold); color: #0b0906; }
+  .btn-primary:hover { background: var(--gold-bright); }
+  .btn-ghost { border-color: var(--ink-faint); color: var(--ink); }
+  .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+  .hero-caption {
+    position: absolute; bottom: 9%; left: 50%; transform: translateX(-50%);
+    z-index: 5; text-align: center; width: 100%; padding: 0 24px;
+  }
+  .hero-caption-track { position: relative; height: 1.6em; }
+  .hero-caption-item {
+    position: absolute; inset: 0; opacity: 0; transition: opacity .5s var(--ease);
+    font-family: var(--font-display); font-size: 1rem; letter-spacing: .08em;
+    color: var(--ink-dim); text-transform: uppercase;
+  }
+  .hero-caption-item.active { opacity: 1; }
+  .hero-scroll-cue {
+    position: absolute; bottom: 3%; left: 50%; transform: translateX(-50%); z-index: 5;
+    font-size: .7rem; letter-spacing: .2em; color: var(--ink-faint); text-transform: uppercase;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .hero-scroll-cue span { width: 1px; height: 34px; background: linear-gradient(var(--gold), transparent); animation: cue 1.8s ease-in-out infinite; }
+  @keyframes cue { 0%,100% { opacity: .2; } 50% { opacity: 1; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-pin { height: auto; }
+    .hero-stage { position: relative; height: 92vh; }
+    .hero-scroll-cue span { animation: none; }
+  }
+  @media (max-width: 640px) {
+    .hero-pin { height: 240vh; }
+    .hero-illustration { width: 74vw; transform: translateY(28%); }
+    .hero-copy { padding: 28px 20px 24px; }
+  }
+
+  /* ---------- Stats ---------- */
+  .stats {
+    background: var(--bg-alt); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    padding: 56px 0;
+  }
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; text-align: center;
+  }
+  .stat-value {
+    font-family: var(--font-display); font-size: clamp(1.6rem, 3vw, 2.3rem); color: var(--gold-bright);
+  }
+  .stat-label { color: var(--ink-dim); font-size: .82rem; letter-spacing: .04em; margin-top: 8px; }
+  .stats-note { text-align: center; color: var(--ink-faint); font-size: .74rem; margin-top: 28px; }
+  @media (max-width: 760px) { .stats-grid { grid-template-columns: repeat(2, 1fr); row-gap: 36px; } }
+
+  /* ---------- Section shell ---------- */
+  section { padding: 120px 0; }
+  .section-head { max-width: 640px; margin-bottom: 64px; }
+  .section-head.center { margin-left: auto; margin-right: auto; text-align: center; }
+  .section-head h2 { font-size: clamp(1.7rem, 3vw, 2.3rem); text-transform: uppercase; }
+  .section-head p { color: var(--ink-dim); margin-top: 18px; font-size: 1rem; }
+
+  /* ---------- Parceiros ---------- */
+  .partners-strip {
+    display: flex; flex-wrap: wrap; gap: 14px; justify-content: center;
+  }
+  .partner-chip {
+    border: 1px solid var(--line); padding: 12px 22px; font-size: .82rem;
+    letter-spacing: .06em; color: var(--ink-dim); text-transform: uppercase;
+  }
+
+  /* ---------- Como funciona ---------- */
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
+  .step { border-top: 1px solid var(--line); padding-top: 26px; }
+  .step-num { font-family: var(--font-display); color: var(--gold); font-size: 1.1rem; }
+  .step h3 { font-size: 1.05rem; margin: 14px 0 10px; text-transform: uppercase; letter-spacing: .04em; }
+  .step p { color: var(--ink-dim); font-size: .92rem; }
+  @media (max-width: 860px) { .steps { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 520px) { .steps { grid-template-columns: 1fr; } }
+
+  /* ---------- Financiamento ---------- */
+  .finance {
+    background: var(--bg-alt); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  }
+  .finance-grid {
+    display: grid; grid-template-columns: 1.1fr .9fr; gap: 64px; align-items: center;
+  }
+  .finance-card {
+    border: 1px solid var(--gold-dim); background: var(--bg-card); padding: 40px;
+  }
+  .finance-card .partner-of { color: var(--ink-faint); font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 8px; }
+  .finance-card strong { font-family: var(--font-display); font-size: 1.3rem; color: var(--gold-bright); display: block; margin-bottom: 16px; }
+  .finance-card p { color: var(--ink-dim); font-size: .92rem; }
+  @media (max-width: 860px) { .finance-grid { grid-template-columns: 1fr; gap: 40px; } }
+
+  /* ---------- Galeria ---------- */
+  .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .gallery-card {
+    position: relative; aspect-ratio: 3/4; overflow: hidden; border: 1px solid var(--line);
+    background: linear-gradient(160deg, var(--bg-card), var(--bg-alt));
+  }
+  .gallery-card svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .8; transition: opacity .4s var(--ease), transform .5s var(--ease); }
+  .gallery-card:hover svg { opacity: 1; transform: scale(1.04); }
+  .gallery-caption {
+    position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 20px;
+    background: linear-gradient(to top, rgba(11,9,6,.92), transparent);
+  }
+  .gallery-caption .place { font-family: var(--font-display); color: var(--ink); font-size: 1rem; }
+  .gallery-caption .tag { color: var(--gold); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; }
+  .gallery-note { color: var(--ink-faint); font-size: .78rem; margin-top: 20px; }
+  @media (max-width: 860px) { .gallery { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .gallery { grid-template-columns: 1fr; } }
+
+  /* ---------- Depoimento ---------- */
+  .testimonial { background: var(--bg-alt); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .testimonial-inner { max-width: 780px; margin: 0 auto; text-align: center; }
+  .testimonial blockquote {
+    font-family: var(--font-display); font-size: clamp(1.3rem, 2.6vw, 1.9rem); line-height: 1.5;
+    color: var(--ink); font-weight: 400;
+  }
+  .testimonial cite {
+    display: block; margin-top: 26px; font-style: normal; color: var(--gold);
+    font-size: .82rem; letter-spacing: .08em; text-transform: uppercase;
+  }
+  .testimonial .example-tag { display:block; margin-top:10px; color: var(--ink-faint); font-size: .72rem; letter-spacing: .04em; }
+
+  /* ---------- CTA final ---------- */
+  .final-cta { text-align: center; }
+  .final-cta h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); text-transform: uppercase; margin-bottom: 24px; }
+  .final-cta p { color: var(--ink-dim); max-width: 50ch; margin: 0 auto 34px; }
+
+  /* ---------- Contato / Footer ---------- */
+  footer { border-top: 1px solid var(--line); padding: 80px 0 40px; }
+  .footer-grid { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 48px; margin-bottom: 56px; }
+  .footer-brand .logo { display: inline-block; margin-bottom: 16px; }
+  .footer-brand p { color: var(--ink-dim); font-size: .9rem; max-width: 34ch; }
+  .footer-col h4 { font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); margin-bottom: 18px; }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .footer-col a { text-decoration: none; color: var(--ink-dim); font-size: .9rem; transition: color .2s var(--ease); }
+  .footer-col a:hover { color: var(--ink); }
+  .footer-example { color: var(--ink-faint); font-size: .72rem; }
+  .footer-bottom {
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    padding-top: 28px; border-top: 1px solid var(--line);
+    color: var(--ink-faint); font-size: .78rem;
+  }
+  @media (max-width: 760px) { .footer-grid { grid-template-columns: 1fr; gap: 36px; } }
+
+  /* ---------- WhatsApp float ---------- */
+  .wa-float {
+    position: fixed; bottom: 26px; right: 26px; z-index: 150;
+    width: 58px; height: 58px; border-radius: 50%; background: var(--gold);
+    display: flex; align-items: center; justify-content: center; text-decoration: none;
+    box-shadow: 0 8px 24px rgba(0,0,0,.4); transition: transform .2s var(--ease), background .2s var(--ease);
+  }
+  .wa-float:hover { transform: translateY(-3px); background: var(--gold-bright); }
+  .wa-float svg { width: 26px; height: 26px; fill: #0b0906; }
+
+  /* ---------- Reveal on scroll ---------- */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s var(--ease), transform .6s var(--ease); }
+  .reveal.in-view { opacity: 1; transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+<header id="site-header">
+  <nav class="nav container" aria-label="Navegação principal">
+    <a href="#topo" class="logo">Arquite<span>tool</span></a>
+    <ul class="nav-links">
+      <li><a href="#filosofia">Filosofia</a></li>
+      <li><a href="#como-funciona">Como funciona</a></li>
+      <li><a href="#financiamento">Financiamento</a></li>
+      <li><a href="#galeria">Portfólio</a></li>
+      <li><a href="#depoimentos">Depoimentos</a></li>
+    </ul>
+    <a class="nav-cta" href="#contato">Fale conosco</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobileMenu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </nav>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#filosofia">Filosofia</a>
+  <a href="#como-funciona">Como funciona</a>
+  <a href="#financiamento">Financiamento</a>
+  <a href="#galeria">Portfólio</a>
+  <a href="#depoimentos">Depoimentos</a>
+  <a class="nav-cta" href="#contato">Fale conosco</a>
+</div>
+
+<main id="conteudo">
+
+  <div id="topo"></div>
+
+  <!-- HERO / PARALLAX DE DESCONSTRUÇÃO -->
+  <section class="hero-pin" id="hero" aria-label="Abertura">
+    <div class="hero-stage">
+      <div class="hero-glow" id="heroGlow" aria-hidden="true"></div>
+
+      <div class="hero-illustration" aria-hidden="true">
+        <svg viewBox="0 0 800 600" role="img" aria-label="Ilustração de um interior se desconstruindo em camadas, do acabamento à estrutura">
+          <!-- STRUCTURE (base, always visible) -->
+          <g id="layerStructure" stroke="#8ea3b8" stroke-width="1.6" fill="none" opacity=".85">
+            <rect x="120" y="80" width="560" height="440" />
+            <line x1="120" y1="220" x2="680" y2="220" />
+            <line x1="120" y1="360" x2="680" y2="360" />
+            <line x1="300" y1="80" x2="300" y2="520" />
+            <line x1="480" y1="80" x2="480" y2="520" />
+            <circle cx="180" cy="150" r="3" fill="#8ea3b8" stroke="none"/>
+            <circle cx="240" cy="150" r="3" fill="#8ea3b8" stroke="none"/>
+            <circle cx="360" cy="150" r="3" fill="#8ea3b8" stroke="none"/>
+            <circle cx="420" cy="150" r="3" fill="#8ea3b8" stroke="none"/>
+            <circle cx="540" cy="150" r="3" fill="#8ea3b8" stroke="none"/>
+            <circle cx="600" cy="150" r="3" fill="#8ea3b8" stroke="none"/>
+          </g>
+
+          <!-- MEP (technical layer) -->
+          <g id="layerMep" stroke="#c9a24b" stroke-width="1.2" fill="none" opacity=".9">
+            <path d="M160 500 L160 260 L340 260 L340 120" />
+            <path d="M640 500 L640 300 L500 300 L500 120" stroke-dasharray="2 6"/>
+            <rect x="150" y="490" width="24" height="24" />
+            <circle cx="340" cy="120" r="6" />
+            <circle cx="500" cy="120" r="6" />
+          </g>
+
+          <!-- WALLS (partitions) -->
+          <g id="layerWalls" stroke="#e9e2d2" stroke-width="2" fill="none" opacity=".95">
+            <line x1="300" y1="220" x2="300" y2="360" />
+            <line x1="480" y1="220" x2="480" y2="360" />
+            <path d="M120 360 L260 360" />
+            <path d="M340 360 L440 360" />
+            <path d="M520 360 L680 360" />
+          </g>
+
+          <!-- FINISH (furniture, warm, topmost) -->
+          <g id="layerFinish">
+            <ellipse cx="220" cy="470" rx="70" ry="14" fill="#c9a24b" opacity=".18"/>
+            <rect x="160" y="410" width="120" height="55" rx="6" fill="#e4c285" opacity=".85"/>
+            <rect x="150" y="440" width="18" height="30" rx="4" fill="#e4c285" opacity=".6"/>
+            <rect x="272" y="440" width="18" height="30" rx="4" fill="#e4c285" opacity=".6"/>
+            <circle cx="430" cy="300" r="46" fill="none" stroke="#e4c285" stroke-width="2" opacity=".8"/>
+            <line x1="430" y1="254" x2="430" y2="230" stroke="#e4c285" stroke-width="2" opacity=".8"/>
+            <rect x="540" y="420" width="90" height="14" rx="3" fill="#e4c285" opacity=".7"/>
+            <line x1="555" y1="434" x2="555" y2="466" stroke="#e4c285" stroke-width="3" opacity=".7"/>
+            <line x1="615" y1="434" x2="615" y2="466" stroke="#e4c285" stroke-width="3" opacity=".7"/>
+            <path d="M560 220 Q580 140 600 220" fill="none" stroke="#e4c285" stroke-width="2" opacity=".6"/>
+            <circle cx="580" cy="215" r="4" fill="#e4c285" opacity=".8"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="hero-copy">
+        <span class="eyebrow">Curadoria de reformas de alto padrão</span>
+        <h1>A obra é nossa.<br>O resultado é seu.</h1>
+        <p>Conectamos você, profissionais de confiança e os melhores fornecedores em um único processo — transparente, sob medida e sem imprevistos.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#contato">Fale com um especialista</a>
+          <a class="btn btn-ghost" href="#contato">Solicitar orçamento</a>
+        </div>
+      </div>
+
+      <div class="hero-caption">
+        <div class="hero-caption-track">
+          <span class="hero-caption-item active" data-stage="0">O acabamento encanta.</span>
+          <span class="hero-caption-item" data-stage="1">Mas a obra começa muito antes.</span>
+          <span class="hero-caption-item" data-stage="2">Cada instalação, planejada.</span>
+          <span class="hero-caption-item" data-stage="3">Cuidamos da estrutura inteira — do projeto à entrega.</span>
+        </div>
+      </div>
+
+      <div class="hero-scroll-cue"><span></span>Role para ver</div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats reveal" aria-label="Números">
+    <div class="container">
+      <div class="stats-grid">
+        <div>
+          <div class="stat-value">20%</div>
+          <div class="stat-label">Execução mais rápida</div>
+        </div>
+        <div>
+          <div class="stat-value">18%</div>
+          <div class="stat-label">De economia média</div>
+        </div>
+        <div>
+          <div class="stat-value" data-count="300">0</div>
+          <div class="stat-label">Obras geridas*</div>
+        </div>
+        <div>
+          <div class="stat-value">4,9/5,0</div>
+          <div class="stat-label">Avaliação média*</div>
+        </div>
+      </div>
+      <p class="stats-note">*Números ilustrativos deste redesign de conceito — a validar com dados reais do cliente.</p>
+    </div>
+  </section>
+
+  <!-- FILOSOFIA / PARCEIROS -->
+  <section id="filosofia">
+    <div class="container">
+      <div class="section-head reveal center">
+        <span class="eyebrow">Nossa filosofia</span>
+        <h2>Exclusividade é não ter que escolher entre <em>rigor</em> e <em>bom gosto</em></h2>
+        <p>Selecionamos profissionais e fornecedores homologados para que cada etapa da sua reforma — do projeto à entrega — siga um padrão que você não precisa fiscalizar.</p>
+      </div>
+      <div class="partners-strip reveal">
+        <span class="partner-chip">Leroy Merlin</span>
+        <span class="partner-chip">Deca</span>
+        <span class="partner-chip">Dexco</span>
+        <span class="partner-chip">Tarkett</span>
+        <span class="partner-chip">Hydra</span>
+        <span class="partner-chip">Telhanorte</span>
+        <span class="partner-chip">Westwing</span>
+        <span class="partner-chip">Qubo</span>
+        <span class="partner-chip">Arqtab</span>
+        <span class="partner-chip">Área Elétrica</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMO FUNCIONA -->
+  <section id="como-funciona">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Como funciona</span>
+        <h2>Um processo, quatro etapas</h2>
+      </div>
+      <div class="steps reveal">
+        <div class="step">
+          <span class="step-num">01</span>
+          <h3>Planejamento</h3>
+          <p>Escopo, cronograma e orçamento definidos antes do primeiro martelo — sem surpresas no meio do caminho.</p>
+        </div>
+        <div class="step">
+          <span class="step-num">02</span>
+          <h3>Conexão</h3>
+          <p>Profissionais e fornecedores homologados, escolhidos para o seu projeto específico.</p>
+        </div>
+        <div class="step">
+          <span class="step-num">03</span>
+          <h3>Gerenciamento</h3>
+          <p>Acompanhamento contínuo do andamento da obra, com transparência sobre cada etapa.</p>
+        </div>
+        <div class="step">
+          <span class="step-num">04</span>
+          <h3>Entrega</h3>
+          <p>Vistoria final e entrega dentro do que foi combinado — no prazo e no padrão prometido.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINANCIAMENTO -->
+  <section class="finance" id="financiamento">
+    <div class="container finance-grid">
+      <div class="reveal">
+        <span class="eyebrow">Financiamento</span>
+        <h2>Sua reforma financiada. Pagamento sem risco.</h2>
+        <p style="color:var(--ink-dim); margin-top:20px; max-width:52ch;">Através da nossa parceria com a Creditas, você pode parcelar o valor da sua reforma com condições especiais — sem entrada alta e sem burocracia. Seu dinheiro só é liberado quando você aprova.</p>
+      </div>
+      <div class="finance-card reveal">
+        <span class="partner-of">Parceiro oficial</span>
+        <strong>Creditas</strong>
+        <p>Crédito com garantia de imóvel, pensado para reformas de alto padrão — condições avaliadas caso a caso.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALERIA (conceitual, não fotos reais) -->
+  <section id="galeria">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Portfólio</span>
+        <h2>Projetos conduzidos com rigor</h2>
+      </div>
+      <div class="gallery reveal">
+        <div class="gallery-card">
+          <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><rect width="300" height="400" fill="#1b1610"/><g stroke="#c9a24b" stroke-width="1" fill="none" opacity=".7"><rect x="40" y="60" width="220" height="280"/><line x1="40" y1="180" x2="260" y2="180"/><line x1="150" y1="60" x2="150" y2="340"/></g></svg>
+          <div class="gallery-caption"><span class="tag">Conceito</span><div class="place">Apartamento — Jardins</div></div>
+        </div>
+        <div class="gallery-card">
+          <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><rect width="300" height="400" fill="#1b1610"/><g stroke="#e4c285" stroke-width="1" fill="none" opacity=".7"><circle cx="150" cy="180" r="90"/><line x1="60" y1="320" x2="240" y2="320"/></g></svg>
+          <div class="gallery-caption"><span class="tag">Conceito</span><div class="place">Cobertura — Itaim Bibi</div></div>
+        </div>
+        <div class="gallery-card">
+          <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><rect width="300" height="400" fill="#1b1610"/><g stroke="#8ea3b8" stroke-width="1" fill="none" opacity=".7"><rect x="70" y="90" width="160" height="220"/><line x1="70" y1="150" x2="230" y2="150"/><line x1="70" y1="250" x2="230" y2="250"/></g></svg>
+          <div class="gallery-caption"><span class="tag">Conceito</span><div class="place">Studio — Pinheiros</div></div>
+        </div>
+      </div>
+      <p class="gallery-note">Composições gráficas ilustrativas deste redesign de conceito — não são fotografias de obras reais.</p>
+    </div>
+  </section>
+
+  <!-- DEPOIMENTO -->
+  <section class="testimonial" id="depoimentos">
+    <div class="container testimonial-inner reveal">
+      <blockquote>"A obra do nosso apartamento terminou antes do previsto. Nunca imaginei que reformar pudesse ser tão tranquilo."</blockquote>
+      <cite>Cliente Arquitetool — São Paulo</cite>
+      <span class="example-tag">Depoimento ilustrativo, adaptado para este redesign de conceito.</span>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="final-cta">
+    <div class="container reveal">
+      <h2>Comece pela conversa certa</h2>
+      <p>Conte o que você tem em mente. Um especialista responde com os próximos passos — sem compromisso.</p>
+      <a class="btn btn-primary" href="#contato">Fale com um especialista</a>
+    </div>
+  </section>
+
+</main>
+
+<footer id="contato">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#topo" class="logo">Arquite<span>tool</span></a>
+        <p>A obra é nossa. O resultado é seu. Curadoria de reformas para quem não abre mão de rigor e exclusividade.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Contato</h4>
+        <ul>
+          <li>(11) 0000-0000 <span class="footer-example">— exemplo</span></li>
+          <li>contato@exemplo.com.br <span class="footer-example">— exemplo</span></li>
+          <li><a href="#">Política de privacidade</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Redes</h4>
+        <ul>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">LinkedIn</a></li>
+          <li><a href="#">Facebook</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Arquitetool — redesign de conceito não-oficial, sem afiliação com a empresa real.</span>
+      <span>Feito com curadoria.</span>
+    </div>
+  </div>
+</footer>
+
+<a class="wa-float" id="waFloat" href="#" aria-label="Falar no WhatsApp (número de exemplo)" target="_blank" rel="noopener">
+  <svg viewBox="0 0 32 32"><path d="M16 3C9 3 3.3 8.6 3.3 15.5c0 2.7.8 5.2 2.2 7.3L3 29l6.4-2.4c2 1.1 4.3 1.7 6.6 1.7 7 0 12.7-5.6 12.7-12.5C28.7 8.6 23 3 16 3zm0 22.7c-2.1 0-4.1-.6-5.8-1.6l-.4-.2-3.8 1.4 1.4-3.7-.3-.4a10.1 10.1 0 0 1-1.8-5.7c0-5.6 4.7-10.2 10.7-10.2s10.7 4.6 10.7 10.2S22 25.7 16 25.7zm5.9-7.6c-.3-.2-1.9-.9-2.2-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7.1a8.7 8.7 0 0 1-2.5-1.5 9.3 9.3 0 0 1-1.7-2.1c-.2-.3 0-.5.1-.6l.5-.6c.2-.2.2-.3.3-.5s0-.4 0-.5-.7-1.7-1-2.3-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4a3.6 3.6 0 0 0-1.1 2.7c0 1.6 1.1 3.1 1.3 3.3s2.2 3.4 5.3 4.7c.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.9-.8 2.1-1.5s.3-1.4.2-1.5-.3-.2-.6-.3z"/></svg>
+</a>
+
+<script>
+(function () {
+  "use strict";
+  var WHATSAPP_NUMBER = "5511900000000"; // exemplo — trocar pelo número real (formato 55DDDNUMERO)
+  var waLink = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent("Olá! Vi o site da Arquitetool e gostaria de saber mais.");
+  document.getElementById("waFloat").href = waLink;
+  document.querySelectorAll('a[href="#contato"].btn').forEach(function (a) {
+    // CTAs levam à seção de contato da própria página, não a um domínio externo real.
+  });
+
+  var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- Header background on scroll ---------- */
+  var header = document.getElementById("site-header");
+  function onHeaderScroll() {
+    header.classList.toggle("scrolled", window.scrollY > 40);
+  }
+  document.addEventListener("scroll", onHeaderScroll, { passive: true });
+
+  /* ---------- Mobile menu ---------- */
+  var navToggle = document.getElementById("navToggle");
+  var mobileMenu = document.getElementById("mobileMenu");
+  navToggle.addEventListener("click", function () {
+    var open = mobileMenu.classList.toggle("open");
+    navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+  mobileMenu.querySelectorAll("a").forEach(function (a) {
+    a.addEventListener("click", function () {
+      mobileMenu.classList.remove("open");
+      navToggle.setAttribute("aria-expanded", "false");
+    });
+  });
+
+  /* ---------- Hero deconstruction scroll-scrub ---------- */
+  var heroPin = document.getElementById("hero");
+  var glow = document.getElementById("heroGlow");
+  var captions = document.querySelectorAll(".hero-caption-item");
+  var layers = [
+    { el: document.getElementById("layerFinish"), start: 0, end: .24 },
+    { el: document.getElementById("layerWalls"), start: .2, end: .46 },
+    { el: document.getElementById("layerMep"), start: .42, end: .68 }
+  ];
+  var structureLayer = document.getElementById("layerStructure");
+
+  function clamp01(v) { return Math.min(Math.max(v, 0), 1); }
+
+  function activeStage(progress) {
+    if (progress < .24) return 0;
+    if (progress < .46) return 1;
+    if (progress < .68) return 2;
+    return 3;
+  }
+
+  var ticking = false;
+  function updateHero() {
+    ticking = false;
+    var rect = heroPin.getBoundingClientRect();
+    var total = heroPin.offsetHeight - window.innerHeight;
+    if (total <= 0) return;
+    var scrolled = -rect.top;
+    var progress = clamp01(scrolled / total);
+
+    layers.forEach(function (layer) {
+      var local = clamp01((progress - layer.start) / (layer.end - layer.start));
+      var opacity = 1 - local;
+      layer.el.style.opacity = opacity;
+      layer.el.style.transform = "translateY(" + (-local * 26) + "px) scale(" + (1 - local * .04) + ")";
+    });
+
+    if (structureLayer) {
+      structureLayer.style.opacity = .85 + progress * .15;
+    }
+
+    if (glow) {
+      glow.style.transform = "translateY(" + (progress * -40) + "px) scale(" + (1 + progress * .15) + ")";
+    }
+
+    var stage = activeStage(progress);
+    captions.forEach(function (c) {
+      c.classList.toggle("active", Number(c.dataset.stage) === stage);
+    });
+  }
+
+  function onScroll() {
+    if (!ticking && !reducedMotion) {
+      window.requestAnimationFrame(updateHero);
+      ticking = true;
+    }
+  }
+
+  if (!reducedMotion) {
+    document.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    updateHero();
+  }
+
+  /* ---------- Reveal on scroll (sections) ---------- */
+  var revealEls = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in-view");
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: .15 });
+    revealEls.forEach(function (el) { io.observe(el); });
+  } else {
+    revealEls.forEach(function (el) { el.classList.add("in-view"); });
+  }
+
+  /* ---------- Stat counter ---------- */
+  var counters = document.querySelectorAll("[data-count]");
+  function animateCounter(el) {
+    var target = Number(el.dataset.count);
+    var duration = 1200;
+    var startTime = null;
+    function step(ts) {
+      if (!startTime) startTime = ts;
+      var p = clamp01((ts - startTime) / duration);
+      el.textContent = "+" + Math.floor(p * target);
+      if (p < 1) window.requestAnimationFrame(step);
+      else el.textContent = "+" + target;
+    }
+    window.requestAnimationFrame(step);
+  }
+  if ("IntersectionObserver" in window && counters.length) {
+    var counterIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          animateCounter(entry.target);
+          counterIO.unobserve(entry.target);
+        }
+      });
+    }, { threshold: .6 });
+    counters.forEach(function (el) { counterIO.observe(el); });
+  }
+})();
+</script>
+
+</body>
+</html>
