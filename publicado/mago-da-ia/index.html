@@ -305,12 +305,23 @@
   @media (max-width: 780px) { .project-card.featured { grid-column: span 1; } }
 
   .project-media {
-    position: relative; padding: 0; min-height: 150px; overflow: hidden;
+    position: relative; padding: 0; min-height: 190px; overflow: hidden;
     background: radial-gradient(600px 200px at 0% 0%, var(--accent-soft), transparent 60%), linear-gradient(160deg, var(--surface-2), var(--surface-3));
     border-bottom: 1px solid var(--border);
     display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); padding: var(--space-4);
   }
-  .project-media .icon { width: 30px; height: 30px; stroke: var(--accent-text); opacity: 0.85; }
+  .project-shot {
+    position: absolute; top: 0; left: 0; width: 100%; height: 145%; object-fit: cover; object-position: top center;
+    opacity: 0.8; transform: translateY(0); animation: shotPan 16s ease-in-out infinite alternate;
+  }
+  .project-card:nth-child(even) .project-shot { animation-duration: 19s; }
+  .project-media::after {
+    content: ""; position: absolute; inset: 0; z-index: 1;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--bg) 20%, transparent) 0%, color-mix(in srgb, var(--surface) 88%, transparent) 78%, var(--surface) 100%);
+  }
+  @keyframes shotPan { from { transform: translateY(0); } to { transform: translateY(-23%); } }
+  .project-media .icon, .project-media .badge { position: relative; z-index: 2; }
+  .project-media .icon { width: 30px; height: 30px; stroke: var(--accent-text); opacity: 0.85; filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5)); }
   .project-body { padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-3); flex: 1; }
   .project-body h3 { font-size: 1.2rem; font-weight: 700; position: relative; overflow: hidden; padding: 2px 4px; margin: -2px -4px; width: fit-content; }
   .project-body h3 .tt { position: relative; z-index: 2; transition: color 0.3s ease; }
@@ -686,6 +697,7 @@
 
         <article class="project-card featured">
           <div class="project-media">
+            <img class="project-shot" src="assets/projects/vigia-obra.jpg" alt="" loading="lazy" />
             <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><circle cx="12" cy="13.5" r="4"/><path d="M8 7l1.5-2.5h5L16 7"/></svg>
             <span class="badge">Destaque</span>
           </div>
@@ -696,7 +708,7 @@
               <span class="tag">Pipeline assistivo</span><span class="tag">Visão computacional</span><span class="tag">Claude Vision</span>
             </div>
             <div class="project-footer">
-              <a class="project-link" href="../vigia-obra-frontend/index.html" target="_blank" rel="noopener">
+              <a class="project-link" href="vigia-obra-frontend/index.html" target="_blank" rel="noopener">
                 Ver interface
                 <svg class="icon" viewBox="0 0 24 24"><path d="M14 4h6v6"/><line x1="20" y1="4" x2="11" y2="13"/><path d="M20 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1h5"/></svg>
               </a>
@@ -706,6 +718,7 @@
 
         <article class="project-card">
           <div class="project-media">
+            <img class="project-shot" src="assets/projects/diario-de-obra.jpg" alt="" loading="lazy" />
             <svg class="icon" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg>
           </div>
           <div class="project-body">
@@ -713,7 +726,7 @@
             <p>Registro diário de atividades, clima, mão de obra e ocorrências — classificadas por severidade, com fluxo de rascunho até assinatura.</p>
             <div class="tag-row"><span class="tag">Protótipo</span></div>
             <div class="project-footer">
-              <a class="project-link" href="../diario-de-obra/index.html" target="_blank" rel="noopener">
+              <a class="project-link" href="diario-de-obra/index.html" target="_blank" rel="noopener">
                 Ver demonstração
                 <svg class="icon" viewBox="0 0 24 24"><path d="M14 4h6v6"/><line x1="20" y1="4" x2="11" y2="13"/><path d="M20 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1h5"/></svg>
               </a>
@@ -723,6 +736,7 @@
 
         <article class="project-card">
           <div class="project-media">
+            <img class="project-shot" src="assets/projects/checklist-de-obra.jpg" alt="" loading="lazy" />
             <svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
           </div>
           <div class="project-body">
@@ -730,7 +744,7 @@
             <p>Checklist item a item com comparação de fotos "antes/depois" de reparos — gera comparativo pronto para compartilhar com o cliente.</p>
             <div class="tag-row"><span class="tag">Protótipo</span></div>
             <div class="project-footer">
-              <a class="project-link" href="../checklist-de-obra/index.html" target="_blank" rel="noopener">
+              <a class="project-link" href="checklist-de-obra/index.html" target="_blank" rel="noopener">
                 Ver demonstração
                 <svg class="icon" viewBox="0 0 24 24"><path d="M14 4h6v6"/><line x1="20" y1="4" x2="11" y2="13"/><path d="M20 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1h5"/></svg>
               </a>
@@ -740,6 +754,7 @@
 
         <article class="project-card">
           <div class="project-media">
+            <img class="project-shot" src="assets/projects/painel-obra.jpg" alt="" loading="lazy" />
             <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="18" x2="12" y2="21"/></svg>
           </div>
           <div class="project-body">
@@ -747,7 +762,7 @@
             <p>Aplicativo local para Windows com publicação manual de um painel público, somente leitura, com metas e itens em aberto.</p>
             <div class="tag-row"><span class="tag">MVP</span><span class="tag">Publicação estática</span></div>
             <div class="project-footer">
-              <a class="project-link" href="../painel-obra/index.html" target="_blank" rel="noopener">
+              <a class="project-link" href="painel-obra/index.html" target="_blank" rel="noopener">
                 Ver painel público
                 <svg class="icon" viewBox="0 0 24 24"><path d="M14 4h6v6"/><line x1="20" y1="4" x2="11" y2="13"/><path d="M20 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1h5"/></svg>
               </a>
@@ -757,6 +772,7 @@
 
         <article class="project-card">
           <div class="project-media">
+            <img class="project-shot" src="assets/projects/agenda-retratil.jpg" alt="" loading="lazy" />
             <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
           </div>
           <div class="project-body">
@@ -764,7 +780,7 @@
             <p>Painel Windows local-first com metas, interpretação de compromissos em português e integração segura com Google Agenda.</p>
             <div class="tag-row"><span class="tag">MVP desktop</span></div>
             <div class="project-footer">
-              <a class="project-link" href="../agenda-retratil/index.html" target="_blank" rel="noopener">
+              <a class="project-link" href="agenda-retratil/index.html" target="_blank" rel="noopener">
                 Conhecer
                 <svg class="icon" viewBox="0 0 24 24"><path d="M14 4h6v6"/><line x1="20" y1="4" x2="11" y2="13"/><path d="M20 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1h5"/></svg>
               </a>
@@ -774,6 +790,7 @@
 
         <article class="project-card">
           <div class="project-media">
+            <img class="project-shot" src="assets/projects/sindico-inteligente.jpg" alt="" loading="lazy" />
             <svg class="icon" viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/></svg>
           </div>
           <div class="project-body">
@@ -781,7 +798,7 @@
             <p>Central operacional local para condomínios: documentos pesquisáveis com fontes, ocorrências, tarefas, comunicados e reservas sem conflito.</p>
             <div class="tag-row"><span class="tag">MVP desktop</span><span class="tag">Local-first</span></div>
             <div class="project-footer">
-              <a class="project-link" href="../sindico-inteligente/index.html" target="_blank" rel="noopener">
+              <a class="project-link" href="sindico-inteligente/index.html" target="_blank" rel="noopener">
                 Conhecer
                 <svg class="icon" viewBox="0 0 24 24"><path d="M14 4h6v6"/><line x1="20" y1="4" x2="11" y2="13"/><path d="M20 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1h5"/></svg>
               </a>
