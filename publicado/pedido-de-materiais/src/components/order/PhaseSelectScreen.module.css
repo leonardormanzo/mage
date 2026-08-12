@@ -1,0 +1,23 @@
+.page {
+  padding: var(--space-5) var(--space-4) calc(var(--space-9) + 64px);
+}
+
+.intro {
+  margin-bottom: var(--space-5);
+}
+
+.title {
+  font-size: var(--text-xl);
+  margin-bottom: 2px;
+}
+
+.subtitle {
+  color: var(--color-text-muted);
+  font-size: var(--text-base);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}

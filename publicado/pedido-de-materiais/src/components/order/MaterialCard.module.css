@@ -1,0 +1,75 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+
+.cardActive {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.icon {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-alt);
+  color: var(--color-primary-strong);
+}
+
+.info {
+  min-width: 0;
+}
+
+.name {
+  font-weight: 700;
+  font-size: var(--text-base);
+  color: var(--color-text);
+  line-height: var(--leading-tight);
+}
+
+.unit {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: 1px;
+}
+
+.inCartBadge {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--color-primary-strong);
+  background: var(--color-surface);
+  border-radius: var(--radius-pill);
+  padding: 4px var(--space-3);
+}
+
+.footer {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-3);
+}
+
+.footer > :first-child {
+  flex: 1;
+  min-width: 0;
+}
