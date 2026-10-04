@@ -50,6 +50,12 @@
   margin-top: 1px;
 }
 
+.brands {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
 .inCartBadge {
   display: inline-flex;
   align-self: flex-start;

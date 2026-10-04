@@ -1,5 +1,7 @@
 name = "mage"
+main = "_worker.js"
+account_id = "66d54d2baab42ea3a97379ef056d105a"
 compatibility_date = "2026-07-26"
 
 [assets]
-directory = "./"
+directory = "./publicado"

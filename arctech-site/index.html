@@ -1,0 +1,957 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arc[tech_] — Inteligência Artificial Prática para a Construção Civil</title>
+  <meta name="description" content="Conecte canteiro, gestão e cliente final com IA preditiva e automação prática via WhatsApp. Interface invisível, RDO automatizado e cronograma preditivo.">
+  <meta name="theme-color" content="#0B0D13">
+  <meta property="og:title" content="Arc[tech_] — A revolução da IA no canteiro de obras">
+  <meta property="og:description" content="Sem apps pesados nem burocracia manual. A inteligência artificial que transforma áudios e fotos de obra em RDOs e gestão imediata.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+
+  <!-- Fontes Google: Caveat (traço de croqui arquitetônico), Inter & DM Sans (UI moderna), Space Mono & VT323 (código/terminal) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Inter:wght@400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=VT323&display=swap" rel="stylesheet">
+  
+  <link rel="preload" href="assets/arctech-robot.webp" as="image" fetchpriority="high">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <!-- Fundo Parallax Dinâmico: Canvas de Partículas Interativas + Grid Arquitetônico Cinético -->
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+  <!-- Camadas Espaciais de Parallax Arquitetônico (VisionOS depth) -->
+  <div class="spatial-depth-layers" aria-hidden="true">
+    <div class="spatial-axis axis-x"></div>
+    <div class="spatial-axis axis-y"></div>
+    <div class="spatial-marker marker-tl mono">REF: 00-DATUM // +0.00M</div>
+    <div class="spatial-marker marker-tr mono">BIM_COORD: LAT -23.55 // LON -46.63</div>
+    <div class="spatial-marker marker-bl mono">EIXO ESTRUTURAL: W-18 // L2</div>
+    <div class="spatial-marker marker-br mono">IA_KERNEL: ACTIVE_SYNC // 60FPS</div>
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+  </div>
+
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo principal</a>
+
+  <!-- Header Flutuante Estilo VisionOS (Frosted Glass) -->
+  <header class="site-header">
+    <div class="header-inner container">
+      <a class="brand" href="#inicio" aria-label="Arctech — início">
+        <span class="brand-sketch">Arc</span><span class="brand-terminal">[tech<span class="cursor">_</span>]</span>
+      </a>
+
+      <nav id="main-nav" aria-label="Navegação principal">
+        <a href="#diferencial" class="nav-item">Interface Invisível</a>
+        <a href="#solucoes" class="nav-item">Ondas de Soluções</a>
+        <a href="#arquitetura" class="nav-item">Arquitetura RAG</a>
+        <a href="#planos" class="nav-item">Planos B2B</a>
+        <a href="#sobre" class="nav-item">Nossa Visão</a>
+      </nav>
+
+      <div class="header-actions">
+        <!-- Theme Toggle -->
+        <button id="theme-toggle" class="theme-button" type="button" aria-label="Alternar tema de cores" aria-pressed="true">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+
+        <!-- CTA Header: Interactive Hover Button -->
+        <a class="interactive-hover-btn btn-sm header-cta" data-contact href="https://wa.me/5511972554234" target="_blank" rel="noopener noreferrer">
+          <span class="btn-text">Falar no WhatsApp</span>
+          <div class="btn-hover-content">
+            <span>Falar agora</span>
+            <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+          <span class="btn-bubble"></span>
+        </a>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="menu-button" type="button" aria-label="Abrir menu de navegação" aria-expanded="false" aria-controls="main-nav">
+          <span class="bar bar-1"></span>
+          <span class="bar bar-2"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo">
+    <!-- HERO SECTION -->
+    <section class="hero" id="inicio" aria-labelledby="hero-title">
+      <div class="container hero-container">
+        <div class="hero-content">
+          <div class="kicker-badge">
+            <span class="badge-pulse"></span>
+            <span class="mono">CONTECH · CONSTRUÇÃO CIVIL & INTELIGÊNCIA ARTIFICIAL</span>
+          </div>
+
+          <h1 id="hero-title">
+            A próxima revolução<br>
+            é no <span class="sketch-accent">canteiro</span><br>
+            de <span class="highlight-text">obras<span class="red-dot">.</span></span>
+          </h1>
+
+          <p class="hero-lead">
+            Eliminamos a burocracia manual, a perda de dados e as surpresas de prazo e custo. Conectamos o canteiro, a gestão e o cliente final por meio de IA preditiva e automação prática — <strong>direto no WhatsApp</strong>.
+          </p>
+
+          <!-- Credenciais do Fundador -->
+          <div class="founder-authority-pill">
+            <div class="avatar-tag mono">LM</div>
+            <div class="pill-info">
+              <strong>Desenhada por quem vive o canteiro</strong>
+              <span>Fundada por Arquiteto & Engenheiro de IA com 12 anos de obra</span>
+            </div>
+          </div>
+
+          <!-- CTAs com Interactive Hover Button -->
+          <div class="hero-actions">
+            <a class="interactive-hover-btn btn-primary" data-contact href="https://wa.me/5511972554234" target="_blank" rel="noopener noreferrer">
+              <span class="btn-text">Transformar minha operação</span>
+              <div class="btn-hover-content">
+                <span>Iniciar piloto</span>
+                <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </div>
+              <span class="btn-bubble"></span>
+            </a>
+
+            <a class="interactive-hover-btn btn-secondary" href="#diferencial">
+              <span class="btn-text">Ver demonstração</span>
+              <div class="btn-hover-content">
+                <span>Interface Invisível</span>
+                <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
+              </div>
+              <span class="btn-bubble"></span>
+            </a>
+          </div>
+
+          <!-- Métricas Rápidas / Indicadores em Vidro -->
+          <div class="hero-metrics">
+            <div class="metric-card glass-panel">
+              <span class="metric-num">0</span>
+              <span class="metric-label">Apps novos para baixar</span>
+            </div>
+            <div class="metric-card glass-panel">
+              <span class="metric-num">100%</span>
+              <span class="metric-label">Adesão pelo WhatsApp</span>
+            </div>
+            <div class="metric-card glass-panel">
+              <span class="metric-num">17h30</span>
+              <span class="metric-label">RDO gerado e assinado</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- HERO VISUAL: Cartão Espacial 3D com o Androide e Telemetria de Obra -->
+        <div class="hero-visual">
+          <div class="visual-card glass-panel">
+            <div class="visual-header mono">
+              <div class="status-indicator">
+                <span class="indicator-dot"></span>
+                <span>ARC_KERNEL // v2.6.4 ONLINE</span>
+              </div>
+              <span class="tag-live">[COGNITIVE_SITE]</span>
+            </div>
+
+            <div class="visual-frame">
+              <img class="robot-image" src="assets/arctech-robot.webp" alt="Androide Arctech com croquis técnicos e circuitos de inteligência artificial" width="1122" height="1402">
+              
+              <!-- Floating Overlay Tags (VisionOS style) -->
+              <div class="floating-tag tag-audio glass-panel">
+                <span class="pulse-ring"></span>
+                <svg class="tag-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+                <div>
+                  <small class="mono">ENTRADA DE VOZ</small>
+                  <strong>“Laje do 4º pav. concretada”</strong>
+                </div>
+              </div>
+
+              <div class="floating-tag tag-vision glass-panel">
+                <svg class="tag-icon text-red" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                <div>
+                  <small class="mono">VISÃO COMPUTACIONAL</small>
+                  <strong>EPI 100% Conforme · 12 Operários</strong>
+                </div>
+              </div>
+
+              <div class="floating-tag tag-output glass-panel">
+                <span class="mono badge-gold">RDO AUTÔNOMO</span>
+                <strong>PDF Formatado · Assinatura Digital</strong>
+              </div>
+            </div>
+
+            <div class="visual-footer mono">
+              <span>CANTEIRO FÍSICO × CÓDIGO PRECISO</span>
+              <span class="coord">[Z: +12.40M]</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO DIFERENCIAL: INTERFACE INVISÍVEL & COPILOTO DE CANTEIRO -->
+    <section class="section-shell" id="diferencial" aria-labelledby="diferencial-title">
+      <div class="container">
+        <div class="section-badge mono">
+          <span class="badge-number">01</span>
+          <span class="badge-label">O DIFERENCIAL COMPETITIVO</span>
+        </div>
+
+        <div class="section-header-split">
+          <div>
+            <h2 id="diferencial-title">
+              A “Interface Invisível”.<br>
+              <span class="text-muted">Se a tecnologia atrapalha o canteiro, ela está errada.</span>
+            </h2>
+          </div>
+          <p class="section-desc">
+            Sistemas convencionais falham porque exigem treinamento maçante, senhas esquecidas e preenchimento de formulários complexos sob sol e poeira. A Arctech opera direto nos canais que sua equipe já usa todo dia: <strong>áudio, fotos, vídeos e texto pelo WhatsApp</strong>.
+          </p>
+        </div>
+
+        <!-- Demonstração Interativa Dupla: Canteiro vs Gestão -->
+        <div class="simulator-wrapper glass-panel">
+          <div class="simulator-topbar">
+            <div class="sim-channels">
+              <button class="channel-pill active" id="btn-chan-site" type="button">
+                <span class="dot-green"></span>
+                <span>Número Canteiro (+55 11 97255-4234)</span>
+                <small class="mono">Operação & Coleta</small>
+              </button>
+              <button class="channel-pill" id="btn-chan-admin" type="button">
+                <span class="dot-blue"></span>
+                <span>Número Gestor Executivo</span>
+                <small class="mono">Decisão & RAG</small>
+              </button>
+            </div>
+            <span class="mono sim-badge">DEMONSTRAÇÃO REALISTA EM TEMPO REAL</span>
+          </div>
+
+          <div class="simulator-body">
+            <!-- Painel Esquerdo: Entrada WhatsApp -->
+            <div class="sim-column glass-subpanel">
+              <div class="subpanel-header">
+                <div class="subpanel-title">
+                  <div class="whatsapp-avatar">💬</div>
+                  <div>
+                    <strong>Copiloto de Canteiro</strong>
+                    <span class="online-status">Online · Processamento Multimodal</span>
+                  </div>
+                </div>
+                <div class="time-stamp mono" id="sim-clock">16:42</div>
+              </div>
+
+              <!-- Seletor de Tipo de Mensagem -->
+              <div class="input-selector" role="tablist" aria-label="Selecione o cenário de teste">
+                <button class="tab-btn active" id="tab-voice" type="button" role="tab" aria-selected="true" data-mode="voice">
+                  🎙️ Áudio de Voz
+                </button>
+                <button class="tab-btn" id="tab-photo" type="button" role="tab" aria-selected="false" data-mode="photo">
+                  📷 Foto com IA
+                </button>
+                <button class="tab-btn" id="tab-text" type="button" role="tab" aria-selected="false" data-mode="text">
+                  ✍️ Mensagem de Texto
+                </button>
+              </div>
+
+              <!-- Mensagem do WhatsApp -->
+              <div class="chat-viewport">
+                <div class="chat-bubble chat-user">
+                  <div class="bubble-meta">
+                    <span class="user-role">Mestre de Obras · Marcos</span>
+                    <span class="mono bubble-time">16:40</span>
+                  </div>
+
+                  <!-- Conteúdo dinâmico da mensagem -->
+                  <div id="sim-message-content">
+                    <!-- Áudio -->
+                    <div class="audio-player-mock">
+                      <button class="play-btn" id="btn-play-audio" type="button" aria-label="Reproduzir áudio fictício">
+                        <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      </button>
+                      <div class="audio-wave">
+                        <span class="wave-bar"></span><span class="wave-bar"></span><span class="wave-bar"></span>
+                        <span class="wave-bar"></span><span class="wave-bar"></span><span class="wave-bar"></span>
+                        <span class="wave-bar"></span><span class="wave-bar"></span><span class="wave-bar"></span>
+                        <span class="wave-bar"></span><span class="wave-bar"></span><span class="wave-bar"></span>
+                        <span class="wave-bar"></span><span class="wave-bar"></span><span class="wave-bar"></span>
+                      </div>
+                      <span class="mono audio-dur">0:24</span>
+                    </div>
+                  </div>
+
+                  <!-- Transcrição IA -->
+                  <div class="transcript-box">
+                    <span class="mono transcript-label">TRANSCRIÇÃO IA MULTIMODAL:</span>
+                    <p id="sim-transcript-text">
+                      “Terminamos a concretagem da laje do 2º pavimento às 15h30. Foram 12 operários, sem acidentes. O caminhão da armadura atrasou e precisamos de 80 barras de 10mm amanhã cedo.”
+                    </p>
+                  </div>
+                </div>
+
+                <div class="chat-bubble chat-ai">
+                  <div class="bubble-meta">
+                    <span class="ai-role mono">ARC[TECH_] COPILOTO</span>
+                    <span class="mono bubble-time">16:41</span>
+                  </div>
+                  <p id="sim-ai-reply">
+                    ✓ Registrado no RDO de hoje. Alerta de suprimento criado: 80 barras de aço 10mm encaminhadas para validação de compras do Residencial Horizonte.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Conector Visual Central -->
+            <div class="sim-connector">
+              <div class="flow-arrow">
+                <span class="connector-line"></span>
+                <span class="connector-badge mono">EXTRAÇÃO & RAG</span>
+                <span class="connector-line"></span>
+              </div>
+            </div>
+
+            <!-- Painel Direito: O que a Gestão Recebe (RDO Automatizado) -->
+            <div class="sim-column glass-subpanel rdo-column">
+              <div class="subpanel-header">
+                <div class="subpanel-title">
+                  <div class="rdo-badge">PDF</div>
+                  <div>
+                    <strong>RDO — Relatório Diário de Obra</strong>
+                    <span class="text-muted">Gerado automaticamente às 17h30</span>
+                  </div>
+                </div>
+                <span class="status-chip chip-ready">Pronto para Assinatura</span>
+              </div>
+
+              <div class="rdo-preview-sheet">
+                <div class="rdo-sheet-head mono">
+                  <div class="rdo-title-bar">
+                    <span>OBRA: RESIDENCIAL HORIZONTE</span>
+                    <span>FOLHA: 01/01</span>
+                  </div>
+                  <div class="rdo-meta-grid">
+                    <div><span>DATA:</span> <strong id="rdo-date">HOJE</strong></div>
+                    <div><span>CLIMA:</span> <strong>Ensolarado / 28°C</strong></div>
+                    <div><span>EFETIVO:</span> <strong id="rdo-team">12 profissionais</strong></div>
+                    <div><span>ACIDENTES:</span> <strong class="text-green">Zero</strong></div>
+                  </div>
+                </div>
+
+                <div class="rdo-section">
+                  <small class="mono">1. ATIVIDADES EXECUTADAS</small>
+                  <p id="rdo-activity">Concretagem da laje do 2º pavimento concluída conforme projeto estrutural.</p>
+                </div>
+
+                <div class="rdo-section">
+                  <small class="mono">2. ANÁLISE DE SEGURANÇA & EPIS</small>
+                  <div class="tag-row" id="rdo-safety-tags">
+                    <span class="tag-check">Capacetes: 100% ✓</span>
+                    <span class="tag-check">Linha de Vida: Ativa ✓</span>
+                    <span class="tag-check">NR-18 Conforme ✓</span>
+                  </div>
+                </div>
+
+                <div class="rdo-section rdo-alert-box">
+                  <small class="mono text-red">3. PONTO DE ATENÇÃO & COMPRAS</small>
+                  <p id="rdo-alert-text">Urgência: Solicitação de 80 barras de aço 10mm para a manhã seguinte devido a atraso de entrega de fornecedor.</p>
+                </div>
+
+                <div class="rdo-footer-signature mono">
+                  <div>
+                    <span>ASSINATURA DIGITAL:</span>
+                    <code>SHA256: 8f9b...e4a1</code>
+                  </div>
+                  <div class="stamp-verified">VERIFICADO PELA IA</div>
+                </div>
+              </div>
+
+              <div class="rdo-actions">
+                <a class="interactive-hover-btn btn-sm btn-full" data-contact href="https://wa.me/5511972554234?text=Ola!%20Gostaria%20de%20testar%20o%20Copiloto%20de%20RDO%20da%20Arctech." target="_blank" rel="noopener noreferrer">
+                  <span class="btn-text">Testar este fluxo na minha obra</span>
+                  <div class="btn-hover-content">
+                    <span>Solicitar piloto grátis</span>
+                    <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  </div>
+                  <span class="btn-bubble"></span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO: ESTRATÉGIA EM 3 ONDAS (ROADMAP) -->
+    <section class="section-shell" id="solucoes" aria-labelledby="solucoes-title">
+      <div class="container">
+        <div class="section-badge mono">
+          <span class="badge-number">02</span>
+          <span class="badge-label">ROADMAP DE PRODUTOS</span>
+        </div>
+
+        <div class="section-header-split">
+          <div>
+            <h2 id="solucoes-title">
+              Estratégia em 3 Ondas.<br>
+              <span class="text-muted">Do alívio imediato no canteiro à robótica física de obra.</span>
+            </h2>
+          </div>
+          <p class="section-desc">
+            A Arctech não tenta mudar tudo de uma vez. Começamos pelo gargalo mais urgente da sua operação e reinvestimos a margem em inteligência preditiva e hardware.
+          </p>
+        </div>
+
+        <div class="waves-grid">
+          <!-- ONDA 1 -->
+          <article class="wave-card glass-panel current-wave">
+            <div class="wave-header">
+              <span class="wave-number mono">ONDA 01</span>
+              <span class="wave-status status-active">EM PILOTO · TRAÇÃO IMEDIATA</span>
+            </div>
+            <h3>Copiloto de Canteiro & RDO Automático</h3>
+            <p class="wave-summary">
+              O ponto de entrada sem fricção. Elimina horas gastas no final da tarde preenchendo planilhas e relatórios à mão.
+            </p>
+            <ul class="wave-features mono">
+              <li><span>✓</span> Coleta contínua de áudios, textos e fotos no WhatsApp</li>
+              <li><span>✓</span> Registro automático de clima, efetivo e ocorrências</li>
+              <li><span>✓</span> Emissão do RDO em PDF assinado às 17h30</li>
+              <li><span>✓</span> Zero treinamento necessário para os operários</li>
+            </ul>
+            <div class="wave-footer">
+              <span class="mono">STATUS: MVP VALIDADO EM CANTEIRO</span>
+            </div>
+          </article>
+
+          <!-- ONDA 2 -->
+          <article class="wave-card glass-panel">
+            <div class="wave-header">
+              <span class="wave-number mono">ONDA 02</span>
+              <span class="wave-status status-upcoming">EXPANSÃO · PLATAFORMA INTEGRADA</span>
+            </div>
+            <h3>Inteligência Preditiva & Visão Computacional</h3>
+            <p class="wave-summary">
+              Conexão profunda com projetos e previsibilidade de cronograma e custos através de Machine Learning.
+            </p>
+            <ul class="wave-features mono">
+              <li><span>✓</span> Cronograma preditivo com Machine Learning (prevê atrasos)</li>
+              <li><span>✓</span> Visão computacional para almoxarifado e EPIs</li>
+              <li><span>✓</span> Orçamentos automatizados (BIM/DWG + SINAPI/TCPO)</li>
+              <li><span>✓</span> Portal do Cliente: tradução de jargões técnicos</li>
+            </ul>
+            <div class="wave-footer">
+              <span class="mono">STATUS: EM DESENVOLVIMENTO ATIVO</span>
+            </div>
+          </article>
+
+          <!-- ONDA 3 -->
+          <article class="wave-card glass-panel robotics-wave">
+            <div class="wave-header">
+              <span class="wave-number mono">ONDA 03</span>
+              <span class="wave-status status-future">VISÃO DE LONGO PRAZO · P&D</span>
+            </div>
+            <h3>Hardware Físico & Robótica de Canteiro</h3>
+            <p class="wave-summary">
+              A inteligência digital ganha corpo físico. O lucro das soluções em software financia nossa divisão de hardware.
+            </p>
+            <ul class="wave-features mono">
+              <li><span>✓</span> Carrinho autônomo para transporte de materiais</li>
+              <li><span>✓</span> Robô encarregado para vistoria técnica noturna</li>
+              <li><span>✓</span> Mochilas ajudantes de suporte de carga ergonômica</li>
+              <li><span>✓</span> Próteses e exoesqueletos de proteção biomecânica</li>
+            </ul>
+            <div class="wave-footer">
+              <span class="mono">STATUS: PESQUISA E PROTOTIPAGEM</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO: ARQUITETURA TÉCNICA (RAG + PROJETOS + NRs) -->
+    <section class="section-shell" id="arquitetura" aria-labelledby="arquitetura-title">
+      <div class="container">
+        <div class="section-badge mono">
+          <span class="badge-number">03</span>
+          <span class="badge-label">ARQUITETURA & TECNOLOGIA</span>
+        </div>
+
+        <div class="section-header-split">
+          <div>
+            <h2 id="arquitetura-title">
+              Engenharia de IA Real.<br>
+              <span class="text-muted">RAG conectado aos seus projetos BIM, DWG e Normas Técnicas.</span>
+            </h2>
+          </div>
+          <p class="section-desc">
+            Não é apenas um bot genérico. Por trás da interface do WhatsApp existe uma cadeia de orquestração via webhooks, modelos multimodais de alta eficiência e uma base RAG que responde dúvidas técnicas embasadas nas Normas Regulamentadoras da construção civil.
+          </p>
+        </div>
+
+        <!-- Fluxo da Arquitetura em Vidro Espacial -->
+        <div class="tech-pipeline glass-panel">
+          <div class="pipeline-step">
+            <div class="step-num mono">01</div>
+            <h4>Entrada Canteiro</h4>
+            <p>WhatsApp (Voz, Fotos de obra, Vídeos de conferência, Textos rápidos).</p>
+            <span class="tag-tech mono">WhatsApp Business API</span>
+          </div>
+
+          <div class="pipeline-divider">→</div>
+
+          <div class="pipeline-step">
+            <div class="step-num mono">02</div>
+            <h4>Orquestração</h4>
+            <p>Roteamento inteligente de eventos, validação de segurança e webhooks.</p>
+            <span class="tag-tech mono">Webhooks / n8n Engine</span>
+          </div>
+
+          <div class="pipeline-divider">→</div>
+
+          <div class="pipeline-step highlighted">
+            <div class="step-num mono">03</div>
+            <h4>RAG Especializado</h4>
+            <p>Cruzamento em tempo real com arquivos BIM/IFC, pranchas DWG e Normas Regulamentadoras (NR-18, NR-35).</p>
+            <span class="tag-tech mono">Vector DB + BIM Graph</span>
+          </div>
+
+          <div class="pipeline-divider">→</div>
+
+          <div class="pipeline-step">
+            <div class="step-num mono">04</div>
+            <h4>Saídas & Ação</h4>
+            <p>RDO assinado em PDF, alertas de suprimentos para compras e previsões de cronograma no dashboard.</p>
+            <span class="tag-tech mono">ERP / PDF / Dashboard</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO: PLANOS & MODELO B2B SAAS -->
+    <section class="section-shell" id="planos" aria-labelledby="planos-title">
+      <div class="container">
+        <div class="section-badge mono">
+          <span class="badge-number">04</span>
+          <span class="badge-label">MODELO DE NEGÓCIOS & PLANOS B2B</span>
+        </div>
+
+        <div class="section-header-split">
+          <div>
+            <h2 id="planos-title">
+              Planos sob medida.<br>
+              <span class="text-muted">Para construtoras e escritórios com 2 a 15 obras simultâneas.</span>
+            </h2>
+          </div>
+          <p class="section-desc">
+            Cobrança em assinatura mensal ou anual com implantação acompanhada por especialistas que conhecem o canteiro.
+          </p>
+        </div>
+
+        <div class="pricing-grid">
+          <!-- STARTER -->
+          <div class="pricing-card glass-panel">
+            <div class="pricing-header">
+              <span class="mono plan-badge">STARTER</span>
+              <h3>Canteiro Ágil</h3>
+              <p>Ideal para construtoras e escritórios iniciando a automação do canteiro.</p>
+            </div>
+            <div class="pricing-scope mono">
+              <span>Até 3 obras ativas simultâneas</span>
+            </div>
+            <ul class="pricing-list">
+              <li><span>✓</span> Copiloto de Canteiro no WhatsApp</li>
+              <li><span>✓</span> Automação completa de RDO diário</li>
+              <li><span>✓</span> Transcrição de áudios e registro de fotos</li>
+              <li><span>✓</span> Exportação em PDF com assinatura digital</li>
+              <li><span>✓</span> Suporte via WhatsApp dedicado</li>
+            </ul>
+            <a class="interactive-hover-btn btn-secondary btn-full" data-contact href="https://wa.me/5511972554234?text=Ola!%20Gostaria%20de%20saber%20mais%20sobre%20o%20plano%20Starter%20da%20Arctech." target="_blank" rel="noopener noreferrer">
+              <span class="btn-text">Consultar Plano Starter</span>
+              <div class="btn-hover-content">
+                <span>Falar no WhatsApp</span>
+                <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </div>
+              <span class="btn-bubble"></span>
+            </a>
+          </div>
+
+          <!-- PROFESSIONAL (DESTAQUE) -->
+          <div class="pricing-card glass-panel featured-plan">
+            <div class="featured-ribbon mono">MAIS ESCOLHIDO</div>
+            <div class="pricing-header">
+              <span class="mono plan-badge badge-red">PROFESSIONAL</span>
+              <h3>Operação Conectada</h3>
+              <p>Para construtoras em expansão que precisam de controle total de compras e prazos.</p>
+            </div>
+            <div class="pricing-scope mono">
+              <span>De 4 a 10 obras simultâneas</span>
+            </div>
+            <ul class="pricing-list">
+              <li><span>✓</span> <strong>Tudo do Starter, mais:</strong></li>
+              <li><span>✓</span> WhatsApp Gestor Executivo com RAG de projetos</li>
+              <li><span>✓</span> Alertas preditivos de desvio de suprimentos</li>
+              <li><span>✓</span> Visão computacional básica (inspeção de EPIs)</li>
+              <li><span>✓</span> Integração com planilhas de compras e ERPs</li>
+              <li><span>✓</span> Diagnóstico operacional presencial ou remoto</li>
+            </ul>
+            <a class="interactive-hover-btn btn-primary btn-full" data-contact href="https://wa.me/5511972554234?text=Ola!%20Quero%20proposta%20para%20o%20plano%20Professional%20da%20Arctech." target="_blank" rel="noopener noreferrer">
+              <span class="btn-text">Iniciar Piloto Professional</span>
+              <div class="btn-hover-content">
+                <span>Agendar conversa</span>
+                <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </div>
+              <span class="btn-bubble"></span>
+            </a>
+          </div>
+
+          <!-- ENTERPRISE -->
+          <div class="pricing-card glass-panel">
+            <div class="pricing-header">
+              <span class="mono plan-badge">ENTERPRISE</span>
+              <h3>Ecossistema Total</h3>
+              <p>Para grandes operações com demandas personalizadas de BIM, IA e múltiplos canteiros.</p>
+            </div>
+            <div class="pricing-scope mono">
+              <span>Mais de 10 obras ou canteiros complexos</span>
+            </div>
+            <ul class="pricing-list">
+              <li><span>✓</span> <strong>Tudo do Professional, mais:</strong></li>
+              <li><span>✓</span> RAG Customizado sobre acervo BIM (IFC / DWG)</li>
+              <li><span>✓</span> Portal do Cliente de Transparência da Obra</li>
+              <li><span>✓</span> Modelos de IA finetunados nas diretrizes da empresa</li>
+              <li><span>✓</span> SLA prioritário e gerente de contas dedicado</li>
+              <li><span>✓</span> Acesso antecipado aos protótipos de hardware (Onda 3)</li>
+            </ul>
+            <a class="interactive-hover-btn btn-secondary btn-full" data-contact href="https://wa.me/5511972554234?text=Ola!%20Preciso%20de%20uma%20solucao%20Enterprise%20customizada%20da%20Arctech." target="_blank" rel="noopener noreferrer">
+              <span class="btn-text">Falar com Especialista</span>
+              <div class="btn-hover-content">
+                <span>Solicitar proposta</span>
+                <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </div>
+              <span class="btn-bubble"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO: PROJETOS E PROTÓTIPOS VALIDADOS -->
+    <section class="section-shell" id="projetos" aria-labelledby="projetos-title">
+      <div class="container">
+        <div class="section-badge mono">
+          <span class="badge-number">05</span>
+          <span class="badge-label">EXPERIMENTE AO VIVO</span>
+        </div>
+
+        <div class="section-header-split">
+          <div>
+            <h2 id="projetos-title">
+              Protótipos que já<br>
+              <span class="text-muted">ganharam forma na obra.</span>
+            </h2>
+          </div>
+          <p class="section-desc">
+            A tecnologia da Arctech é construída sobre testes reais de laboratório e campo. Conheça algumas das ferramentas e experimentos interativos já desenvolvidos.
+          </p>
+        </div>
+
+        <div class="project-cards-grid">
+          <a class="project-item glass-panel" href="https://magodaia.com/vigia-obra-frontend/index.html" target="_blank" rel="noopener noreferrer">
+            <div class="proj-header mono">
+              <span>01 // SEGURANÇA</span>
+              <span class="badge-tag">AO VIVO ↗</span>
+            </div>
+            <h3>Vigia Obra</h3>
+            <p>Pipeline assistivo de visão computacional para detecção de conformidade de EPIs e áreas de risco em canteiros.</p>
+            <span class="mono link-text">Explorar protótipo →</span>
+          </a>
+
+          <a class="project-item glass-panel" href="https://magodaia.com/painel-obra/index.html" target="_blank" rel="noopener noreferrer">
+            <div class="proj-header mono">
+              <span>02 // GESTÃO</span>
+              <span class="badge-tag">AO VIVO ↗</span>
+            </div>
+            <h3>Painel da Obra</h3>
+            <p>Metas, pendências e linha de tempo pública para manter equipes e clientes alinhados com transparência.</p>
+            <span class="mono link-text">Explorar painel →</span>
+          </a>
+
+          <a class="project-item glass-panel" href="https://magodaia.com/checklist-de-obra/index.html" target="_blank" rel="noopener noreferrer">
+            <div class="proj-header mono">
+              <span>03 // VISTORIAS</span>
+              <span class="badge-tag">AO VIVO ↗</span>
+            </div>
+            <h3>Checklist de Obra</h3>
+            <p>Inspeção visual guiada e comparativos de antes e depois para fiscalização de acabamentos e entregas.</p>
+            <span class="mono link-text">Explorar checklist →</span>
+          </a>
+
+          <a class="project-item glass-panel" href="https://magodaia.com/diario-de-obra/index.html" target="_blank" rel="noopener noreferrer">
+            <div class="proj-header mono">
+              <span>04 // RDO</span>
+              <span class="badge-tag">AO VIVO ↗</span>
+            </div>
+            <h3>Protótipo de RDO Digital</h3>
+            <p>Estruturador de diário de obra com exportação direta em PDF e consolidação de índices climáticos.</p>
+            <span class="mono link-text">Explorar RDO →</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO: SOBRE / NOSSA VISÃO -->
+    <section class="section-shell" id="sobre" aria-labelledby="sobre-title">
+      <div class="container">
+        <div class="about-grid">
+          <div class="about-bio glass-panel">
+            <div class="section-badge mono">
+              <span class="badge-number">06</span>
+              <span class="badge-label">ORIGEM & PROPÓSITO</span>
+            </div>
+            <h2 id="sobre-title">
+              Não só digitalizar.<br>
+              Reimaginar a obra<span class="red-dot">.</span>
+            </h2>
+            <p>
+              Acreditamos em uma construção civil onde a inteligência artificial, a automação e a robótica trabalham lado a lado com os operários, mestres e engenheiros.
+            </p>
+            <p>
+              A <strong>Arctech</strong> nasce do cruzamento raro entre quem passou <strong>12 anos dentro de canteiros de obra</strong> lidando com concretagens, atrasos de caminhão e medições de empreiteiros, e a capacidade de engenharia de software e inteligência artificial de ponta.
+            </p>
+            <div class="founder-card">
+              <div class="founder-info">
+                <strong>Leonardo Manzo</strong>
+                <span>Fundador · Arquiteto & Especialista em Engenharia de IA</span>
+              </div>
+              <a class="text-link mono" href="https://www.linkedin.com/in/leonardo-manzo-05ab4075" target="_blank" rel="noopener noreferrer">
+                LinkedIn Oficial ↗
+              </a>
+            </div>
+          </div>
+
+          <div class="vision-manifesto glass-panel">
+            <div class="manifesto-header mono">
+              <span>ARC / MANIFESTO TÉCNICO</span>
+              <span>REV. 2026</span>
+            </div>
+            <div class="manifesto-items">
+              <div class="manifesto-row">
+                <span class="mono row-idx">01</span>
+                <div>
+                  <strong>Traço Humano, Precisão Digital</strong>
+                  <p>A tecnologia existe para servir às pessoas no campo, nunca para criar atrito ou burocracia.</p>
+                </div>
+              </div>
+              <div class="manifesto-row">
+                <span class="mono row-idx">02</span>
+                <div>
+                  <strong>Dados Vivos em Tempo Real</strong>
+                  <p>O que acontece no canteiro às 10h da manhã não pode ser descoberto pelo diretor na semana seguinte.</p>
+                </div>
+              </div>
+              <div class="manifesto-row">
+                <span class="mono row-idx">03</span>
+                <div>
+                  <strong>O Futuro Físico</strong>
+                  <p>O software é o alicerce para construir a robótica de apoio que tornará a construção civil mais segura e menos desgastante fisicamente.</p>
+                </div>
+              </div>
+            </div>
+            <div class="manifesto-footer mono">
+              <span>ARC[TECH_] // CONSTRUINDO O NOVO CANTEIRO</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ SECTION -->
+    <section class="section-shell" id="faq" aria-labelledby="faq-title">
+      <div class="container faq-container">
+        <div class="section-badge mono">
+          <span class="badge-number">07</span>
+          <span class="badge-label">DÚVIDAS FREQUENTES</span>
+        </div>
+        <h2 id="faq-title">Respostas diretas sobre a Arctech.</h2>
+        
+        <div class="faq-accordion">
+          <details class="faq-item glass-panel">
+            <summary>
+              <span>Minha equipe de obra precisa instalar algum aplicativo novo no celular?</span>
+              <span class="faq-icon">+</span>
+            </summary>
+            <p>
+              Não! Esse é o grande diferencial da Arctech. Os mestres, encarregados e fornecedores continuam usando o próprio WhatsApp pessoal que já utilizam todos os dias. Eles enviam áudios normais, fotos e mensagens sem necessidade de logins, senhas ou treinamentos complicados.
+            </p>
+          </details>
+
+          <details class="faq-item glass-panel">
+            <summary>
+              <span>Como funciona a geração automática do RDO (Relatório Diário de Obra)?</span>
+              <span class="faq-icon">+</span>
+            </summary>
+            <p>
+              Ao longo do dia, o Copiloto processa todas as mensagens de áudio, textos e fotos recebidos pelo número de WhatsApp do canteiro. Ele extrai condições climáticas automáticas por geolocalização, efetivo de trabalhadores, frentes de serviço e eventuais ocorrências. No final da tarde (por exemplo, às 17h30), o sistema compila o PDF oficial formatado e envia o resumo para aprovação e assinatura digital do gestor.
+            </p>
+          </details>
+
+          <details class="faq-item glass-panel">
+            <summary>
+              <span>A Arctech substitui o engenheiro ou toma decisões técnicas sozinha?</span>
+              <span class="faq-icon">+</span>
+            </summary>
+            <p>
+              De forma alguma. A inteligência artificial atua como um copiloto assistivo. Ela elimina o trabalho manual e repetitivo de compilação de dados e aponta riscos antes que se tornem prejuízos, mas toda validação técnica e decisão final permanece sob controle dos profissionais responsáveis pela obra.
+            </p>
+          </details>
+
+          <details class="faq-item glass-panel">
+            <summary>
+              <span>Como funciona o período de piloto ou teste da plataforma?</span>
+              <span class="faq-icon">+</span>
+            </summary>
+            <p>
+              Realizamos um diagnóstico inicial rápido para entender a rotina dos seus canteiros atuais. Selecionamos de 1 a 3 obras para rodar o piloto assistido do Copiloto de RDO por 15 a 30 dias com acompanhamento próximo da nossa equipe.
+            </p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO FINAL: CTA -->
+    <section class="section-shell contact-section" id="contato">
+      <div class="container">
+        <div class="cta-banner glass-panel">
+          <div class="cta-glow"></div>
+          <div class="section-badge mono">
+            <span class="badge-number">PRÓXIMO PASSO</span>
+            <span class="badge-label">VAMOS CONSTRUIR JUNTOS</span>
+          </div>
+
+          <h2>
+            O que trava sua obra hoje<br>
+            não precisa fazer parte da rotina<span class="red-dot">.</span>
+          </h2>
+
+          <p class="cta-subtitle">
+            Converse diretamente com quem entende a realidade do canteiro. Vamos analisar sua operação e desenhar o piloto ideal para suas obras.
+          </p>
+
+          <div class="cta-buttons">
+            <a class="interactive-hover-btn btn-primary btn-lg" data-contact href="https://wa.me/5511972554234" target="_blank" rel="noopener noreferrer">
+              <span class="btn-text">Conversar no WhatsApp com o fundador</span>
+              <div class="btn-hover-content">
+                <span>+55 11 97255-4234</span>
+                <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </div>
+              <span class="btn-bubble"></span>
+            </a>
+
+            <a class="interactive-hover-btn btn-secondary btn-lg" href="mailto:leonardo.r.manzo@gmail.com">
+              <span class="btn-text">Enviar e-mail para a Arctech</span>
+              <div class="btn-hover-content">
+                <span>leonardo.r.manzo@gmail.com</span>
+                <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </div>
+              <span class="btn-bubble"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container footer-container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a class="brand" href="#inicio" aria-label="Arctech — início">
+            <span class="brand-sketch">Arc</span><span class="brand-terminal">[tech<span class="cursor">_</span>]</span>
+          </a>
+          <p class="footer-motto">
+            Inteligência prática, sem atrito.<br>
+            Para quem constrói o mundo real.
+          </p>
+        </div>
+
+        <div class="footer-links-grid">
+          <div class="footer-col">
+            <strong class="mono footer-col-title">SOLUÇÕES</strong>
+            <a href="#diferencial">Interface Invisível</a>
+            <a href="#solucoes">Copiloto de RDO</a>
+            <a href="#solucoes">Cronograma Preditivo</a>
+            <a href="#solucoes">Hardware & Robótica</a>
+          </div>
+
+          <div class="footer-col">
+            <strong class="mono footer-col-title">TECNOLOGIA</strong>
+            <a href="#arquitetura">RAG de Projetos BIM</a>
+            <a href="#arquitetura">Normas Regulamentadoras</a>
+            <a href="#arquitetura">Visão Computacional</a>
+            <a href="#projetos">Protótipos Validados</a>
+          </div>
+
+          <div class="footer-col">
+            <strong class="mono footer-col-title">CONTATO</strong>
+            <a href="https://wa.me/5511972554234" target="_blank" rel="noopener noreferrer">WhatsApp Direto ↗</a>
+            <a href="mailto:leonardo.r.manzo@gmail.com">leonardo.r.manzo@gmail.com</a>
+            <a href="https://www.linkedin.com/in/leonardo-manzo-05ab4075" target="_blank" rel="noopener noreferrer">LinkedIn de Leonardo Manzo ↗</a>
+            <span class="location-tag mono">São Paulo · Brasil</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span class="mono">© <span id="year">2026</span> Arc[tech_] Tecnologia para Construção Ltda. Todos os direitos reservados.</span>
+        <a class="mono top-link" href="#inicio">Voltar ao topo ↑</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- GUIA FLUTUANTE (DRAWER / QUICK GUIDE) -->
+  <button class="guide-launcher" type="button" aria-label="Abrir guia rápido da Arctech" aria-expanded="false" aria-controls="guide-panel">
+    <span class="launcher-icon mono">[a_]</span>
+    <span class="launcher-tooltip mono">Guia Arctech</span>
+  </button>
+
+  <aside id="guide-panel" class="guide-panel glass-panel" role="dialog" aria-modal="false" aria-labelledby="guide-title" hidden>
+    <div class="guide-header">
+      <div>
+        <h3 id="guide-title" class="guide-panel-title">Guia Arc[tech_]</h3>
+        <p class="guide-panel-subtitle">Tudo sobre nossa plataforma em 1 clique</p>
+      </div>
+      <button class="guide-close" type="button" aria-label="Fechar guia">×</button>
+    </div>
+
+    <div class="guide-options">
+      <button class="guide-chip active" type="button" data-answer="rdo">O que é o RDO Automático?</button>
+      <button class="guide-chip" type="button" data-answer="piloto">Como funciona o piloto?</button>
+      <button class="guide-chip" type="button" data-answer="precos">Quais os planos e valores?</button>
+      <button class="guide-chip" type="button" data-answer="rag">Como o RAG usa meus projetos?</button>
+    </div>
+
+    <div class="guide-answer-box">
+      <p class="guide-answer" aria-live="polite">
+        O Copiloto de Canteiro da Arctech recebe mensagens de voz, textos e fotos dos encarregados ao longo do dia e gera automaticamente o PDF formatado e assinado do Diário de Obra às 17h30, sem que ninguém precise preencher planilhas.
+      </p>
+    </div>
+
+    <div class="guide-cta">
+      <a class="interactive-hover-btn btn-sm btn-full" data-contact href="https://wa.me/5511972554234" target="_blank" rel="noopener noreferrer">
+        <span class="btn-text">Conversar com Leonardo Manzo</span>
+        <div class="btn-hover-content">
+          <span>Abrir WhatsApp</span>
+          <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+        <span class="btn-bubble"></span>
+      </a>
+    </div>
+  </aside>
+</body>
+</html>

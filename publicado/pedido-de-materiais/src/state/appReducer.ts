@@ -1,4 +1,4 @@
-import type { Order, OrderDraft, OrderItem, UrgencyLevel } from '../types/models'
+import type { Order, OrderDraft, OrderItem, OrderStatus, UrgencyLevel } from '../types/models'
 import { createEmptyDraft } from '../types/models'
 import type { ScreenState } from './screens'
 import { STORAGE_KEYS } from './storageKeys'
@@ -30,6 +30,8 @@ export type Action =
   | { type: 'CONFIRM_ORDER'; orderId: string; createdAt: string }
   | { type: 'DISCARD_DRAFT' }
   | { type: 'SET_ONLINE_SIM'; isOnline: boolean }
+  | { type: 'UPDATE_ORDER_STATUS'; orderId: string; status: OrderStatus }
+  | { type: 'DELETE_ORDER'; orderId: string }
 
 export function currentScreen(state: AppState): ScreenState {
   return state.history[state.history.length - 1]
@@ -144,6 +146,23 @@ export function appReducer(state: AppState, action: Action): AppState {
         orders: state.orders.map((order) => (order.pendingSync ? { ...order, pendingSync: false } : order)),
       }
     }
+
+    case 'UPDATE_ORDER_STATUS':
+      return {
+        ...state,
+        orders: state.orders.map((order) =>
+          order.id === action.orderId ? { ...order, status: action.status } : order,
+        ),
+      }
+
+    case 'DELETE_ORDER':
+      return {
+        ...state,
+        orders: state.orders.filter((order) => order.id !== action.orderId),
+        history: state.history.filter(
+          (screen) => !(screen.name === 'order-detail' && screen.orderId === action.orderId),
+        ),
+      }
 
     default:
       return state

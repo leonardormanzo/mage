@@ -44,6 +44,11 @@ export function MaterialCard({ material, categoryName, cartQuantity, onAdd }: Pr
         <div className={styles.info}>
           <p className={styles.name}>{material.name}</p>
           <p className={styles.unit}>Unidade: {material.unit}</p>
+          {material.brands && (
+            <p className={styles.brands}>
+              {material.brands[0]} ou {material.brands[1]}
+            </p>
+          )}
         </div>
       </div>
 

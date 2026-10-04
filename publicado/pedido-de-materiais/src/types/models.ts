@@ -48,6 +48,8 @@ export interface MaterialDef {
   unit: Unit
   /** m², m³, metro e kg aceitam casas decimais; unidades contáveis, não. */
   allowsDecimal: boolean
+  /** Duas marcas de referência do mercado brasileiro, só quando marca importa. */
+  brands?: readonly [string, string]
 }
 
 export type UrgencyLevel = 'normal' | 'urgente'
