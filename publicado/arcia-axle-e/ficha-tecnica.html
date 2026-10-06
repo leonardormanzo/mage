@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%231c1d1f%27/%3E%3Cpath d=%27M6 12h20l-3 8H9z%27 fill=%27%23f2b705%27/%3E%3Ccircle cx=%2711%27 cy=%2724%27 r=%273%27 fill=%27%23cfcbc3%27/%3E%3Ccircle cx=%2721%27 cy=%2724%27 r=%273%27 fill=%27%23cfcbc3%27/%3E%3C/svg%3E">
+<title>Ficha Técnica Axle-E</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#1d1a15; --paper:#efe4cc; --accent:#e0a21b; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#2b2722; color:var(--paper); font-family:"Roboto Condensed", system-ui, sans-serif; display:flex; flex-direction:column; align-items:center; gap:12px; padding:16px; }
+  .bar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:center; }
+  button { font:inherit; font-weight:700; padding:8px 16px; border-radius:8px; border:1.5px solid var(--paper); background:var(--accent); color:var(--ink); cursor:pointer; }
+  button:disabled { opacity:.5; cursor:wait; }
+  button:focus-visible { outline:3px solid var(--paper); outline-offset:2px; }
+  canvas { width:min(100%, 1000px); height:auto; box-shadow:0 10px 40px #0008; background:var(--paper); }
+</style>
+</head>
+<body>
+<div class="bar"><button id="dl" disabled>Baixar PNG</button><span id="status">Gerando ficha técnica…</span></div>
+<canvas id="poster" aria-label="Ficha técnica Terra-Botics Axle-E revisão B"></canvas>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { buildCart } from './js/cart.js';
+
+// ---------- layout (unidades lógicas; S = fator de resolução) ----------
+const W = 1500, H = 2160, S = 2;
+const COLOR = { ink: '#1d1a15', paper: '#efe4cc', line: '#3a342b', muted: '#5b5348', accent: '#e0a21b', blue: '#2a4f9e', grid: '#c9d6ea' };
+const REVISION = 'B', DATE = '06/10/2026', AUTHOR = 'LEONARDO MANZO';
+const DUMP_MAX = 0.62;
+const P = {                                          // painéis [x, y, w, h]
+  front: [40, 205, 380, 330], rear: [450, 205, 380, 330], side: [860, 205, 600, 330],
+  top: [40, 600, 430, 330], hero: [480, 580, 980, 720],
+  det: [[40, 1365, 300, 230], [355, 1365, 300, 230], [670, 1365, 300, 230]], safety: [995, 1345, 465, 330],
+  blueprint: [40, 1745, 640, 375], changes: [700, 1745, 280, 375], specs: [995, 1745, 465, 375],
+};
+
+const canvas = document.getElementById('poster');
+canvas.width = W * S; canvas.height = H * S;
+const ctx = canvas.getContext('2d');
+
+// ---------- cena 3D ----------
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setPixelRatio(1);
+renderer.setClearColor(0x000000, 0);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+const scene = new THREE.Scene();
+const envMap = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+scene.environment = envMap;
+const sun = new THREE.DirectionalLight(0xffffff, 2.2);
+sun.position.set(3, 7, 5); sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -4, right: 4, top: 4, bottom: -4, near: 1, far: 20 });
+sun.shadow.bias = -0.0004;
+scene.add(sun, new THREE.HemisphereLight(0xfff4dd, 0x8a7a5a, 0.6));
+const catcher = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), new THREE.ShadowMaterial({ opacity: 0.22 }));
+catcher.rotation.x = -Math.PI / 2; catcher.receiveShadow = true;
+scene.add(catcher);
+
+const cart = buildCart();
+scene.add(cart.root);
+const hinge = new THREE.Group();
+hinge.position.set(0, cart.BY, cart.BL / 2);
+cart.root.add(hinge); hinge.add(cart.bucket);
+cart.bucket.position.set(0, -cart.BY, -cart.BL / 2);
+function setDump(a) {
+  hinge.rotation.x = a;
+  cart.frontGate.rotation.x = cart.TILT + THREE.MathUtils.clamp((a - 0.05) / 0.15, 0, 1) * 1.35;
+  cart.update(0);
+}
+setDump(0);
+
+// ---------- medidas tiradas do modelo ----------
+const wheelParts = new Set();
+cart.wheels.forEach(w => w.pivot.traverse(o => wheelParts.add(o)));
+const bbox = new THREE.Box3().setFromObject(cart.root);
+let clearance = Infinity;
+cart.root.traverse(o => {
+  if (!o.isMesh || wheelParts.has(o)) return;
+  clearance = Math.min(clearance, new THREE.Box3().setFromObject(o).min.y);
+});
+const mm = v => Math.round(v * 1000 / 10) * 10;
+const DIM = {
+  length: mm(bbox.max.z - bbox.min.z), width: mm(bbox.max.x - bbox.min.x), height: mm(bbox.max.y),
+  wheelbase: mm(cart.wheels.find(w => w.sz > 0).pivot.position.z - cart.wheels.find(w => w.sz < 0).pivot.position.z),
+  track: mm(Math.abs(cart.wheels[0].pivot.position.x) * 2), clearance: mm(clearance), wheel: mm(0.406 * 2),
+};
+const bucketVolume = (() => {           // tronco de pirâmide da caçamba
+  const f = cart.BH * Math.sin(cart.TILT), h = cart.BH * Math.cos(cart.TILT);
+  const a1 = cart.BW * cart.BL, a2 = (cart.BW + 2 * f) * (cart.BL + 2 * f);
+  return h / 3 * (a1 + a2 + Math.sqrt(a1 * a2));
+})();
+
+// ---------- desenho do modelo ----------
+const center = bbox.getCenter(new THREE.Vector3());
+function orthoCam(dir, up, panel, span) {
+  const [, , w, h] = panel, aspect = w / h;
+  const halfH = Math.max(span[1] / 2, span[0] / 2 / aspect), halfW = halfH * aspect;
+  const cam = new THREE.OrthographicCamera(-halfW, halfW, halfH, -halfH, 0.1, 50);
+  cam.position.copy(center).addScaledVector(dir, 15);
+  cam.up.copy(up);
+  cam.lookAt(center);
+  cam.updateMatrixWorld();
+  return cam;
+}
+function perspCam(pos, target, panel, fov = 30) {
+  const cam = new THREE.PerspectiveCamera(fov, panel[2] / panel[3], 0.1, 60);
+  cam.position.set(...pos); cam.lookAt(...target); cam.updateMatrixWorld();
+  return cam;
+}
+function renderPanel(cam, panel, { shadow = true } = {}) {
+  const [x, y, w, h] = panel;
+  renderer.setSize(w * S, h * S, false);
+  catcher.visible = shadow;
+  renderer.render(scene, cam);
+  ctx.drawImage(renderer.domElement, x * S, y * S, w * S, h * S);
+}
+// projeta um ponto do mundo para coordenadas lógicas do pôster
+function proj(cam, panel, x, y, z) {
+  const v = new THREE.Vector3(x, y, z).project(cam);
+  return [panel[0] + (v.x + 1) / 2 * panel[2], panel[1] + (1 - v.y) / 2 * panel[3]];
+}
+
+// modo desenho técnico: preenchimento claro + arestas azuis
+const blueprint = (() => {
+  const fill = new THREE.MeshBasicMaterial({ color: 0xf3f6fb, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 });
+  const edgeMat = new THREE.LineBasicMaterial({ color: 0x2a4f9e });
+  const meshes = [], edges = [], hidden = [];
+  cart.root.traverse(o => { if (o.isInstancedMesh) hidden.push(o); else if (o.isMesh && !o.material.transparent) meshes.push(o); else if (o.isMesh) hidden.push(o); });
+  for (const m of meshes) {
+    const e = new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry, 30), edgeMat);
+    e.visible = false; m.add(e); edges.push(e);
+  }
+  return on => {
+    meshes.forEach(m => { if (on) { m.userData.mat = m.material; m.material = fill; } else m.material = m.userData.mat; });
+    edges.forEach(e => { e.visible = on; });
+    hidden.forEach(o => { o.visible = !on; });
+    scene.environment = on ? null : envMap;
+  };
+})();
+
+// ---------- 2D: papel, texto, cotas ----------
+const font = (size, weight = 400, family = 'Roboto Condensed') => `${weight} ${size * S}px "${family}"`;
+function text(str, x, y, { size = 16, weight = 400, family = 'Roboto Condensed', color = COLOR.ink, align = 'left', base = 'alphabetic' } = {}) {
+  ctx.font = font(size, weight, family); ctx.fillStyle = color; ctx.textAlign = align; ctx.textBaseline = base;
+  ctx.fillText(str, x * S, y * S);
+}
+function wrap(str, x, y, maxW, opts = {}) {
+  const size = opts.size || 15, lh = opts.lh || size * 1.3;
+  ctx.font = font(size, opts.weight || 400);
+  let line = '', yy = y;
+  for (const word of str.split(' ')) {
+    const test = line ? `${line} ${word}` : word;
+    if (ctx.measureText(test).width / S > maxW && line) { text(line, x, yy, opts); line = word; yy += lh; } else line = test;
+  }
+  if (line) text(line, x, yy, opts);
+  return yy + lh;
+}
+function heading(str, x, y, w) {
+  text(str, x, y, { size: 22, weight: 700, family: 'Oswald' });
+  ctx.strokeStyle = COLOR.line; ctx.lineWidth = 1.5 * S;
+  ctx.beginPath(); ctx.moveTo(x * S, (y + 7) * S); ctx.lineTo((x + w) * S, (y + 7) * S); ctx.stroke();
+}
+function line(x1, y1, x2, y2, color = COLOR.line, width = 1.2) {
+  ctx.strokeStyle = color; ctx.lineWidth = width * S;
+  ctx.beginPath(); ctx.moveTo(x1 * S, y1 * S); ctx.lineTo(x2 * S, y2 * S); ctx.stroke();
+}
+function arrowHead(x, y, ang, color = COLOR.line, size = 8) {
+  ctx.fillStyle = color; ctx.beginPath();
+  ctx.moveTo(x * S, y * S);
+  ctx.lineTo((x - Math.cos(ang - 0.35) * size) * S, (y - Math.sin(ang - 0.35) * size) * S);
+  ctx.lineTo((x - Math.cos(ang + 0.35) * size) * S, (y - Math.sin(ang + 0.35) * size) * S);
+  ctx.fill();
+}
+// cota: a,b em coordenadas do pôster; off = deslocamento perpendicular (px); label em mm
+function dim(a, b, off, label, color = COLOR.line) {
+  const dx = b[0] - a[0], dy = b[1] - a[1], len = Math.hypot(dx, dy), nx = -dy / len, ny = dx / len;
+  const A = [a[0] + nx * off, a[1] + ny * off], B = [b[0] + nx * off, b[1] + ny * off];
+  line(a[0] + nx * off * 0.15, a[1] + ny * off * 0.15, A[0] + nx * 6 * Math.sign(off), A[1] + ny * 6 * Math.sign(off), color, 0.8);
+  line(b[0] + nx * off * 0.15, b[1] + ny * off * 0.15, B[0] + nx * 6 * Math.sign(off), B[1] + ny * 6 * Math.sign(off), color, 0.8);
+  line(A[0], A[1], B[0], B[1], color, 1);
+  const ang = Math.atan2(dy, dx);
+  arrowHead(B[0], B[1], ang, color); arrowHead(A[0], A[1], ang + Math.PI, color);
+  const mx = (A[0] + B[0]) / 2, my = (A[1] + B[1]) / 2;
+  ctx.save(); ctx.translate(mx * S, my * S); ctx.rotate(Math.abs(ang) > Math.PI / 2 ? ang + Math.PI : ang);
+  ctx.font = font(15, 700); const tw = ctx.measureText(label).width + 10 * S;
+  ctx.fillStyle = COLOR.paper; ctx.fillRect(-tw / 2, -9 * S, tw, 18 * S);
+  ctx.fillStyle = color; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(label, 0, 0);
+  ctx.restore();
+}
+// chamadas (callouts): rótulos no lado do ponto indicado, na mesma ordem vertical (linhas sem cruzar)
+const CALLOUT_COLS = { left: { x: 44, y0: 990, y1: 1290 }, right: { x: P.hero[0] + P.hero[2] - 10, y0: 640, y1: 1270 } };
+function callouts(cam, panel, items) {
+  const midX = panel[0] + panel[2] / 2;
+  const placed = items.map(it => ({ ...it, at: proj(cam, panel, ...it.pt) }));
+  for (const side of ['left', 'right']) {
+    const col = CALLOUT_COLS[side], list = placed.filter(p => (p.at[0] < midX) === (side === 'left')).sort((a, b) => a.at[1] - b.at[1]);
+    const step = list.length > 1 ? (col.y1 - col.y0) / (list.length - 1) : 0;
+    list.forEach((it, i) => {
+      const ty = list.length > 1 ? col.y0 + i * step : THREE.MathUtils.clamp(it.at[1], col.y0, col.y1);
+      ctx.font = font(18);
+      const tw = Math.max(...it.lines.map(l => ctx.measureText(l).width / S));
+      const sx = side === 'left' ? col.x + tw + 8 : col.x - tw - 8, sy = ty - 6;
+      const [px, py] = it.at;
+      ctx.strokeStyle = COLOR.ink; ctx.lineWidth = 1.5 * S;
+      ctx.beginPath(); ctx.moveTo(sx * S, sy * S);
+      ctx.quadraticCurveTo(((sx + px) / 2) * S, sy * S, px * S, py * S); ctx.stroke();
+      ctx.fillStyle = COLOR.ink; ctx.beginPath(); ctx.arc(px * S, py * S, 3.5 * S, 0, Math.PI * 2); ctx.fill();
+      it.lines.forEach((l, k) => text(l, col.x, ty + k * 21, { size: 18, align: side }));
+    });
+  }
+}
+function framePanel([x, y, w, h], fill) {
+  if (fill) { ctx.fillStyle = fill; ctx.fillRect(x * S, y * S, w * S, h * S); }
+  ctx.strokeStyle = COLOR.line; ctx.lineWidth = 1.5 * S; ctx.strokeRect(x * S, y * S, w * S, h * S);
+}
+
+function paper() {
+  ctx.fillStyle = COLOR.paper; ctx.fillRect(0, 0, W * S, H * S);
+  for (let i = 0; i < 60000; i++) {
+    const v = 150 + Math.random() * 80;
+    ctx.fillStyle = `rgba(${v},${v * 0.9},${v * 0.75},${Math.random() * 0.12})`;
+    ctx.fillRect(Math.random() * W * S, Math.random() * H * S, S * (0.6 + Math.random()), S * (0.6 + Math.random()));
+  }
+  const g = ctx.createRadialGradient(W * S / 2, H * S / 2, H * S * 0.3, W * S / 2, H * S / 2, H * S * 0.75);
+  g.addColorStop(0, 'rgba(120,90,50,0)'); g.addColorStop(1, 'rgba(120,90,50,0.22)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W * S, H * S);
+  ctx.strokeStyle = COLOR.line; ctx.lineWidth = 2 * S; ctx.strokeRect(14 * S, 14 * S, (W - 28) * S, (H - 28) * S);
+}
+
+// ---------- seções ----------
+function header() {
+  text('TERRA-BOTICS APOIO LOGÍSTICO 4X4', 40, 92, { size: 70, weight: 700, family: 'Oswald' });
+  text('CONCEITO REVISADO — CARRINHO UTILITÁRIO AUTÔNOMO AXLE-E', 42, 140, { size: 30, weight: 500, family: 'Oswald' });
+  text(`REV. ${REVISION}`, W - 40, 140, { size: 30, weight: 700, family: 'Oswald', align: 'right' });
+}
+
+function orthoViews() {
+  const xz = new THREE.Vector3(0, 0, 1), up = new THREE.Vector3(0, 1, 0);
+  const b = bbox, spanFront = [b.max.x - b.min.x + 0.8, b.max.y + 0.6];
+  const yMid = (P.front[1] + P.front[1] + P.front[3]) / 2;
+
+  heading('VISTA FRONTAL', P.front[0], P.front[1] - 18, 160);
+  const cf = orthoCam(xz, up, P.front, spanFront);
+  renderPanel(cf, P.front);
+  dim(proj(cf, P.front, b.min.x, 0, 0), proj(cf, P.front, b.max.x, 0, 0), 28, `${DIM.width}`);
+  dim(proj(cf, P.front, b.min.x, b.max.y, 0), proj(cf, P.front, b.min.x, 0, 0), 26, `${DIM.height}`);
+
+  heading('VISTA TRASEIRA', P.rear[0], P.rear[1] - 18, 170);
+  const cr = orthoCam(xz.clone().negate(), up, P.rear, spanFront);
+  renderPanel(cr, P.rear);
+  const wx = Math.abs(cart.wheels[0].pivot.position.x);
+  dim(proj(cr, P.rear, wx, 0, 0), proj(cr, P.rear, -wx, 0, 0), 28, `BITOLA ${DIM.track}`);
+
+  heading('VISTA LATERAL', P.side[0], P.side[1] - 18, 160);
+  const cs = orthoCam(new THREE.Vector3(1, 0, 0), up, P.side, [b.max.z - b.min.z + 0.8, b.max.y + 0.6]);
+  renderPanel(cs, P.side);
+  const wz = cart.wheels.find(w => w.sz > 0).pivot.position.z;
+  dim(proj(cs, P.side, 0, cart.WHEEL_R, wz), proj(cs, P.side, 0, cart.WHEEL_R, -wz), 132, `ENTRE-EIXOS ${DIM.wheelbase}`);
+  dim(proj(cs, P.side, 0, 0, b.max.z), proj(cs, P.side, 0, 0, b.min.z), 24, `${DIM.length}`);
+  dim(proj(cs, P.side, 0, 0, b.min.z - 0.05), proj(cs, P.side, 0, b.max.y, b.min.z - 0.05), 24, `${DIM.height}`);
+  void yMid;
+
+  heading('VISTA SUPERIOR', P.top[0], P.top[1] - 18, 170);
+  const ct = orthoCam(new THREE.Vector3(0, 1, 0), new THREE.Vector3(-1, 0, 0), P.top, [b.max.z - b.min.z + 0.6, b.max.x - b.min.x + 0.9]);
+  renderPanel(ct, P.top, { shadow: false });
+  dim(proj(ct, P.top, b.max.x, 0, b.max.z), proj(ct, P.top, b.max.x, 0, b.min.z), -24, `${DIM.length}`);
+  dim(proj(ct, P.top, b.min.x, 0, b.max.z + 0.05), proj(ct, P.top, b.max.x, 0, b.max.z + 0.05), -24, `${DIM.width}`);
+}
+
+function hero() {
+  heading('VISTA EM PERSPECTIVA', P.hero[0] + 110, P.hero[1] + 22, 250);
+  const cam = perspCam([4.6, 2.5, 4.4], [0, 0.72, -0.35], P.hero, 32);
+  renderPanel(cam, P.hero);
+  callouts(cam, P.hero, [
+    { pt: [-0.56, 1.57, 0.9], lines: ['Caçamba basculante 36°', 'livre, sem roll cage'] },
+    { pt: [0.6, 0.93, 0.98], lines: ['LiDAR 360° no canto', 'dianteiro do chassi'] },
+    { pt: [0, 0.46, 1.23], lines: ['Câmera estéreo rebaixada', '(abaixo do arco da tampa)'] },
+    { pt: [-0.25, 0.66, 1.14], lines: ['Barra de status SYS OK', 'AUTO · ALERTA · FREIO'] },
+    { pt: [0.66, 0.6, -0.2], lines: ['Baterias', 'POWER PACK 70V'] },
+    { pt: [0.62, 0.72, -0.86], lines: ['Suspensão independente', 'com molas helicoidais'] },
+    { pt: [0.4, 0.29, 1.18], lines: ['Para-choque zebrado', 'e ganchos de reboque'] },
+    { pt: [0.55, 1.05, -1.25], lines: ['Alças traseiras com', 'placas vazadas'] },
+  ]);
+}
+
+function details() {
+  heading('DETALHES DOS COMPONENTES', P.det[0][0], P.det[0][1] - 22, 930);
+  const shots = [
+    { cam: perspCam([2.1, 1.25, 3.2], [0.25, 0.62, 1.0], P.det[0], 30), cap: ['Sensores frontais: câmera estéreo,', 'LiDAR e barra SYS OK'] },
+    { cam: perspCam([0.75, 1.95, -2.75], [0, 1.22, -1.45], P.det[1], 28), cap: ['Painel do operador: display', 'de status + botão de emergência'] },
+    { cam: perspCam([4.2, 2.6, 3.6], [0, 1.0, 0.2], P.det[2], 34), cap: ['Basculamento 36° com tampa', 'frontal e cilindro hidráulico'], dump: true },
+  ];
+  shots.forEach((s, i) => {
+    const p = P.det[i];
+    framePanel(p, 'rgba(255,255,255,0.25)');
+    setDump(s.dump ? DUMP_MAX : 0);
+    renderPanel(s.cam, p);
+    s.cap.forEach((c, k) => text(c, p[0], p[1] + p[3] + 24 + k * 20, { size: 17 }));
+  });
+  setDump(0);
+}
+
+function bullets(items, x, y, w, size = 16) {
+  let yy = y;
+  for (const [title, body] of items) {
+    ctx.fillStyle = COLOR.accent; ctx.fillRect(x * S, (yy - 11) * S, 9 * S, 9 * S);
+    text(title, x + 16, yy, { size, weight: 700 });
+    yy = wrap(body, x + 16, yy + size * 1.25, w - 16, { size, color: COLOR.muted }) + 6;
+  }
+  return yy;
+}
+
+function safety() {
+  const [x, y, w] = P.safety;
+  heading('SEGURANÇA & AUTONOMIA', x, y, w);
+  bullets([
+    ['Alerta de colisão', 'LiDAR + câmera analisam o corredor da trajetória, à frente ou em ré, considerando a curva.'],
+    ['Freio automático', 'Desacelera a 7 m/s² e bloqueia arrancar em direção ao obstáculo.'],
+    ['Sensor de peso', 'Célula de carga na caçamba; libera a saída com ≥ 170 kg.'],
+    ['Auto-execução', 'Carregamento → aguarda peso → descarga → recolhe → ré → repete.'],
+  ], x, y + 34, w);
+}
+
+function blueprintSection() {
+  const [x, y, w, h] = P.blueprint;
+  heading('DESENHO TÉCNICO', x, y, w);
+  const area = [x, y + 18, w, h - 18];
+  ctx.fillStyle = '#e9eff8'; ctx.fillRect(area[0] * S, area[1] * S, area[2] * S, area[3] * S);
+  ctx.strokeStyle = COLOR.grid; ctx.lineWidth = 0.8 * S;
+  for (let gx = area[0]; gx <= area[0] + area[2]; gx += 20) line(gx, area[1], gx, area[1] + area[3], COLOR.grid, 0.6);
+  for (let gy = area[1]; gy <= area[1] + area[3]; gy += 20) line(area[0], gy, area[0] + area[2], gy, COLOR.grid, 0.6);
+  blueprint(true);
+  const b = bbox;
+  const side = [x + 10, y + 30, 360, 200], front = [x + 380, y + 30, 250, 200], top = [x + 10, y + 235, 620, 130];
+  const up = new THREE.Vector3(0, 1, 0);
+  const cs = orthoCam(new THREE.Vector3(1, 0, 0), up, side, [b.max.z - b.min.z + 0.7, b.max.y + 0.7]);
+  renderPanel(cs, side, { shadow: false });
+  const cf = orthoCam(new THREE.Vector3(0, 0, 1), up, front, [b.max.x - b.min.x + 0.7, b.max.y + 0.7]);
+  renderPanel(cf, front, { shadow: false });
+  const ct = orthoCam(new THREE.Vector3(0, 1, 0), new THREE.Vector3(-1, 0, 0), top, [b.max.z - b.min.z + 0.4, b.max.x - b.min.x + 0.3]);
+  renderPanel(ct, top, { shadow: false });
+  blueprint(false);
+  dim(proj(cs, side, 0, 0, b.max.z), proj(cs, side, 0, 0, b.min.z), 16, `${DIM.length}`, COLOR.blue);
+  dim(proj(cs, side, 0, 0, b.min.z), proj(cs, side, 0, b.max.y, b.min.z), 16, `${DIM.height}`, COLOR.blue);
+  dim(proj(cf, front, b.min.x, 0, 0), proj(cf, front, b.max.x, 0, 0), 16, `${DIM.width}`, COLOR.blue);
+}
+
+function changes() {
+  const [x, y, w] = P.changes;
+  heading(`ALTERAÇÕES REV. ${REVISION}`, x, y, w);
+  bullets([
+    ['Sem roll cage e grades', 'Carga livre para a escavadeira.'],
+    ['Sensores rebaixados', 'Fora do arco da tampa basculante.'],
+    ['LiDAR no canto', 'Dianteiro do chassi.'],
+    ['Sem pé de apoio', 'Alças livres atrás.'],
+    ['Painel do operador', 'Display + emergência.'],
+    ['Suspensão e reboque', 'Molas, ganchos e engate.'],
+  ], x, y + 32, w, 14);
+}
+
+function specs() {
+  const [x, y, w] = P.specs;
+  heading('ESPECIFICAÇÕES', x, y, w);
+  const rows = [
+    ['Peso', '250 kg'],
+    ['Capacidade de carga', '200 kg'],
+    ['Volume da caçamba', `≈ ${bucketVolume.toFixed(1).replace('.', ',')} m³`],
+    ['Basculamento', '36° · cilindro hidráulico'],
+    ['Transmissão', 'Elétrica 4x4 · 2 diferenciais'],
+    ['Bateria', '70 V · 4× Power Pack'],
+    ['Velocidade máxima', '16 km/h manual · 10 km/h auto'],
+    ['Sensores', 'LiDAR, câmera estéreo, célula de carga'],
+    ['Dimensões (C×L×A)', `${DIM.length} × ${DIM.width} × ${DIM.height} mm`],
+    ['Entre-eixos / bitola', `${DIM.wheelbase} / ${DIM.track} mm`],
+    ['Rodas', `25×10-12 off-road · Ø ${DIM.wheel} mm`],
+    ['Vão livre', `${DIM.clearance} mm`],
+  ];
+  const rh = 21.5, top = y + 22;
+  ctx.strokeStyle = COLOR.line; ctx.lineWidth = 1.2 * S;
+  ctx.strokeRect(x * S, (top - 4) * S, w * S, (rows.length * rh + 8) * S);
+  rows.forEach(([k, v], i) => {
+    const yy = top + 16 + i * rh;
+    text(k, x + 10, yy, { size: 15.5 });
+    text(v, x + 175, yy, { size: 15.5, weight: 700 });
+    if (i) line(x, yy - 15.5, x + w, yy - 15.5, 'rgba(58,52,43,0.25)', 0.8);
+  });
+  // carimbo
+  const by = top + rows.length * rh + 14, bh = 64;
+  ctx.strokeRect(x * S, by * S, w * S, bh * S);
+  ctx.strokeStyle = COLOR.ink; ctx.lineWidth = 3 * S;
+  ctx.beginPath(); ctx.moveTo((x + 12) * S, (by + 52) * S); ctx.lineTo((x + 36) * S, (by + 12) * S); ctx.lineTo((x + 60) * S, (by + 52) * S); ctx.closePath(); ctx.stroke();
+  [['PROJETO', 'TERRA-BOTICS AXLE-E'], ['REVISÃO / DATA', `${REVISION} · ${DATE}`], ['DESENHO', AUTHOR]].forEach(([k, v], i) => {
+    text(k, x + 80, by + 18 + i * 18, { size: 12, color: COLOR.muted });
+    text(v, x + 190, by + 18 + i * 18, { size: 12.5, weight: 700 });
+  });
+}
+
+// ---------- montagem ----------
+async function build() {
+  await Promise.all(['700 40px Oswald', '500 40px Oswald', '400 16px "Roboto Condensed"', '700 16px "Roboto Condensed"'].map(f => document.fonts.load(f)));
+  paper();
+  header();
+  orthoViews();
+  hero();
+  details();
+  safety();
+  blueprintSection();
+  changes();
+  specs();
+}
+
+const status = document.getElementById('status'), dl = document.getElementById('dl');
+const NAME = `ficha-tecnica-axle-e-rev-${REVISION.toLowerCase()}.png`;
+window.__ficha = {
+  ready: build().then(() => { status.textContent = `Ficha técnica pronta (${W * S}×${H * S} px)`; dl.disabled = false; })
+    .catch(err => { status.textContent = 'Erro ao gerar a ficha: ' + err.message; throw err; }),
+  blob: () => new Promise(res => canvas.toBlob(res, 'image/png')),
+  name: NAME,
+};
+dl.addEventListener('click', async () => {
+  const url = URL.createObjectURL(await window.__ficha.blob());
+  const a = Object.assign(document.createElement('a'), { href: url, download: NAME });
+  a.click(); setTimeout(() => URL.revokeObjectURL(url), 2000);
+});
+</script>
+</body>
+</html>

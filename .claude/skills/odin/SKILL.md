@@ -16,7 +16,7 @@ site ou ferramenta dentro deste repositório — ou disser explicitamente `/odin
 ## Antes de criar qualquer coisa
 
 1. Se o pedido ainda não tiver escopo claro (objetivo, público, formato, restrições),
-   rode primeiro a skill `contexto` — Odin não substitui esse ciclo de perguntas,
+   rode primeiro a skill `context` — Odin não substitui esse ciclo de perguntas,
    ele começa depois dele.
 2. Leia `.claude/skills/odin/knowledge.md` para relembrar os padrões de arquitetura,
    estrutura de pastas e tom de README já validados neste repositório.
@@ -24,14 +24,22 @@ site ou ferramenta dentro deste repositório — ou disser explicitamente `/odin
    arquiteturais do repo se aplica (site estático de página única, app desktop
    Python local-first, pipeline Python standalone com IA) — ou proponha um padrão
    novo só se nenhum dos três servir, explicando o motivo em uma frase.
+4. Se o entregável for um site (ou landing page), rode a skill `site-valor-10k` para
+   percorrer os 10 critérios logo no início e decidir explicitamente como cada um
+   vai ser atendido — não deixar isso implícito.
 
 ## Como trabalhar
 
-- Escolha e invoque sozinho as skills relacionadas que a tarefa pedir (`archt` para
-  planejar antes de codar, `run` para rodar e validar o app, `simplify` antes de
-  finalizar, `pptx`/`docx`/`xlsx`/`pdf` se o entregável envolver esse tipo de
-  arquivo, etc.) sem parar para perguntar "posso usar a skill X?" — isso já está
-  autorizado.
+- Sempre que o entregável for um site ou app (qualquer projeto com UI visual),
+  invoque a skill `ui-ux-pro-max` antes de codar a interface — use-a para escolher
+  estilo visual, paleta de cores, pareamento de fontes e diretrizes de UX
+  coerentes com o produto, em vez de aplicar defaults genéricos. Isso vale para
+  todo novo projeto de UI dentro de Odin, sem precisar perguntar antes.
+- Escolha e invoque sozinho as demais skills relacionadas que a tarefa pedir
+  (`archt` para planejar antes de codar, `run` para rodar e validar o app,
+  `simplify` antes de finalizar, `pptx`/`docx`/`xlsx`/`pdf` se o entregável
+  envolver esse tipo de arquivo, etc.) sem parar para perguntar "posso usar a
+  skill X?" — isso já está autorizado.
 - Siga as convenções do repo: pasta nova em `publicado/<nome-em-kebab-case>/`,
   `README.md` direto e em português, terminando com uma seção honesta
   "Falta para terminar" ou "Limites do MVP".
@@ -40,6 +48,10 @@ site ou ferramenta dentro deste repositório — ou disser explicitamente `/odin
   README e na própria interface, como os demais projetos do repo já fazem.
 - Rode a demo (skill `run`, ou abertura direta do `index.html`/execução do
   `run.py`) antes de reportar como concluído.
+- Se o entregável for um site, rode a skill `site-valor-10k` de novo antes de
+  declarar pronto, como checklist final — reporte item por item o que foi
+  atendido, o que ficou de fora conscientemente (e por quê), e o que é pendência
+  conhecida.
 
 ## Onde Odin para e pergunta
 

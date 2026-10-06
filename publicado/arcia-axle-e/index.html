@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%231c1d1f%27/%3E%3Cpath d=%27M6 12h20l-3 8H9z%27 fill=%27%23f2b705%27/%3E%3Ccircle cx=%2711%27 cy=%2724%27 r=%273%27 fill=%27%23cfcbc3%27/%3E%3Ccircle cx=%2721%27 cy=%2724%27 r=%273%27 fill=%27%23cfcbc3%27/%3E%3C/svg%3E">
+<title>Arcia Axle-E</title>
+<meta name="description" content="Arcia Terra-Botics Axle-E: carrinho utilitário autônomo para obra — modelo 3D, simulação jogável e ficha técnica.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;900&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --concreto: #cfcbc3;
+    --concreto-2: #bdb8ae;
+    --asfalto: #1c1d1f;
+    --asfalto-2: #2a2b2e;
+    --amarelo: #f2b705;
+    --laranja: #ff6b1a;
+    --azul: #2a4f9e;
+    --lcd-bg: #0b1f12;
+    --lcd: #2bd46b;
+    --texto-suave: #4a4741;
+    --f-display: "Big Shoulders Stencil Display", "Arial Narrow", sans-serif;
+    --f-body: "Barlow", system-ui, sans-serif;
+    --f-mono: "IBM Plex Mono", ui-monospace, monospace;
+    --gutter: clamp(16px, 4vw, 56px);
+    --max: 1240px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+  body {
+    margin: 0; color: var(--asfalto); font: 400 17px/1.55 var(--f-body);
+    background-color: var(--concreto);
+    background-image:
+      radial-gradient(rgba(0,0,0,.06) 1px, transparent 1.2px),
+      radial-gradient(rgba(255,255,255,.18) 1px, transparent 1.4px);
+    background-size: 7px 7px, 11px 11px; background-position: 0 0, 3px 5px;
+  }
+  img { max-width: 100%; display: block; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--laranja); outline-offset: 3px; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
+  .mono { font-family: var(--f-mono); overflow-wrap: anywhere; }
+  kbd { font: 600 12px/1 var(--f-mono); background: var(--asfalto); color: var(--concreto); padding: 4px 7px; border-radius: 4px; }
+
+  /* ---------- display do operador (navegação) ---------- */
+  .topo { position: fixed; inset: 12px var(--gutter) auto; z-index: 20; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; pointer-events: none; }
+  .lcd {
+    pointer-events: auto; font: 500 13px/1.35 var(--f-mono); color: var(--lcd); background: var(--lcd-bg);
+    border: 3px solid var(--asfalto); border-radius: 8px; padding: 8px 12px 9px; min-width: 248px;
+    box-shadow: inset 0 0 18px rgba(43,212,107,.12), 0 6px 18px rgba(0,0,0,.25); text-shadow: 0 0 6px rgba(43,212,107,.55);
+    text-decoration: none;
+  }
+  .lcd .linha { display: flex; justify-content: space-between; gap: 14px; white-space: nowrap; }
+  .lcd .sec { color: #b9f5cf; }
+  .lcd .bat { display: inline-block; width: 46px; height: 9px; border: 1px solid var(--lcd); vertical-align: -1px; position: relative; }
+  .lcd .bat::after { content: ""; position: absolute; inset: 1px; width: var(--carga, 87%); background: var(--lcd); }
+  .menu { pointer-events: auto; display: flex; gap: 4px; background: var(--asfalto); border-radius: 8px; padding: 5px; flex-wrap: wrap; justify-content: flex-end; }
+  .menu a { color: var(--concreto); text-decoration: none; font: 600 14px/1 var(--f-body); padding: 9px 12px; border-radius: 5px; }
+  .menu a:hover, .menu a[aria-current="true"] { background: var(--amarelo); color: var(--asfalto); }
+
+  /* ---------- abertura ---------- */
+  .hero { min-height: 100svh; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: center; gap: 24px; padding: 110px var(--gutter) 40px; max-width: 1480px; margin: 0 auto; position: relative; }
+  .eyebrow { font: 500 13px/1.3 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--texto-suave); }
+  .hero h1 { font: 900 clamp(96px, 12.5vw, 210px)/.8 var(--f-display); margin: 14px 0 12px; letter-spacing: -.01em; color: var(--asfalto); white-space: nowrap; }
+  .hero h1 span { color: var(--amarelo); -webkit-text-stroke: 3px var(--asfalto); paint-order: stroke fill; }
+  .hero .sub { font: 600 clamp(20px, 2.1vw, 26px)/1.25 var(--f-body); margin: 0 0 14px; }
+  .hero p.lead { max-width: 46ch; margin: 0 0 26px; color: var(--texto-suave); }
+  .acoes { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn { font: 700 16px/1 var(--f-body); padding: 15px 20px; border-radius: 6px; border: 2px solid var(--asfalto); background: transparent; color: var(--asfalto); cursor: pointer; text-decoration: none; display: inline-flex; gap: 10px; align-items: center; }
+  .btn-pri { background: var(--amarelo); box-shadow: 4px 4px 0 var(--asfalto); }
+  .btn-pri:hover { transform: translate(-1px, -1px); box-shadow: 5px 5px 0 var(--asfalto); }
+  .btn-pri:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--asfalto); }
+  .btn:not(.btn-pri):hover { background: var(--asfalto); color: var(--concreto); }
+  .fatos { display: flex; flex-wrap: wrap; gap: 0; margin-top: 30px; border-top: 2px solid var(--asfalto); }
+  .fatos div { padding: 12px 18px 0 0; margin-right: 18px; }
+  .fatos b { display: block; font: 700 26px/1.1 var(--f-body); }
+  .fatos span { font: 400 12.5px/1.3 var(--f-mono); color: var(--texto-suave); text-transform: uppercase; letter-spacing: .04em; }
+  .palco { position: relative; height: min(78svh, 760px); min-height: 380px; }
+  .palco canvas { width: 100%; height: 100%; display: block; cursor: grab; touch-action: pan-y; }
+  .palco canvas:active { cursor: grabbing; }
+  .palco .dica { position: absolute; right: 8px; bottom: 6px; font: 400 12.5px/1 var(--f-mono); color: var(--texto-suave); }
+  .aviso-file { position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%); z-index: 30; background: var(--laranja); color: var(--asfalto); padding: 12px 16px; border-radius: 8px; font-weight: 600; max-width: calc(100% - 32px); display: none; }
+
+  /* ---------- seções ---------- */
+  section.bloco { padding: clamp(64px, 9vw, 120px) 0; }
+  .titulo { display: grid; grid-template-columns: auto 1fr; gap: 6px 22px; align-items: end; margin-bottom: 36px; }
+  .titulo h2 { font: 900 clamp(48px, 7vw, 92px)/.85 var(--f-display); margin: 0; }
+  .titulo p { margin: 0; max-width: 58ch; color: var(--texto-suave); align-self: end; padding-bottom: 6px; }
+  .escuro { background: var(--asfalto); color: var(--concreto); }
+  .escuro .titulo p, .escuro .eyebrow { color: #a9a49b; }
+  .escuro .btn { border-color: var(--concreto); color: var(--concreto); }
+  .escuro .btn-pri { color: var(--asfalto); border-color: var(--asfalto); box-shadow: 4px 4px 0 var(--amarelo); }
+  .faixa { height: 14px; background: repeating-linear-gradient(-45deg, var(--amarelo) 0 18px, var(--asfalto) 18px 36px); }
+
+  /* linha do tempo (ordem real das etapas) */
+  .tempo { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border-top: 2px solid var(--asfalto); }
+  .tempo li { padding: 18px 20px 26px 0; border-right: 1px dashed rgba(28,29,31,.35); margin-right: 20px; }
+  .tempo li:nth-child(4n) { border-right: 0; margin-right: 0; }
+  .tempo .n { font: 900 46px/1 var(--f-display); color: var(--amarelo); -webkit-text-stroke: 1.5px var(--asfalto); }
+  .tempo h3 { font: 700 21px/1.2 var(--f-body); margin: 6px 0 6px; }
+  .tempo p { margin: 0; color: var(--texto-suave); font-size: 15.5px; }
+
+  /* palcos interativos (carregam sob demanda) */
+  .tela { position: relative; border: 3px solid var(--asfalto); border-radius: 10px; overflow: hidden; background: var(--asfalto); aspect-ratio: 16 / 9; }
+  .tela > img { width: 100%; height: 100%; object-fit: cover; opacity: .8; }
+  .tela iframe, .tela canvas { width: 100%; height: 100%; border: 0; display: block; }
+  .tela .abrir { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 12px; text-align: center; background: linear-gradient(180deg, rgba(28,29,31,.1), rgba(28,29,31,.55)); }
+  .tela .abrir small { color: var(--concreto); font: 400 13px/1.3 var(--f-mono); background: rgba(28,29,31,.75); padding: 5px 9px; border-radius: 4px; }
+  .duas { display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); gap: 28px; align-items: start; }
+  .lista { margin: 0; padding: 0; list-style: none; }
+  .lista li { padding: 10px 0; border-bottom: 1px solid rgba(169,164,155,.3); }
+  .lista b { display: block; font-weight: 700; }
+  .lista span { color: #a9a49b; font-size: 15px; }
+  .ciclo { counter-reset: passo; list-style: none; padding: 0; margin: 0 0 22px; }
+  .ciclo li { counter-increment: passo; display: grid; grid-template-columns: 34px 1fr; gap: 10px; padding: 7px 0; align-items: baseline; }
+  .ciclo li::before { content: counter(passo); font: 900 26px/1 var(--f-display); color: var(--amarelo); }
+  .controles { display: grid; grid-template-columns: auto 1fr; gap: 9px 14px; align-items: center; font-size: 15px; margin-top: 8px; }
+  .h3 { font: 700 15px/1.2 var(--f-mono); text-transform: uppercase; letter-spacing: .06em; margin: 26px 0 10px; color: var(--amarelo); }
+  .legenda { font: 400 13px/1.4 var(--f-mono); color: var(--texto-suave); margin-top: 8px; }
+  .escuro .legenda { color: #a9a49b; }
+
+
+  /* fichas antes / depois */
+  .fichas { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; }
+  .ficha { margin: 0; }
+  .ficha a { display: block; border: 3px solid var(--asfalto); border-radius: 6px; overflow: hidden; }
+  .ficha img { width: 100%; aspect-ratio: 3/4.3; object-fit: cover; object-position: top; transition: transform .4s; }
+  .ficha a:hover img { transform: scale(1.02); }
+  .ficha figcaption { margin-top: 10px; }
+  .ficha figcaption b { font: 900 30px/1 var(--f-display); display: block; }
+  .mudancas { margin: 0; padding: 0 0 0 18px; font-size: 18px; }
+  .mudancas li { margin-bottom: 6px; break-inside: avoid; }
+
+
+  footer { padding: 28px 0 40px; font: 400 13px/1.5 var(--f-mono); color: var(--texto-suave); }
+
+  @media (max-width: 980px) {
+    .hero { grid-template-columns: 1fr; padding-top: 150px; }
+    .palco { height: 58svh; order: -1; }
+    .duas, .fichas { grid-template-columns: 1fr; }
+    .tempo { grid-template-columns: 1fr 1fr; }
+    .tempo li:nth-child(4n) { border-right: 1px dashed rgba(28,29,31,.35); margin-right: 20px; }
+    .tempo li:nth-child(2n) { border-right: 0; margin-right: 0; }
+    .titulo { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .menu { display: none; }
+    .lcd { min-width: 0; }
+    .tempo { grid-template-columns: 1fr; }
+    .tempo li { border-right: 0 !important; margin-right: 0 !important; border-bottom: 1px dashed rgba(28,29,31,.35); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .ficha img, .btn-pri { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <a class="lcd" href="#topo" aria-label="Voltar ao início">
+    <div class="linha"><span>ARCIA AXLE-E</span><span id="lcdStatus">SYS OK</span></div>
+    <div class="linha"><span class="sec" id="lcdSec">▸ INÍCIO</span><span><span class="bat"></span></span></div>
+  </a>
+  <nav class="menu" aria-label="Seções">
+    <a href="#trajetoria">Projeto</a>
+    <a href="#modelo">Modelo 3D</a>
+    <a href="#simulacao">Simulação</a>
+    <a href="#ficha">Ficha técnica</a>
+  </nav>
+</header>
+
+<main id="topo">
+  <section class="hero" data-lcd="INÍCIO">
+    <div>
+      <div class="eyebrow">Arcia Robotics · projeto conceito · 2026</div>
+      <h1>AXLE<span>-E</span></h1>
+      <p class="sub">Terra-Botics: carrinho utilitário autônomo para obra</p>
+      <p class="lead">Um carrinho elétrico 4x4 que transporta cascalho e entulho sozinho pelo canteiro: espera a escavadeira encher a caçamba, leva a carga ao bota-fora, bascula e volta. Aqui está o projeto inteiro, do modelo 3D à simulação jogável.</p>
+      <div class="acoes">
+        <a class="btn btn-pri" href="#simulacao" id="ctaJogar">Jogar a simulação</a>
+        <a class="btn" href="#ficha">Ver a ficha técnica</a>
+      </div>
+      <div class="fatos">
+        <div><b>200 kg</b><span>carga útil</span></div>
+        <div><b>70 V</b><span>4x4 elétrico</span></div>
+        <div><b>36°</b><span>basculamento</span></div>
+        <div><b>10 km/h</b><span>modo autônomo</span></div>
+      </div>
+    </div>
+    <div class="palco">
+      <canvas id="heroCanvas" aria-label="Modelo 3D do Axle-E girando; arraste para girar"></canvas>
+      <span class="dica">arraste para girar</span>
+    </div>
+  </section>
+
+  <div class="faixa" aria-hidden="true"></div>
+
+  <section class="bloco" id="trajetoria" data-lcd="PROJETO">
+    <div class="wrap">
+      <div class="titulo">
+        <h2>Como chegamos aqui</h2>
+        <p>Do primeiro modelo 3D à revisão pensada para operar sozinha com escavadeira e bota-fora, testada numa simulação de canteiro.</p>
+      </div>
+      <ol class="tempo">
+        <li><div class="n">1</div><h3>Modelo 3D na web</h3><p>Reconstrução em Three.js com texturas PBR geradas por código: pintura gasta, banda de rodagem, chapa xadrez e plástico nervurado.</p></li>
+        <li><div class="n">2</div><h3>Revisão B</h3><p>Sem roll cage e sem grades, sensores rebaixados para fora do arco da tampa, LiDAR no canto, painel do operador e suspensão com molas.</p></li>
+        <li><div class="n">3</div><h3>Simulação de obra</h3><p>Canteiro com escavadeira, trabalhadores, alerta de colisão, freio automático, sensor de peso e ciclo de transporte autônomo.</p></li>
+        <li><div class="n">4</div><h3>Ficha técnica</h3><p>Vistas, cotas e especificações geradas a partir do próprio modelo, para a ficha nunca divergir do carrinho.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="bloco" id="modelo" data-lcd="MODELO 3D">
+    <div class="wrap">
+      <div class="titulo">
+        <h2>Modelo 3D</h2>
+        <p>Gire, aproxime e veja de qualquer ângulo. É o mesmo modelo usado na simulação e na ficha técnica.</p>
+      </div>
+      <div class="tela" id="telaModelo">
+        <img src="imagens/ficha-tecnica-axle-e-rev-b-web.jpg" alt="" style="object-position: 50% 32%">
+        <div class="abrir">
+          <button class="btn btn-pri" type="button" id="abrirModelo">Abrir visualizador 3D</button>
+          <small>carrega o modelo interativo nesta área</small>
+        </div>
+      </div>
+      <p class="legenda" id="legendaModelo">Revisão B · 3500 × 2240 × 1580 mm · arraste para girar, role para aproximar</p>
+    </div>
+  </section>
+
+  <section class="bloco escuro" id="simulacao" data-lcd="SIMULAÇÃO">
+    <div class="wrap">
+      <div class="titulo">
+        <h2>Simulação na obra</h2>
+        <p>Dirija você mesmo ou ligue a auto-execução e veja o carrinho trabalhar sozinho. Trabalhadores cruzam as vias: o sensor alerta e o freio automático para o carrinho a tempo.</p>
+      </div>
+      <div class="duas">
+        <div>
+          <div class="tela" id="telaJogo">
+            <img src="imagens/captura-jogo.jpg" alt="Carrinho estacionado na baia enquanto a escavadeira despeja cascalho na caçamba">
+            <div class="abrir">
+              <button class="btn btn-pri" type="button" id="abrirJogo">Iniciar simulação</button>
+              <small>precisa de teclado · clique no jogo para controlar</small>
+            </div>
+          </div>
+          <div class="acoes" style="margin-top:12px">
+            <a class="btn" href="simulacao.html" target="_blank" rel="noopener">Abrir em tela cheia</a>
+          </div>
+          <img src="imagens/captura-obra.jpg" alt="Visão geral do canteiro: prédio em construção, grua, betoneira, estoques e vias de terra" style="margin-top:22px;border-radius:10px;border:3px solid var(--asfalto-2)" loading="lazy">
+        </div>
+        <aside>
+          <div class="h3">Ciclo autônomo</div>
+          <ol class="ciclo">
+            <li>Vai até a baia de carregamento</li>
+            <li>Espera o sensor de peso marcar 170 kg</li>
+            <li>Leva a carga ao bota-fora</li>
+            <li>Bascula a caçamba a 36°</li>
+            <li>Recolhe a caçamba</li>
+            <li>Dá ré e repete</li>
+          </ol>
+          <div class="h3">Segurança</div>
+          <ul class="lista">
+            <li><b>Alerta de colisão</b><span>LiDAR e câmera vigiam o caminho à frente ou em ré, já considerando a curva.</span></li>
+            <li><b>Freio automático</b><span>Para a 7 m/s² e não deixa arrancar em direção ao obstáculo.</span></li>
+            <li><b>Status no carrinho</b><span>A barra muda entre SYS OK, AUTO, ALERTA e FREIO.</span></li>
+          </ul>
+          <div class="h3">Controles</div>
+          <div class="controles">
+            <span><kbd>W</kbd> <kbd>S</kbd></span><span>acelerar e ré</span>
+            <span><kbd>A</kbd> <kbd>D</kbd></span><span>virar</span>
+            <span><kbd>E</kbd> <kbd>Q</kbd></span><span>levantar e baixar a caçamba</span>
+            <span><kbd>P</kbd></span><span>ligar a auto-execução</span>
+            <span><kbd>L</kbd> <kbd>M</kbd> <kbd>C</kbd></span><span>faróis, som, câmera</span>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloco" id="ficha" data-lcd="FICHA TÉCNICA">
+    <div class="wrap">
+      <div class="titulo">
+        <h2>Ficha técnica</h2>
+        <p>Desenhada a partir do próprio modelo 3D: as vistas, as cotas e as especificações saem direto da geometria da revisão B.</p>
+      </div>
+      <div class="fichas">
+        <figure class="ficha">
+          <a href="imagens/ficha-tecnica-axle-e-rev-b.png" target="_blank" rel="noopener"><img src="imagens/ficha-tecnica-axle-e-rev-b-web.jpg" alt="Ficha técnica revisão B com vistas, cotas e especificações" loading="lazy"></a>
+          <figcaption><b>Revisão B</b><span class="legenda">clique para abrir em alta resolução (3000 × 4320 px)</span></figcaption>
+        </figure>
+        <div>
+          <div class="h3" style="color:var(--asfalto);margin-top:0">O que mudou na revisão B</div>
+          <ul class="mudancas">
+            <li>Roll cage e grades removidos: a escavadeira carrega por cima</li>
+            <li>Câmera e barra de status abaixo do arco da tampa basculante</li>
+            <li>LiDAR no canto dianteiro do chassi</li>
+            <li>Pé de apoio traseiro removido</li>
+            <li>Painel do operador com display e botão de emergência</li>
+            <li>Suspensão com molas, ganchos e engate de reboque</li>
+          </ul>
+          <div class="acoes" style="margin-top:24px">
+            <a class="btn btn-pri" href="imagens/ficha-tecnica-axle-e-rev-b.png" target="_blank" rel="noopener">Abrir em alta resolução</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">Arcia Robotics · Terra-Botics Axle-E · Leonardo Manzo · 2026</footer>
+<div class="aviso-file" id="avisoFile">Abra esta página pelo servidor local (<span class="mono">python serve.py</span>) para o modelo 3D e o jogo funcionarem.</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (location.protocol === 'file:') document.getElementById('avisoFile').style.display = 'block';
+
+// ---------- display do operador acompanha a seção visível ----------
+function lcdNav() {
+  const sec = document.getElementById('lcdSec'), links = [...document.querySelectorAll('.menu a')];
+  const io = new IntersectionObserver(entries => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      sec.textContent = '▸ ' + e.target.dataset.lcd;
+      links.forEach(a => a.setAttribute('aria-current', String(a.hash === '#' + e.target.id)));
+    }
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  document.querySelectorAll('[data-lcd]').forEach(s => io.observe(s));
+}
+
+// ---------- carrinho 3D na abertura ----------
+async function hero() {
+  const canvas = document.getElementById('heroCanvas');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  const scene = new THREE.Scene();
+  scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+  const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 50);
+  camera.position.set(5.6, 2.6, 5.2);
+  const sun = new THREE.DirectionalLight(0xffffff, 2.2);
+  sun.position.set(3, 7, 4); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+  Object.assign(sun.shadow.camera, { left: -4, right: 4, top: 4, bottom: -4 });
+  scene.add(sun, new THREE.HemisphereLight(0xfff4dd, 0x8a7a5a, 0.6));
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), new THREE.ShadowMaterial({ opacity: 0.25 }));
+  floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+
+  const { buildCart } = await import('./js/cart.js');
+  const cart = buildCart();
+  cart.root.position.z = 0.45;
+  scene.add(cart.root);
+  cart.setDisplay({ speed: 0, load: 0, dump: 0, battery: 87, mode: 'AUTO' });
+
+  const controls = new OrbitControls(camera, canvas);
+  controls.target.set(0, 0.7, 0);
+  controls.enableZoom = false; controls.enablePan = false; controls.enableDamping = true;
+  controls.minPolarAngle = 0.6; controls.maxPolarAngle = 1.45;
+  controls.autoRotate = !reduceMotion; controls.autoRotateSpeed = 0.9;
+
+  const cta = document.getElementById('ctaJogar');
+  cta.addEventListener('mouseenter', () => cart.setStatus('auto'));
+  cta.addEventListener('mouseleave', () => cart.setStatus('ok'));
+
+  function resize() {
+    const { clientWidth: w, clientHeight: h } = canvas;
+    renderer.setSize(w, h, false); camera.aspect = w / h;
+    camera.fov = camera.aspect < 1 ? 30 / camera.aspect ** 0.75 : 30;   // tela estreita: abre o enquadramento
+    camera.updateProjectionMatrix();
+  }
+  new ResizeObserver(resize).observe(canvas); resize();
+  let visible = true;
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(canvas);
+  const clock = new THREE.Clock();
+  renderer.setAnimationLoop(() => {
+    const dt = clock.getDelta();
+    if (!visible) return;
+    cart.update(dt); controls.update(); renderer.render(scene, camera);
+  });
+}
+
+// ---------- visualizadores sob demanda ----------
+function iframeIn(tela, src, title) {
+  tela.innerHTML = `<iframe src="${src}" title="${title}" allow="fullscreen" loading="eager"></iframe>`;
+  tela.querySelector('iframe').focus();
+}
+
+function setupModelo() {
+  document.getElementById('abrirModelo').addEventListener('click', () =>
+    iframeIn(document.getElementById('telaModelo'), 'modelo.html', 'Visualizador 3D do Axle-E'));
+}
+
+function setupJogo() {
+  document.getElementById('abrirJogo').addEventListener('click', () =>
+    iframeIn(document.getElementById('telaJogo'), 'simulacao.html', 'Simulação de obra Terra-Botics'));
+}
+
+lcdNav();
+setupModelo();
+setupJogo();
+hero().catch(err => {
+  console.error('Modelo 3D da abertura não carregou:', err);
+  document.querySelector('.palco .dica').textContent = 'não foi possível carregar o modelo 3D — abra pelo servidor local';
+});
+</script>
+</body>
+</html>

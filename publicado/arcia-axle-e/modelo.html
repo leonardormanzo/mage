@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%231c1d1f%27/%3E%3Cpath d=%27M6 12h20l-3 8H9z%27 fill=%27%23f2b705%27/%3E%3Ccircle cx=%2711%27 cy=%2724%27 r=%273%27 fill=%27%23cfcbc3%27/%3E%3Ccircle cx=%2721%27 cy=%2724%27 r=%273%27 fill=%27%23cfcbc3%27/%3E%3C/svg%3E">
+<title>Terra-Botics Axle-E 3D</title>
+<style>
+  :root { --ink:#1d1a15; --paper:#eadfc8; --accent:#e0a21b; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; height:100%; overflow:hidden; background:var(--paper); font-family: "Segoe UI", system-ui, sans-serif; color:var(--ink); }
+  canvas { display:block; touch-action:none; }
+  header { position:fixed; top:14px; left:16px; right:16px; pointer-events:none; }
+  h1 { margin:0; font-size:clamp(18px,3.4vw,30px); letter-spacing:.5px; font-weight:800; text-transform:uppercase; }
+  header p { margin:2px 0 0; font-size:13px; opacity:.7; }
+  .bar { position:fixed; bottom:16px; left:50%; transform:translateX(-50%); display:flex; flex-wrap:wrap; gap:8px; justify-content:center; width:calc(100% - 32px); max-width:720px; }
+  button { font:inherit; font-size:13px; font-weight:600; padding:8px 14px; border-radius:8px; border:1.5px solid var(--ink); background:rgba(255,255,255,.55); color:var(--ink); cursor:pointer; backdrop-filter:blur(4px); }
+  button:hover { background:var(--accent); }
+  button[aria-pressed="true"] { background:var(--ink); color:var(--paper); }
+  .hint { position:fixed; right:16px; bottom:70px; font-size:12px; opacity:.6; text-align:right; pointer-events:none; }
+  @media (max-width:600px){ .hint{ display:none; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Terra-Botics Axle-E</h1>
+  <p>Apoio logístico 4x4 · carrinho utilitário autônomo (conceito)</p>
+</header>
+<div class="bar" id="bar">
+  <button id="rot" aria-pressed="true">Girar automático</button>
+  <button data-view="hero">Hero</button>
+  <button data-view="front">Frente</button>
+  <button data-view="side">Lateral</button>
+  <button data-view="rear">Traseira</button>
+  <button data-view="top">Topo</button>
+</div>
+<div class="hint">Arraste: girar · Scroll: zoom · Botão direito: mover</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { buildCart } from './js/cart.js';
+
+// ---------- cena ----------
+const renderer = new THREE.WebGLRenderer({ antialias:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+document.body.prepend(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xeadfc8);
+scene.fog = new THREE.Fog(0xeadfc8, 12, 28);
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+const camera = new THREE.PerspectiveCamera(40, innerWidth / innerHeight, 0.1, 100);
+camera.position.set(4.6, 2.8, 4.8);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 0.95, -0.1);
+controls.enableDamping = true;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 1.2;
+controls.maxPolarAngle = Math.PI / 2 - 0.02;
+controls.minDistance = 2.5;
+controls.maxDistance = 14;
+
+const sun = new THREE.DirectionalLight(0xffffff, 2.2);
+sun.position.set(4, 7, 3);
+sun.castShadow = true;
+sun.shadow.mapSize.set(4096, 4096);
+Object.assign(sun.shadow.camera, { left:-4, right:4, top:4, bottom:-4, near:1, far:20 });
+sun.shadow.bias = -0.0004;
+scene.add(sun, new THREE.HemisphereLight(0xfff4dd, 0x8a7a5a, 0.5));
+
+const floor = new THREE.Mesh(new THREE.CircleGeometry(14, 64), new THREE.MeshStandardMaterial({ color:0xd9cbaa, roughness:1 }));
+floor.rotation.x = -Math.PI / 2;
+floor.receiveShadow = true;
+scene.add(floor);
+const grid = new THREE.GridHelper(20, 40, 0x8c7b57, 0xb9a77f);
+grid.position.y = 0.002;
+grid.material.transparent = true; grid.material.opacity = 0.35;
+scene.add(grid);
+
+// ---------- carrinho ----------
+const cart = buildCart();
+scene.add(cart.root);
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+
+// ---------- UI ----------
+const views = {
+  hero:  { pos: V(4.6, 2.8, 4.8),  target: V(0, 0.95, -0.1) },
+  front: { pos: V(0, 1.4, 7.5),    target: V(0, 0.95, 0) },
+  rear:  { pos: V(0, 1.6, -7.5),   target: V(0, 0.95, 0) },
+  side:  { pos: V(8, 1.2, 0),      target: V(0, 0.95, -0.2) },
+  top:   { pos: V(0.01, 10, 0.01), target: V(0, 0.5, -0.1) },
+};
+let tween = null;
+document.querySelectorAll('[data-view]').forEach(btn => btn.addEventListener('click', () => {
+  const v = views[btn.dataset.view];
+  tween = { fromPos: camera.position.clone(), fromTgt: controls.target.clone(), toPos: v.pos, toTgt: v.target, t: 0 };
+  setAuto(false);
+}));
+const rotBtn = document.getElementById('rot');
+function setAuto(on) { controls.autoRotate = on; rotBtn.setAttribute('aria-pressed', String(on)); }
+rotBtn.addEventListener('click', () => setAuto(!controls.autoRotate));
+controls.addEventListener('start', () => setAuto(false));
+
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+const clock = new THREE.Clock();
+const ease = t => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+(function loop() {
+  requestAnimationFrame(loop);
+  if (tween) {
+    tween.t = Math.min(1, tween.t + 0.025);
+    const k = ease(tween.t);
+    camera.position.lerpVectors(tween.fromPos, tween.toPos, k);
+    controls.target.lerpVectors(tween.fromTgt, tween.toTgt, k);
+    if (tween.t >= 1) tween = null;
+  }
+  cart.update(clock.getDelta());
+  controls.update();
+  renderer.render(scene, camera);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#FAF7F0" />
+<title>Simulador de Reforma — Veja Propostas para o Seu Apartamento</title>
+<meta name="description" content="Simulador: conte a área do seu apartamento, o orçamento e o que é mais importante pra você, e veja várias propostas de reforma diferentes — com custo, prazo e impacto ambiental estimados de cada uma." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --color-primary: #2f6e4c;
+    --color-primary-strong: #234f38;
+    --color-primary-soft: #e4f1e8;
+    --color-on-primary: #ffffff;
+
+    --color-sand: #a9835a;
+    --color-sand-soft: #f1e9da;
+    --color-orange: #c96f2e;
+    --color-orange-soft: #f8e6d4;
+    --color-terracotta: #b5563c;
+    --color-terracotta-soft: #f3e1db;
+
+    --color-bg: #faf7f0;
+    --color-bg-alt: #f2ede1;
+    --color-surface: #ffffff;
+    --color-surface-alt: #f5f1e8;
+    --color-border: #e8e1d2;
+    --color-border-strong: #d8cfb9;
+    --color-text: #2b2a26;
+    --color-text-muted: #6b6659;
+    --color-text-faint: #948e7d;
+
+    --color-danger: #c1352f;
+    --color-danger-soft: #f7e1df;
+    --color-success: #2f6e4c;
+    --color-success-soft: #e4f1e8;
+
+    --font-display: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
+    --font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
+
+    --space-2: 8px; --space-3: 12px; --space-4: 16px;
+    --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px;
+
+    --radius-md: 16px; --radius-lg: 20px; --radius-xl: 28px; --radius-pill: 999px;
+    --shadow-sm: 0 1px 2px rgba(43, 42, 38, 0.07);
+    --shadow-md: 0 6px 16px -4px rgba(43, 42, 38, 0.12), 0 2px 6px rgba(43, 42, 38, 0.06);
+    color-scheme: light;
+  }
+
+  * { box-sizing: border-box; }
+  html { background: var(--color-bg); }
+  body {
+    margin: 0; background: var(--color-bg); color: var(--color-text);
+    font-family: var(--font-body); line-height: 1.55; font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 800; margin: 0; letter-spacing: -0.01em; }
+  :focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; border-radius: 4px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+  /* ---------- Hero (simula a seção de um site de reforma) ---------- */
+  .hero {
+    background: linear-gradient(180deg, var(--color-bg-alt), var(--color-bg));
+    padding: var(--space-8) var(--space-6) var(--space-7);
+    text-align: center;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .hero .eyebrow {
+    font-size: 0.82rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--color-primary); margin-bottom: var(--space-3);
+  }
+  .hero h1 { font-size: clamp(1.7rem, 1.3rem + 1.6vw, 2.6rem); max-width: 720px; margin: 0 auto var(--space-4); color: var(--color-text); }
+  .hero p.lead { max-width: 560px; margin: 0 auto; color: var(--color-text-muted); font-size: 1.05rem; }
+
+  main { max-width: 1280px; margin: 0 auto; padding: var(--space-6); display: grid; grid-template-columns: 340px 1fr; gap: var(--space-6); align-items: flex-start; }
+  @media (max-width: 920px) { main { grid-template-columns: 1fr; padding: var(--space-4); } }
+
+  .panel {
+    background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl);
+    padding: var(--space-5); box-shadow: var(--shadow-sm);
+  }
+  .panel-form { position: sticky; top: var(--space-5); display: flex; flex-direction: column; gap: var(--space-5); }
+  @media (max-width: 920px) { .panel-form { position: static; } }
+
+  .panel h2 { font-size: 1.1rem; margin-bottom: var(--space-1); }
+  .panel .hint { color: var(--color-text-muted); font-size: 0.88rem; margin: 0 0 var(--space-4); }
+
+  .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: var(--space-4); }
+  .field:last-child { margin-bottom: 0; }
+  .field label { font-size: 0.86rem; color: var(--color-text); font-weight: 600; display: flex; justify-content: space-between; }
+  .field label .val { color: var(--color-primary); font-weight: 700; }
+  .field .field-hint { font-size: 0.78rem; color: var(--color-text-faint); margin-top: -2px; }
+  input[type="number"], select {
+    background: var(--color-surface-alt); border: 1px solid var(--color-border); color: var(--color-text);
+    border-radius: var(--radius-md); padding: 11px 12px; font-size: 0.98rem; width: 100%; min-height: 48px;
+  }
+  input[type="range"] { width: 100%; accent-color: var(--color-primary); height: 22px; }
+  fieldset { border: none; padding: 0; margin: 0 0 var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); }
+  legend { font-size: 0.86rem; color: var(--color-text); font-weight: 700; padding: 0 0 var(--space-2); }
+
+  .btn {
+    font-family: var(--font-display); font-weight: 700; font-size: 1rem; border: none; border-radius: var(--radius-pill);
+    padding: 14px 20px; cursor: pointer; transition: transform 150ms ease, background 150ms ease; min-height: 48px;
+  }
+  .btn-primary { background: var(--color-primary); color: var(--color-on-primary); width: 100%; box-shadow: var(--shadow-md); }
+  .btn-primary:hover { background: var(--color-primary-strong); transform: translateY(-1px); }
+
+  .toolbar {
+    display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-5);
+    justify-content: space-between;
+  }
+  .toolbar .left { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+  .toolbar select { width: auto; min-height: 44px; }
+  .toolbar label.check { display: flex; align-items: center; gap: 6px; font-size: 0.86rem; color: var(--color-text-muted); cursor: pointer; }
+  .count { font-size: 0.84rem; color: var(--color-text-faint); }
+
+  .grid-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-5); }
+
+  .card {
+    background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl);
+    padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-4); box-shadow: var(--shadow-sm);
+  }
+  .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-2); }
+  .rank { font-size: 0.8rem; color: var(--color-text-faint); font-weight: 600; }
+  .rank strong { color: var(--color-sand); font-size: 1rem; }
+  .score-gauge { display: flex; align-items: center; gap: 8px; }
+  .score-gauge .bar { width: 60px; height: 7px; border-radius: 4px; background: var(--color-surface-alt); overflow: hidden; }
+  .score-gauge .bar > span { display: block; height: 100%; background: linear-gradient(90deg, var(--color-primary), var(--color-sand)); }
+  .score-gauge .num { font-size: 0.8rem; color: var(--color-primary-strong); font-weight: 700; }
+
+  .card h3 { font-size: 1.02rem; line-height: 1.35; }
+  .card .sub { font-size: 0.82rem; color: var(--color-text-muted); }
+
+  .diagram { display: block; width: 100%; height: auto; background: var(--color-surface-alt); border-radius: var(--radius-md); border: 1px solid var(--color-border); }
+
+  .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; font-size: 0.84rem; }
+  .metrics .m-label { color: var(--color-text-faint); }
+  .metrics .m-val { color: var(--color-text); font-weight: 700; text-align: right; }
+
+  .budget-badge {
+    font-size: 0.76rem; font-weight: 700; padding: 6px 11px; border-radius: var(--radius-pill);
+    display: inline-flex; align-self: flex-start;
+  }
+  .budget-badge.ok { background: var(--color-success-soft); color: var(--color-primary-strong); }
+  .budget-badge.over { background: var(--color-danger-soft); color: var(--color-danger); }
+
+  .empty-state {
+    border: 1px dashed var(--color-border-strong); border-radius: var(--radius-xl); padding: var(--space-8);
+    text-align: center; color: var(--color-text-muted); font-size: 0.95rem; background: var(--color-surface);
+  }
+
+  .info-box {
+    margin-top: var(--space-6); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl);
+    padding: var(--space-5);
+  }
+  .info-box h2 { font-size: 1.05rem; margin-bottom: var(--space-3); }
+  .info-box p, .info-box li { color: var(--color-text-muted); font-size: 0.9rem; }
+  .info-box ul { margin: 0; padding-left: 1.1em; }
+  .info-box details summary { cursor: pointer; font-weight: 600; color: var(--color-text); margin-top: var(--space-3); }
+
+  .cta-strip {
+    margin-top: var(--space-7); text-align: center; padding: var(--space-7) var(--space-5);
+    background: var(--color-primary-soft); border-radius: var(--radius-xl);
+  }
+  .cta-strip h2 { font-size: 1.2rem; margin-bottom: var(--space-2); }
+  .cta-strip p { color: var(--color-text-muted); margin: 0 0 var(--space-4); }
+  .cta-strip .btn-primary { width: auto; padding-left: 28px; padding-right: 28px; }
+
+  footer.site {
+    border-top: 1px solid var(--color-border); padding: var(--space-6); margin-top: var(--space-7);
+    color: var(--color-text-faint); font-size: 0.8rem; text-align: center;
+  }
+  footer.site a { color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <p class="eyebrow">Simulador de reforma</p>
+  <h1>Descubra caminhos diferentes para reformar o seu apartamento</h1>
+  <p class="lead">Conte a área do seu apê, o orçamento e o que mais importa pra você. Em segundos, você vê várias
+    propostas de reforma diferentes — com custo, prazo e impacto ambiental estimados de cada uma.</p>
+</section>
+
+<main>
+  <form class="panel panel-form" id="form-restricoes" aria-label="Dados do seu apartamento">
+    <div>
+      <h2>Conte sobre seu apê</h2>
+      <p class="hint">Esses números são a base para gerar as propostas ao lado.</p>
+    </div>
+
+    <div class="field">
+      <label for="input-area">Área do apartamento (m²) <span class="val" id="val-area">65</span></label>
+      <input type="number" id="input-area" min="25" max="400" step="5" value="65" />
+    </div>
+
+    <div class="field">
+      <label for="input-quartos">Quantos quartos tem hoje?</label>
+      <select id="input-quartos">
+        <option value="1">1 quarto</option>
+        <option value="2" selected>2 quartos</option>
+        <option value="3">3 quartos</option>
+        <option value="4">4 quartos</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="input-orcamento">Orçamento disponível (R$) <span class="val" id="val-orcamento">80.000</span></label>
+      <input type="number" id="input-orcamento" min="10000" max="2000000" step="5000" value="80000" />
+    </div>
+
+    <fieldset>
+      <legend>O que é mais importante pra você? (0–10)</legend>
+      <div class="field">
+        <label for="peso-custo">Economizar <span class="val" id="val-peso-custo">5</span></label>
+        <input type="range" id="peso-custo" min="0" max="10" value="5" />
+      </div>
+      <div class="field">
+        <label for="peso-eficiencia">Ganhar espaço e integração <span class="val" id="val-peso-eficiencia">5</span></label>
+        <input type="range" id="peso-eficiencia" min="0" max="10" value="5" />
+      </div>
+      <div class="field">
+        <label for="peso-sustentabilidade">Sustentabilidade da obra <span class="val" id="val-peso-sustentabilidade">5</span></label>
+        <input type="range" id="peso-sustentabilidade" min="0" max="10" value="5" />
+      </div>
+    </fieldset>
+
+    <button type="submit" class="btn btn-primary">Gerar propostas</button>
+  </form>
+
+  <section class="panel-results" aria-label="Propostas de reforma geradas">
+    <div class="toolbar">
+      <div class="left">
+        <label for="sort-select" style="font-size:0.86rem;color:var(--color-text-muted);">Ordenar por</label>
+        <select id="sort-select">
+          <option value="score">Melhor combinação (critérios ao lado)</option>
+          <option value="custo">Mais barato primeiro</option>
+          <option value="eficiencia">Mais integração primeiro</option>
+          <option value="co2">Mais sustentável primeiro</option>
+        </select>
+        <label class="check">
+          <input type="checkbox" id="filtro-orcamento" checked />
+          Só mostrar o que cabe no orçamento
+        </label>
+      </div>
+      <span class="count" id="count-text"></span>
+    </div>
+
+    <div class="grid-results" id="grid-results"></div>
+  </section>
+
+  <div class="info-box" style="grid-column: 1 / -1;">
+    <h2>Como isso é calculado</h2>
+    <p>A partir da área e dos quartos que você informou, o simulador testa sozinho várias combinações de
+      <strong>quanto da planta é mexida</strong> (só acabamento, reforma parcial com uma parede a menos, ou reforma
+      ampla e integrada), <strong>nível de acabamento</strong>, <strong>tipo de material</strong> (convencional ou de
+      menor impacto ambiental) e, se você tiver 2+ quartos, <strong>o que fazer com um quarto sobrando</strong>. Para
+      cada combinação, calculamos custo, prazo de obra, ganho de integração dos ambientes e impacto ambiental
+      estimado — e ranqueamos tudo pela nota que combina os três critérios que você ajustar ao lado.</p>
+    <details>
+      <summary>Ver os limites desses números</summary>
+      <ul>
+        <li>Os valores de custo, prazo e impacto ambiental são <strong>estimativas de referência</strong>, calibradas
+          de forma simplificada — não são um orçamento fechado. O valor real varia por região, fornecedor e projeto.</li>
+        <li>Isso não substitui uma visita técnica, um projeto de arquitetura ou um orçamento formal de uma
+          construtora/arquiteto(a).</li>
+      </ul>
+    </details>
+  </div>
+
+  <div class="cta-strip" style="grid-column: 1 / -1;">
+    <h2>Gostou de alguma proposta?</h2>
+    <p>Fale com nosso time e transforme a simulação em um projeto de verdade.</p>
+    <button type="button" class="btn btn-primary">Falar com um especialista</button>
+  </div>
+</main>
+
+<footer class="site">
+  Protótipo demonstrativo — Mago da IA · Leonardo Manzo ·
+  <a href="https://www.linkedin.com/in/leonardo-manzo-05ab4075" target="_blank" rel="noopener">contato pelo LinkedIn</a>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---------- Dados de referência (calibrar antes de uso comercial) ----------
+  var INTERVENCOES = {
+    acabamento: { nome: 'Só acabamentos', custoPorM2: 650, semanasBase: 3, integracao: 0.08, residuo: 0.3 },
+    parcial: { nome: 'Reforma parcial (integra 2 ambientes)', custoPorM2: 1250, semanasBase: 6, integracao: 0.40, residuo: 0.6 },
+    ampla: { nome: 'Reforma ampla (planta bem integrada)', custoPorM2: 1900, semanasBase: 10, integracao: 0.70, residuo: 1.0 }
+  };
+  var PADRAO_MULT = { economico: 0.8, medio: 1.0, alto: 1.45 };
+  var PADRAO_NOMES = { economico: 'acabamento econômico', medio: 'acabamento médio', alto: 'acabamento alto padrão' };
+  var MATERIAIS = {
+    convencional: { nome: 'Materiais convencionais', custoMult: 1.0, impactoMult: 1.0 },
+    sustentavel: { nome: 'Materiais de menor impacto', custoMult: 1.12, impactoMult: 0.55 }
+  };
+  var DESTINO_EXTRA = {
+    manter: { nome: 'quartos como estão', custoFixo: 0, integracaoBonus: 0 },
+    escritorio: { nome: 'um quarto virou home office', custoFixo: 4500, integracaoBonus: 0.04 },
+    suite: { nome: 'um quarto virou suíte ampliada', custoFixo: 16000, integracaoBonus: 0.02 }
+  };
+  var CO2_BASE_POR_M2 = 55; // kg CO2e/m² de resíduo+material, referência simplificada
+  var MAX_CARDS = 18;
+
+  var rawCandidates = [];
+
+  // ---------- Geração paramétrica ----------
+  function generateCandidates(inputs) {
+    var out = [];
+    var destinosPossiveis = inputs.quartos >= 2 ? Object.keys(DESTINO_EXTRA) : ['manter'];
+
+    Object.keys(INTERVENCOES).forEach(function (intervKey) {
+      var interv = INTERVENCOES[intervKey];
+      Object.keys(PADRAO_MULT).forEach(function (padraoKey) {
+        var padraoMult = PADRAO_MULT[padraoKey];
+        Object.keys(MATERIAIS).forEach(function (matKey) {
+          var mat = MATERIAIS[matKey];
+          destinosPossiveis.forEach(function (destKey) {
+            var dest = DESTINO_EXTRA[destKey];
+
+            var custoPorM2 = interv.custoPorM2 * padraoMult * mat.custoMult;
+            var custoTotal = custoPorM2 * inputs.area + dest.custoFixo;
+
+            var semanas = interv.semanasBase + inputs.area / 15 + (padraoKey === 'alto' ? 2 : 0);
+
+            var integracao = clamp(interv.integracao + dest.integracaoBonus, 0.05, 0.85);
+
+            var co2PorM2 = CO2_BASE_POR_M2 * interv.residuo * mat.impactoMult;
+            var co2Total = co2PorM2 * inputs.area;
+
+            out.push({
+              intervKey: intervKey, intervNome: interv.nome,
+              padraoKey: padraoKey, padraoNome: PADRAO_NOMES[padraoKey],
+              matKey: matKey, matNome: mat.nome,
+              destKey: destKey, destNome: dest.nome,
+              custoPorM2: custoPorM2, custoTotal: custoTotal,
+              semanas: Math.round(semanas),
+              integracao: integracao,
+              co2PorM2: co2PorM2, co2Total: co2Total
+            });
+          });
+        });
+      });
+    });
+    return out;
+  }
+
+  function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+  // ---------- Pontuação e ordenação ----------
+  function scoreAndSort(candidates, weights, sortMode) {
+    if (candidates.length === 0) return [];
+    var custos = candidates.map(function (c) { return c.custoTotal; });
+    var integs = candidates.map(function (c) { return c.integracao; });
+    var co2s = candidates.map(function (c) { return c.co2PorM2; });
+    var minCusto = Math.min.apply(null, custos), maxCusto = Math.max.apply(null, custos);
+    var minInteg = Math.min.apply(null, integs), maxInteg = Math.max.apply(null, integs);
+    var minCo2 = Math.min.apply(null, co2s), maxCo2 = Math.max.apply(null, co2s);
+
+    var totalPeso = weights.custo + weights.eficiencia + weights.sustentabilidade;
+    if (totalPeso === 0) totalPeso = 1;
+
+    var scored = candidates.map(function (c) {
+      var custoScore = maxCusto > minCusto ? 1 - (c.custoTotal - minCusto) / (maxCusto - minCusto) : 1;
+      var integScore = maxInteg > minInteg ? (c.integracao - minInteg) / (maxInteg - minInteg) : 1;
+      var co2Score = maxCo2 > minCo2 ? 1 - (c.co2PorM2 - minCo2) / (maxCo2 - minCo2) : 1;
+      var score = (weights.custo * custoScore + weights.eficiencia * integScore + weights.sustentabilidade * co2Score) / totalPeso;
+      return Object.assign({}, c, { score: score });
+    });
+
+    scored.sort(function (a, b) {
+      if (sortMode === 'custo') return a.custoTotal - b.custoTotal;
+      if (sortMode === 'eficiencia') return b.integracao - a.integracao;
+      if (sortMode === 'co2') return a.co2PorM2 - b.co2PorM2;
+      return b.score - a.score;
+    });
+    return scored;
+  }
+
+  // ---------- Render da planta simplificada ----------
+  function renderDiagramSVG(c, quartosAtuais) {
+    var VBW = 220, VBH = 140;
+    var margin = 8;
+    var w = VBW - margin * 2, h = VBH - margin * 2;
+    var quartoRows = Math.min(quartosAtuais, 3);
+    var quartoRowH = h * 0.34;
+    var socialY = margin + quartoRowH;
+    var socialH = h - quartoRowH;
+
+    var wallStyle = c.intervKey === 'acabamento'
+      ? { dash: '0', opacity: 1 }
+      : c.intervKey === 'parcial'
+        ? { dash: '4,3', opacity: 0.9 }
+        : { dash: '2,4', opacity: 0.35 };
+
+    var svg = '<svg class="diagram" viewBox="0 0 ' + VBW + ' ' + VBH + '" role="img" aria-label="Planta simplificada da proposta">';
+    svg += '<rect x="' + margin + '" y="' + margin + '" width="' + w + '" height="' + h + '" fill="none" stroke="#d8cfb9" stroke-width="1.5" rx="4" />';
+
+    // quartos (linha de cima)
+    var isOfficeRoom = c.destKey === 'escritorio';
+    var isSuiteMerge = c.destKey === 'suite' && quartoRows >= 2;
+    var qW = w / quartoRows;
+    for (var i = 0; i < quartoRows; i++) {
+      if (isSuiteMerge && i === 1) continue; // segunda célula vira parte da suíte (mesclada com a primeira)
+      var cellW = (isSuiteMerge && i === 0) ? qW * 2 : qW;
+      var fill = (isOfficeRoom && i === quartoRows - 1) ? '#f8e6d4' : (isSuiteMerge && i === 0) ? '#f1e9da' : '#ffffff';
+      svg += '<rect x="' + (margin + i * qW) + '" y="' + margin + '" width="' + cellW + '" height="' + quartoRowH + '" fill="' + fill + '" stroke="#d8cfb9" stroke-width="1" />';
+    }
+    // linhas internas entre quartos (sempre mantidas — reforma não mexe na estrutura entre quartos, exceto suíte)
+    for (var j = 1; j < quartoRows; j++) {
+      if (isSuiteMerge && j === 1) continue;
+      svg += '<line x1="' + (margin + j * qW) + '" y1="' + margin + '" x2="' + (margin + j * qW) + '" y2="' + socialY + '" stroke="#c9b98f" stroke-width="1" />';
+    }
+
+    // área social: cozinha + sala, dividida conforme nível de intervenção
+    var socialSplitX = margin + w * 0.42;
+    svg += '<rect x="' + margin + '" y="' + socialY + '" width="' + (socialSplitX - margin) + '" height="' + socialH + '" fill="#f5f1e8" stroke="#d8cfb9" stroke-width="1" />';
+    svg += '<rect x="' + socialSplitX + '" y="' + socialY + '" width="' + (margin + w - socialSplitX) + '" height="' + socialH + '" fill="#eef4ef" stroke="#d8cfb9" stroke-width="1" />';
+    svg += '<line x1="' + socialSplitX + '" y1="' + socialY + '" x2="' + socialSplitX + '" y2="' + (socialY + socialH) + '" stroke="#b5563c" stroke-width="2" stroke-dasharray="' + wallStyle.dash + '" opacity="' + wallStyle.opacity + '" />';
+
+    svg += '<text x="' + (margin + (socialSplitX - margin) / 2) + '" y="' + (socialY + socialH / 2 + 3) + '" text-anchor="middle" font-size="8" fill="#6b6659" font-family="Inter, sans-serif">Cozinha</text>';
+    svg += '<text x="' + (socialSplitX + (margin + w - socialSplitX) / 2) + '" y="' + (socialY + socialH / 2 + 3) + '" text-anchor="middle" font-size="8" fill="#6b6659" font-family="Inter, sans-serif">Sala</text>';
+
+    if (isOfficeRoom) {
+      svg += '<text x="' + (margin + (quartoRows - 1) * qW + qW / 2) + '" y="' + (margin + quartoRowH / 2 + 3) + '" text-anchor="middle" font-size="7" fill="#c96f2e" font-family="Inter, sans-serif">Escritório</text>';
+    }
+    if (isSuiteMerge) {
+      svg += '<text x="' + (margin + qW) + '" y="' + (margin + quartoRowH / 2 + 3) + '" text-anchor="middle" font-size="7" fill="#a9835a" font-family="Inter, sans-serif">Suíte</text>';
+    }
+
+    svg += '</svg>';
+    return svg;
+  }
+
+  function fmtMoney(v) { return 'R$ ' + Math.round(v).toLocaleString('pt-BR'); }
+  function fmtNum(v, dec) { return v.toLocaleString('pt-BR', { minimumFractionDigits: dec || 0, maximumFractionDigits: dec || 0 }); }
+
+  function renderCard(c, rank, quartosAtuais) {
+    var budgetBadge = c.dentroOrcamento
+      ? '<span class="budget-badge ok">Cabe no orçamento</span>'
+      : '<span class="budget-badge over">Passa em ' + fmtMoney(c.excedente) + '</span>';
+
+    return '<article class="card">' +
+      '<div class="card-top">' +
+        '<span class="rank">#<strong>' + rank + '</strong></span>' +
+        '<span class="score-gauge"><span class="bar"><span style="width:' + Math.round(c.score * 100) + '%"></span></span>' +
+          '<span class="num">' + Math.round(c.score * 100) + '</span></span>' +
+      '</div>' +
+      renderDiagramSVG(c, quartosAtuais) +
+      '<div>' +
+        '<h3>' + c.intervNome + '</h3>' +
+        '<p class="sub">' + c.padraoNome + ' · ' + c.matNome.toLowerCase() + (c.destKey !== 'manter' ? ' · ' + c.destNome : '') + '</p>' +
+      '</div>' +
+      '<div class="metrics">' +
+        '<span class="m-label">Custo estimado</span><span class="m-val">' + fmtMoney(c.custoTotal) + '</span>' +
+        '<span class="m-label">Prazo estimado</span><span class="m-val">' + c.semanas + ' semanas</span>' +
+        '<span class="m-label">Ganho de integração</span><span class="m-val">' + Math.round(c.integracao * 100) + '%</span>' +
+        '<span class="m-label">Pegada estimada</span><span class="m-val">' + fmtNum(c.co2Total) + ' kg CO2e</span>' +
+      '</div>' +
+      budgetBadge +
+      '</article>';
+  }
+
+  // ---------- Estado / eventos ----------
+  var els = {
+    area: document.getElementById('input-area'),
+    quartos: document.getElementById('input-quartos'),
+    orcamento: document.getElementById('input-orcamento'),
+    pesoCusto: document.getElementById('peso-custo'),
+    pesoEficiencia: document.getElementById('peso-eficiencia'),
+    pesoSustentabilidade: document.getElementById('peso-sustentabilidade'),
+    form: document.getElementById('form-restricoes'),
+    sortSelect: document.getElementById('sort-select'),
+    filtroOrcamento: document.getElementById('filtro-orcamento'),
+    grid: document.getElementById('grid-results'),
+    count: document.getElementById('count-text')
+  };
+
+  function readInputs() {
+    return {
+      area: Number(els.area.value) || 65,
+      quartos: Number(els.quartos.value) || 2
+    };
+  }
+
+  function readWeights() {
+    return {
+      custo: Number(els.pesoCusto.value),
+      eficiencia: Number(els.pesoEficiencia.value),
+      sustentabilidade: Number(els.pesoSustentabilidade.value)
+    };
+  }
+
+  function syncLabels() {
+    document.getElementById('val-area').textContent = Number(els.area.value).toLocaleString('pt-BR');
+    document.getElementById('val-orcamento').textContent = Number(els.orcamento.value).toLocaleString('pt-BR');
+    document.getElementById('val-peso-custo').textContent = els.pesoCusto.value;
+    document.getElementById('val-peso-eficiencia').textContent = els.pesoEficiencia.value;
+    document.getElementById('val-peso-sustentabilidade').textContent = els.pesoSustentabilidade.value;
+  }
+
+  function renderResults() {
+    syncLabels();
+    var orcamento = Number(els.orcamento.value) || 0;
+    var quartosAtuais = Number(els.quartos.value) || 2;
+    var decorated = rawCandidates.map(function (c) {
+      return Object.assign({}, c, {
+        dentroOrcamento: c.custoTotal <= orcamento,
+        excedente: c.custoTotal - orcamento
+      });
+    });
+
+    var pool = decorated;
+    if (els.filtroOrcamento.checked) pool = pool.filter(function (c) { return c.dentroOrcamento; });
+
+    if (pool.length === 0) {
+      var msg = rawCandidates.length === 0
+        ? 'Preencha os dados ao lado e clique em "Gerar propostas".'
+        : 'Nenhuma proposta cabe nesse orçamento — tente aumentar o valor ou desmarque o filtro para ver todas.';
+      els.grid.innerHTML = '<div class="empty-state">' + msg + '</div>';
+      els.count.textContent = '';
+      return;
+    }
+
+    var scored = scoreAndSort(pool, readWeights(), els.sortSelect.value);
+    var shown = scored.slice(0, MAX_CARDS);
+    els.grid.innerHTML = shown.map(function (c, i) { return renderCard(c, i + 1, quartosAtuais); }).join('');
+
+    var dentroCount = decorated.filter(function (c) { return c.dentroOrcamento; }).length;
+    els.count.textContent = 'Mostrando ' + shown.length + ' de ' + pool.length + ' propostas (' +
+      rawCandidates.length + ' combinações possíveis, ' + dentroCount + ' cabem no orçamento)';
+  }
+
+  els.form.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    rawCandidates = generateCandidates(readInputs());
+    renderResults();
+  });
+
+  els.area.addEventListener('input', function () {
+    document.getElementById('val-area').textContent = Number(els.area.value).toLocaleString('pt-BR');
+  });
+  [els.orcamento, els.pesoCusto, els.pesoEficiencia, els.pesoSustentabilidade].forEach(function (el) {
+    el.addEventListener('input', renderResults);
+  });
+  [els.sortSelect, els.filtroOrcamento].forEach(function (el) {
+    el.addEventListener('change', renderResults);
+  });
+
+  // Gera um exemplo inicial para a página não abrir vazia.
+  rawCandidates = generateCandidates(readInputs());
+  renderResults();
+})();
+</script>
+</body>
+</html>

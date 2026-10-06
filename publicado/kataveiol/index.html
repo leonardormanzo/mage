@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kataveiol — Roupas confortáveis e elegantes</title>
+<meta name="description" content="Kataveiol: roupas confortáveis, elegantes e fáceis de comprar. Atendimento humano por telefone, textos grandes e compra simples, pensada para você.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>K</text></svg>">
+<style>
+  :root{
+    --color-bg:#FAF8F5;
+    --color-bg-alt:#F2EEE7;
+    --color-surface:#FFFFFF;
+    --color-text:#1C1917;
+    --color-text-muted:#57534E;
+    --color-primary:#1C1917;
+    --color-accent:#9A3412;
+    --color-accent-hover:#7C2D12;
+    --color-accent-contrast:#FFFFFF;
+    --color-border:#E7E2D9;
+    --color-success:#166534;
+    --color-success-bg:#F0FDF4;
+    --focus-ring:#1D4ED8;
+    --font-heading: 'Kataveiol Heading', Georgia, 'Times New Roman', serif;
+    --font-body: 'Kataveiol Body', -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    --step: 0;
+    --base-size: 19px;
+  }
+
+  /* Ajuste de tamanho de texto (acessibilidade) */
+  html[data-text-size="grande"]{ --base-size: 22px; }
+  html[data-text-size="maior"]{ --base-size: 25px; }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; overflow-x: hidden; }
+  body{
+    margin:0;
+    overflow-x: hidden;
+    font-family: var(--font-body);
+    font-size: var(--base-size);
+    line-height: 1.65;
+    color: var(--color-text);
+    background: var(--color-bg);
+    -webkit-font-smoothing: antialiased;
+  }
+  img,svg{ max-width:100%; display:block; }
+  h1,h2,h3{ font-family: var(--font-heading); font-weight:600; line-height:1.2; margin:0 0 .5em; color: var(--color-primary); }
+  h1{ font-size: clamp(2.2rem, 5vw, 3.4rem); }
+  h2{ font-size: clamp(1.6rem, 3.5vw, 2.3rem); }
+  h3{ font-size: 1.25rem; }
+  p{ margin:0 0 1em; }
+  a{ color: var(--color-accent); }
+  ul{ margin:0; padding:0; list-style:none; }
+  button{ font-family: inherit; font-size: 1rem; cursor:pointer; }
+
+  /* Foco visível sempre — essencial para navegação por teclado */
+  :focus-visible{
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; scroll-behavior:auto !important; }
+  }
+
+  .skip-link{
+    position:absolute; left:-9999px; top:0; z-index:1000;
+    background: var(--color-primary); color:#fff; padding: 14px 20px;
+    border-radius: 0 0 8px 0; font-weight:600;
+  }
+  .skip-link:focus{ left:0; }
+
+  .container{ max-width: 1180px; margin:0 auto; padding: 0 24px; }
+  .section{ padding: 64px 0; }
+  .section-alt{ background: var(--color-bg-alt); }
+  .section-header{ max-width: 640px; margin: 0 auto 40px; text-align:center; }
+  .section-header p{ color: var(--color-text-muted); font-size: 1.05em; }
+
+  /* ---------- Header ---------- */
+  header.site-header{
+    position: sticky; top:0; z-index: 200;
+    background: rgba(250,248,245,0.96);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    gap: 16px; padding: 10px 24px; max-width:1180px; margin:0 auto;
+    font-size: 0.85em; color: var(--color-text-muted);
+    border-bottom: 1px solid var(--color-border);
+    flex-wrap: wrap;
+  }
+  .topbar a{ color: var(--color-text-muted); text-decoration:none; }
+  .topbar a:hover{ color: var(--color-accent); }
+  .text-size-controls{ display:flex; align-items:center; gap:8px; }
+  .text-size-controls span{ margin-right: 4px; }
+  .text-size-controls button{
+    background: var(--color-surface); border: 1px solid var(--color-border);
+    width: 40px; height: 40px; border-radius: 8px; font-weight:700;
+    color: var(--color-text);
+  }
+  .text-size-controls button[aria-pressed="true"]{
+    background: var(--color-primary); color:#fff; border-color: var(--color-primary);
+  }
+
+  .navbar{
+    display:flex; align-items:center; justify-content:space-between;
+    gap: 16px; padding: 18px 24px; max-width:1180px; margin:0 auto;
+  }
+  .logo{
+    font-family: var(--font-heading); font-size: 1.7rem; font-weight:700;
+    color: var(--color-primary); text-decoration:none; letter-spacing: 0.5px;
+  }
+  nav.main-nav ul{ display:flex; gap: 28px; }
+  nav.main-nav a{
+    color: var(--color-text); text-decoration:none; font-weight:500; font-size: 1.02em;
+    padding: 8px 2px; border-bottom: 2px solid transparent;
+  }
+  nav.main-nav a:hover{ border-bottom-color: var(--color-accent); }
+  .header-actions{ display:flex; align-items:center; gap: 12px; }
+  .icon-btn{
+    display:flex; align-items:center; gap:8px;
+    background: var(--color-surface); border: 1px solid var(--color-border);
+    padding: 10px 16px; border-radius: 10px; color: var(--color-text);
+    min-height: 48px;
+  }
+  .icon-btn:hover{ border-color: var(--color-accent); color: var(--color-accent); }
+  .cart-count{
+    background: var(--color-accent); color:#fff; border-radius:999px;
+    min-width:22px; height:22px; display:inline-flex; align-items:center; justify-content:center;
+    font-size: 0.75rem; font-weight:700; padding: 0 6px;
+  }
+  .menu-toggle{ display:none; }
+
+  @media (max-width: 860px){
+    nav.main-nav{ display:none; }
+    .menu-toggle{
+      display:flex; align-items:center; gap:8px;
+      background: var(--color-surface); border:1px solid var(--color-border);
+      padding: 10px 14px; border-radius: 10px; min-height:48px;
+    }
+    .navbar{ padding: 14px 16px; gap: 8px; }
+    .icon-btn{ padding: 10px 12px; }
+  }
+
+  @media (max-width: 400px){
+    .navbar{ flex-wrap: wrap; }
+    .logo{ font-size: 1.4rem; }
+  }
+    nav.main-nav.open{
+      display:flex; position:absolute; top:100%; left:0; right:0;
+      background: var(--color-surface); border-bottom:1px solid var(--color-border);
+      padding: 12px 24px 24px;
+    }
+    nav.main-nav.open ul{ flex-direction:column; gap:4px; width:100%; }
+    nav.main-nav.open a{ display:block; padding: 14px 4px; }
+  }
+
+  /* ---------- Botões ---------- */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:10px;
+    padding: 14px 28px; border-radius: 10px; font-weight:600; font-size: 1.02em;
+    text-decoration:none; border: 2px solid transparent; min-height: 52px;
+    transition: background-color .2s ease, color .2s ease, border-color .2s ease, transform .15s ease;
+  }
+  .btn-accent{ background: var(--color-accent); color: var(--color-accent-contrast); }
+  .btn-accent:hover{ background: var(--color-accent-hover); }
+  .btn-outline{ background: transparent; color: var(--color-primary); border-color: var(--color-primary); }
+  .btn-outline:hover{ background: var(--color-primary); color:#fff; }
+  .btn:active{ transform: translateY(1px); }
+  .btn-block{ width:100%; }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    display:grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items:center;
+    padding: 56px 0 64px;
+  }
+  .hero-badge{
+    display:inline-flex; align-items:center; gap:8px;
+    background: var(--color-success-bg); color: var(--color-success);
+    padding: 8px 14px; border-radius: 999px; font-weight:600; font-size: 0.9em; margin-bottom: 18px;
+  }
+  .hero p.lead{ font-size: 1.15em; color: var(--color-text-muted); max-width: 46ch; }
+  .hero-ctas{ display:flex; gap:16px; flex-wrap:wrap; margin-top: 28px; }
+  .hero-trust{ display:flex; gap:28px; margin-top:36px; flex-wrap:wrap; }
+  .hero-trust li{ display:flex; align-items:center; gap:10px; color: var(--color-text-muted); font-size:0.95em; }
+  .hero-visual{
+    background: var(--color-bg-alt); border-radius: 24px; padding: 40px;
+    display:flex; align-items:center; justify-content:center; border:1px solid var(--color-border);
+  }
+  @media (max-width: 900px){
+    .hero{ grid-template-columns: 1fr; padding-top: 32px; }
+    .hero-visual{ order:-1; }
+  }
+
+  /* ---------- Diferenciais ---------- */
+  .features-grid{
+    display:grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+  }
+  .feature-card{
+    background: var(--color-surface); border:1px solid var(--color-border); border-radius:16px;
+    padding: 28px 22px; text-align:center;
+  }
+  .feature-icon{
+    width:56px; height:56px; margin: 0 auto 16px; color: var(--color-accent);
+  }
+  .feature-card h3{ margin-bottom: 8px; }
+  .feature-card p{ color: var(--color-text-muted); font-size: 0.95em; margin:0; }
+  @media (max-width: 900px){ .features-grid{ grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px){ .features-grid{ grid-template-columns: 1fr; } }
+
+  /* ---------- Produtos ---------- */
+  .product-grid{
+    display:grid; grid-template-columns: repeat(3, 1fr); gap: 28px;
+  }
+  .product-card{
+    background: var(--color-surface); border:1px solid var(--color-border); border-radius: 18px;
+    overflow:hidden; display:flex; flex-direction:column;
+  }
+  .product-image{
+    background: var(--color-bg-alt); padding: 32px; display:flex; align-items:center; justify-content:center;
+    aspect-ratio: 4/3;
+  }
+  .product-image svg{ width: 60%; height:60%; color: var(--color-primary); }
+  .product-body{ padding: 22px; display:flex; flex-direction:column; gap: 10px; flex:1; }
+  .product-body h3{ margin:0; }
+  .product-price{ font-size: 1.2em; font-weight:700; color: var(--color-primary); }
+  .product-sizes{ display:flex; gap:8px; flex-wrap:wrap; margin: 4px 0; }
+  .size-btn{
+    min-width: 44px; height: 44px; border-radius: 8px; border: 1px solid var(--color-border);
+    background: var(--color-surface); color: var(--color-text); font-weight:600;
+  }
+  .size-btn[aria-pressed="true"]{ background: var(--color-primary); color:#fff; border-color: var(--color-primary); }
+  .product-note{ color: var(--color-text-muted); font-size: 0.9em; }
+  @media (max-width: 980px){ .product-grid{ grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 620px){ .product-grid{ grid-template-columns: 1fr; } }
+
+  /* ---------- Como comprar ---------- */
+  .steps{ display:grid; grid-template-columns: repeat(3,1fr); gap: 28px; }
+  .step-card{ text-align:center; padding: 12px; }
+  .step-number{
+    width:56px; height:56px; border-radius:999px; background: var(--color-primary); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:1.4rem; font-weight:700;
+    margin: 0 auto 16px;
+  }
+  @media (max-width: 760px){ .steps{ grid-template-columns: 1fr; } }
+
+  /* ---------- Depoimentos ---------- */
+  .testimonials{ display:grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+  .testimonial-card{
+    background: var(--color-surface); border:1px solid var(--color-border); border-radius:16px; padding: 26px;
+  }
+  .testimonial-card p{ font-size: 1.05em; }
+  .testimonial-author{ font-weight:700; color: var(--color-primary); margin-top: 12px; }
+  .testimonial-role{ color: var(--color-text-muted); font-size: 0.9em; }
+  @media (max-width: 900px){ .testimonials{ grid-template-columns: 1fr; } }
+
+  /* ---------- Contato / Newsletter ---------- */
+  .contact-grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items:start; }
+  .contact-info li{ display:flex; gap:14px; margin-bottom: 20px; align-items:flex-start; }
+  .contact-info svg{ width: 26px; height:26px; color: var(--color-accent); flex-shrink:0; margin-top:2px; }
+  .contact-info strong{ display:block; }
+  .contact-info span{ color: var(--color-text-muted); }
+  form.contact-form{
+    background: var(--color-surface); border:1px solid var(--color-border); border-radius:18px; padding: 28px;
+  }
+  .form-row{ margin-bottom: 18px; }
+  .form-row label{ display:block; font-weight:600; margin-bottom: 8px; }
+  .form-row input, .form-row textarea{
+    width:100%; padding: 14px 16px; border-radius: 10px; border: 1px solid var(--color-border);
+    font-size: 1em; font-family: inherit; background: var(--color-bg);
+    min-height: 52px;
+  }
+  .form-row textarea{ min-height: 120px; resize: vertical; }
+  .form-note{
+    background: var(--color-bg-alt); border: 1px solid var(--color-border); border-radius: 10px;
+    padding: 12px 16px; font-size: 0.9em; color: var(--color-text-muted); margin-bottom: 18px;
+  }
+  .form-success{
+    display:none; background: var(--color-success-bg); color: var(--color-success);
+    border-radius: 10px; padding: 14px 16px; font-weight:600; margin-top: 14px;
+  }
+  @media (max-width: 900px){ .contact-grid{ grid-template-columns: 1fr; } }
+
+  /* ---------- Footer ---------- */
+  footer.site-footer{ background: var(--color-primary); color: #EDE9E3; padding: 48px 0 24px; }
+  .footer-grid{ display:grid; grid-template-columns: 2fr 1fr 1fr; gap: 32px; margin-bottom: 32px; }
+  footer.site-footer h3{ color:#fff; font-size:1.1rem; }
+  footer.site-footer a{ color:#CFC9C0; text-decoration:none; }
+  footer.site-footer a:hover{ color:#fff; }
+  footer.site-footer li{ margin-bottom: 10px; }
+  .footer-bottom{
+    border-top: 1px solid rgba(255,255,255,0.15); padding-top: 20px;
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;
+    font-size: 0.85em; color:#B9B2A6;
+  }
+  @media (max-width: 760px){ .footer-grid{ grid-template-columns: 1fr; } }
+
+  /* ---------- Carrinho (drawer) ---------- */
+  .cart-overlay{
+    position: fixed; inset:0; background: rgba(28,25,23,0.5); z-index: 300;
+    display:none;
+  }
+  .cart-overlay.open{ display:block; }
+  .cart-drawer{
+    position: fixed; top:0; right:0; height:100%; width: min(420px, 100%);
+    background: var(--color-surface); z-index: 301; box-shadow: -8px 0 24px rgba(0,0,0,0.15);
+    display:flex; flex-direction:column; transform: translateX(100%);
+    transition: transform .25s ease;
+  }
+  .cart-drawer.open{ transform: translateX(0); }
+  .cart-header{
+    display:flex; justify-content:space-between; align-items:center;
+    padding: 20px 24px; border-bottom: 1px solid var(--color-border);
+  }
+  .cart-close{
+    background: var(--color-bg-alt); border:1px solid var(--color-border); border-radius:10px;
+    width:44px; height:44px; display:flex; align-items:center; justify-content:center;
+  }
+  .cart-items{ flex:1; overflow-y:auto; padding: 16px 24px; }
+  .cart-item{ display:flex; gap:14px; padding: 16px 0; border-bottom: 1px solid var(--color-border); }
+  .cart-item-img{ width:70px; height:70px; background: var(--color-bg-alt); border-radius:10px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+  .cart-item-img svg{ width:60%; height:60%; color: var(--color-primary); }
+  .cart-item-info{ flex:1; }
+  .cart-item-info strong{ display:block; }
+  .cart-item-info span{ color: var(--color-text-muted); font-size: 0.9em; }
+  .cart-item-remove{
+    background:none; border:none; color: var(--color-accent); font-weight:600; padding: 4px 0;
+    text-decoration: underline;
+  }
+  .cart-empty{ text-align:center; color: var(--color-text-muted); padding: 40px 20px; }
+  .cart-footer{ padding: 20px 24px; border-top: 1px solid var(--color-border); }
+  .cart-total{ display:flex; justify-content:space-between; font-weight:700; font-size:1.2em; margin-bottom: 16px; }
+
+  .visually-hidden{
+    position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap;
+  }
+</style>
+</head>
+<body>
+
+<a href="#conteudo" class="skip-link">Pular para o conteúdo principal</a>
+
+<header class="site-header">
+  <div class="topbar">
+    <a href="tel:+551140028922">📞 Fale com a gente: (11) 4002-8922 — todos os dias, 8h às 20h</a>
+    <div class="text-size-controls" role="group" aria-label="Ajustar tamanho do texto">
+      <span>Tamanho do texto:</span>
+      <button type="button" data-text-size="normal" aria-pressed="true">A</button>
+      <button type="button" data-text-size="grande" aria-pressed="false">A+</button>
+      <button type="button" data-text-size="maior" aria-pressed="false">A++</button>
+    </div>
+  </div>
+  <div class="navbar">
+    <a href="#topo" class="logo">Kataveiol</a>
+    <button type="button" class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="mainNav">
+      Menu
+    </button>
+    <nav class="main-nav" id="mainNav" aria-label="Navegação principal">
+      <ul>
+        <li><a href="#colecao">Coleção</a></li>
+        <li><a href="#como-comprar">Como Comprar</a></li>
+        <li><a href="#sobre">Sobre</a></li>
+        <li><a href="#contato">Contato</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <button type="button" class="icon-btn" id="cartOpenBtn" aria-haspopup="dialog">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        Sacola
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="conteudo">
+
+  <!-- Hero -->
+  <section class="section" id="topo">
+    <div class="container hero">
+      <div>
+        <span class="hero-badge">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+          Atendimento humano por telefone
+        </span>
+        <h1>Roupas confortáveis e elegantes, do jeito que você merece vestir.</h1>
+        <p class="lead">A Kataveiol veste você com tecidos macios, caimento confortável e um jeito simples de comprar — texto grande, botões claros e ajuda de verdade quando precisar.</p>
+        <div class="hero-ctas">
+          <a href="#colecao" class="btn btn-accent">Ver a Coleção</a>
+          <a href="#como-comprar" class="btn btn-outline">Como funciona a compra</a>
+        </div>
+        <ul class="hero-trust">
+          <li>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            Frete grátis acima de R$ 199
+          </li>
+          <li>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+            Troca fácil em até 30 dias
+          </li>
+          <li>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><path d="M12 6v6l4 2"/></svg>
+            Compra em poucos passos
+          </li>
+        </ul>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <svg width="260" height="260" viewBox="0 0 200 200" fill="none" stroke="#1C1917" stroke-width="3" stroke-linejoin="round">
+          <path d="M70 30 L100 45 L130 30 L155 55 L140 75 L130 68 L130 175 L70 175 L70 68 L60 75 L45 55 Z" fill="#F2EEE7"/>
+          <circle cx="100" cy="45" r="7" fill="#9A3412" stroke="none"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Diferenciais -->
+  <section class="section section-alt" aria-labelledby="diferenciais-heading">
+    <div class="container">
+      <div class="section-header">
+        <h2 id="diferenciais-heading">Por que comprar com a Kataveiol</h2>
+        <p>Pensamos em cada detalhe para que comprar roupas online seja simples, seguro e agradável.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <h3>Atendimento por telefone</h3>
+          <p>Fale com uma pessoa de verdade para tirar dúvidas sobre tamanho, tecido ou seu pedido.</p>
+        </div>
+        <div class="feature-card">
+          <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+          <h3>Compra em 3 passos</h3>
+          <p>Sem cadastros complicados. Escolha, confirme o tamanho e finalize — do seu jeito.</p>
+        </div>
+        <div class="feature-card">
+          <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96L12 12l8.73-5.04"/><path d="M12 22.08V12"/></svg>
+          <h3>Troca facilitada</h3>
+          <p>Recebeu e não ficou bom? Você troca de tamanho em até 30 dias, sem burocracia.</p>
+        </div>
+        <div class="feature-card">
+          <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <h3>Pagamento seguro</h3>
+          <p>Seus dados protegidos do início ao fim da compra, com opções de pagamento claras.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Coleção / Produtos -->
+  <section class="section" id="colecao" aria-labelledby="colecao-heading">
+    <div class="container">
+      <div class="section-header">
+        <h2 id="colecao-heading">Nossa Coleção</h2>
+        <p>Peças pensadas para conforto no dia a dia, com tecidos macios e caimento confortável. Escolha o tamanho e adicione à sacola.</p>
+      </div>
+      <div class="product-grid" id="productGrid"></div>
+    </div>
+  </section>
+
+  <!-- Como comprar -->
+  <section class="section section-alt" id="como-comprar" aria-labelledby="como-comprar-heading">
+    <div class="container">
+      <div class="section-header">
+        <h2 id="como-comprar-heading">Como funciona a compra</h2>
+        <p>Três passos simples, sem enrolação.</p>
+      </div>
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-number" aria-hidden="true">1</div>
+          <h3>Escolha a peça e o tamanho</h3>
+          <p>Veja a foto, o preço e escolha o tamanho (P, M, G ou GG) direto na página do produto.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number" aria-hidden="true">2</div>
+          <h3>Adicione à sacola</h3>
+          <p>Clique em "Adicionar à sacola". Você pode ver e conferir tudo antes de continuar.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number" aria-hidden="true">3</div>
+          <h3>Finalize e receba em casa</h3>
+          <p>Confirme o endereço e a forma de pagamento. Se tiver dúvida, é só nos ligar.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sobre -->
+  <section class="section" id="sobre" aria-labelledby="sobre-heading">
+    <div class="container" style="max-width: 760px;">
+      <h2 id="sobre-heading">Sobre a Kataveiol</h2>
+      <p>A Kataveiol nasceu para vestir bem quem busca conforto sem abrir mão da elegância. Trabalhamos com tecidos macios, modelagens confortáveis e um atendimento próximo — porque comprar roupa deveria ser simples e agradável, em qualquer idade.</p>
+      <p>Cada peça é escolhida pensando em caimento confortável, cintos e cós elásticos, tecidos que não irritam a pele e cores atemporais que combinam com o seu estilo.</p>
+    </div>
+  </section>
+
+  <!-- Depoimentos -->
+  <section class="section section-alt" aria-labelledby="depoimentos-heading">
+    <div class="container">
+      <div class="section-header">
+        <h2 id="depoimentos-heading">Quem já comprou, aprova</h2>
+      </div>
+      <div class="testimonials">
+        <div class="testimonial-card">
+          <p>"Comprei uma blusa e, quando tive dúvida no tamanho, liguei e uma atendente me ajudou na hora. Chegou certinho e super confortável."</p>
+          <div class="testimonial-author">Marlene S.</div>
+          <div class="testimonial-role">Cliente desde 2024</div>
+        </div>
+        <div class="testimonial-card">
+          <p>"O site tem letras grandes e é fácil de mexer, diferente de outros que eu nem consigo ler direito. Já comprei três vezes."</p>
+          <div class="testimonial-author">Antônio R.</div>
+          <div class="testimonial-role">Cliente desde 2024</div>
+        </div>
+        <div class="testimonial-card">
+          <p>"O tecido do casaco é muito macio e quentinho. A troca de tamanho foi tranquila, sem complicação nenhuma."</p>
+          <div class="testimonial-author">Ivone P.</div>
+          <div class="testimonial-role">Cliente desde 2025</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contato -->
+  <section class="section" id="contato" aria-labelledby="contato-heading">
+    <div class="container contact-grid">
+      <div>
+        <h2 id="contato-heading">Fale com a gente</h2>
+        <p>Prefere resolver por telefone? Estamos à disposição todos os dias.</p>
+        <ul class="contact-info">
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <div>
+              <strong>Telefone / WhatsApp (exemplo — trocar pelo real)</strong>
+              <span>(11) 4002-8922 — todos os dias, 8h às 20h</span>
+            </div>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="M22 6l-10 7L2 6"/></svg>
+            <div>
+              <strong>E-mail (exemplo — trocar pelo real)</strong>
+              <span>contato@kataveiol.com.br</span>
+            </div>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <div>
+              <strong>Loja (exemplo — trocar pelo endereço real)</strong>
+              <span>Rua das Flores, 123 — São Paulo, SP</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <form class="contact-form" id="contactForm" novalidate>
+        <div class="form-note">Este formulário é uma simulação: ao enviar, nenhum dado é transmitido para lugar nenhum, apenas mostramos uma confirmação na tela.</div>
+        <div class="form-row">
+          <label for="nome">Seu nome</label>
+          <input type="text" id="nome" name="nome" required autocomplete="name">
+        </div>
+        <div class="form-row">
+          <label for="telefone">Telefone para contato</label>
+          <input type="tel" id="telefone" name="telefone" required autocomplete="tel" placeholder="(11) 90000-0000">
+        </div>
+        <div class="form-row">
+          <label for="mensagem">Sua mensagem</label>
+          <textarea id="mensagem" name="mensagem" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-accent btn-block">Enviar mensagem</button>
+        <div class="form-success" id="formSuccess" role="status">Mensagem enviada! (simulação — nenhum dado foi realmente transmitido)</div>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <h3>Kataveiol</h3>
+      <p style="color:#CFC9C0;">Roupas confortáveis e elegantes, com um jeito simples de comprar.</p>
+    </div>
+    <div>
+      <h3>Navegação</h3>
+      <ul>
+        <li><a href="#colecao">Coleção</a></li>
+        <li><a href="#como-comprar">Como Comprar</a></li>
+        <li><a href="#sobre">Sobre</a></li>
+        <li><a href="#contato">Contato</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Atendimento</h3>
+      <ul>
+        <li>(11) 4002-8922</li>
+        <li>Todos os dias, 8h às 20h</li>
+        <li>contato@kataveiol.com.br</li>
+      </ul>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <span>© 2026 Kataveiol. Site de demonstração — dados de contato são exemplos.</span>
+    <span>Pagamento: Cartão · Pix · Boleto</span>
+  </div>
+</footer>
+
+<!-- Carrinho -->
+<div class="cart-overlay" id="cartOverlay"></div>
+<div class="cart-drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+  <div class="cart-header">
+    <h2 id="cartTitle" style="margin:0; font-size:1.3rem;">Sua sacola</h2>
+    <button type="button" class="cart-close" id="cartCloseBtn" aria-label="Fechar sacola">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty">Sua sacola está vazia. Escolha uma peça na coleção para começar.</div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span>Total</span>
+      <span id="cartTotal">R$ 0,00</span>
+    </div>
+    <button type="button" class="btn btn-accent btn-block" id="checkoutBtn">Finalizar Compra</button>
+    <p style="font-size:0.85em; color: var(--color-text-muted); margin-top:10px; margin-bottom:0;">Compra de demonstração — nenhum pagamento real é processado.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Tamanho do texto ---------- */
+  var textSizeButtons = document.querySelectorAll('.text-size-controls button');
+  var savedSize = localStorage.getItem('kataveiol_text_size') || 'normal';
+  applyTextSize(savedSize);
+
+  textSizeButtons.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      applyTextSize(btn.getAttribute('data-text-size'));
+    });
+  });
+
+  function applyTextSize(size){
+    document.documentElement.setAttribute('data-text-size', size);
+    localStorage.setItem('kataveiol_text_size', size);
+    textSizeButtons.forEach(function(btn){
+      btn.setAttribute('aria-pressed', btn.getAttribute('data-text-size') === size ? 'true' : 'false');
+    });
+  }
+
+  /* ---------- Menu mobile ---------- */
+  var menuToggle = document.getElementById('menuToggle');
+  var mainNav = document.getElementById('mainNav');
+  menuToggle.addEventListener('click', function(){
+    var isOpen = mainNav.classList.toggle('open');
+    menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+  mainNav.addEventListener('click', function(e){
+    if (e.target.tagName === 'A'){
+      mainNav.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  /* ---------- Produtos ---------- */
+  var ICONS = {
+    camisa: '<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"><path d="M35 15 L50 25 L65 15 L85 32 L72 48 L65 42 L65 88 L35 88 L35 42 L28 48 L15 32 Z"/></svg>',
+    vestido: '<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"><path d="M42 12 L58 12 L62 30 L80 88 L20 88 L38 30 Z"/><circle cx="50" cy="18" r="3" fill="currentColor" stroke="none"/></svg>',
+    calca: '<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"><path d="M30 12 H70 L74 88 H58 L50 45 L42 88 H26 Z"/></svg>',
+    casaco: '<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"><path d="M38 14 L50 24 L62 14 L84 34 L74 50 L64 44 L68 88 H32 L36 44 L26 50 L16 34 Z"/><line x1="50" y1="30" x2="50" y2="88"/></svg>',
+    blusa: '<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"><path d="M36 16 L50 24 L64 16 L82 34 L70 46 L64 40 L64 84 L36 84 L36 40 L30 46 L18 34 Z"/></svg>',
+    saia: '<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"><path d="M38 15 H62 L80 85 H20 Z"/><line x1="44" y1="15" x2="34" y2="85"/><line x1="56" y1="15" x2="66" y2="85"/></svg>'
+  };
+
+  var PRODUCTS = [
+    { id: 'p1', nome: 'Camisa Social Confortável', preco: 189.90, icon: 'camisa', nota: 'Tecido macio, sem apertar' },
+    { id: 'p2', nome: 'Vestido Midi Leveza', preco: 219.90, icon: 'vestido', nota: 'Caimento solto e confortável' },
+    { id: 'p3', nome: 'Calça Alfaiataria com Elástico', preco: 159.90, icon: 'calca', nota: 'Cós elástico, sem incomodar' },
+    { id: 'p4', nome: 'Casaco de Lã Suave', preco: 289.90, icon: 'casaco', nota: 'Quentinho para os dias frios' },
+    { id: 'p5', nome: 'Blusa de Malha Macia', preco: 129.90, icon: 'blusa', nota: 'Toque suave na pele' },
+    { id: 'p6', nome: 'Saia Plissada Conforto', preco: 169.90, icon: 'saia', nota: 'Cintura elástica confortável' }
+  ];
+
+  var SIZES = ['P','M','G','GG'];
+
+  function formatBRL(v){
+    return v.toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
+  }
+
+  var productGrid = document.getElementById('productGrid');
+  var selectedSizes = {};
+
+  PRODUCTS.forEach(function(product){
+    selectedSizes[product.id] = 'M';
+
+    var card = document.createElement('article');
+    card.className = 'product-card';
+    card.innerHTML =
+      '<div class="product-image">' + ICONS[product.icon] + '</div>' +
+      '<div class="product-body">' +
+        '<h3>' + product.nome + '</h3>' +
+        '<div class="product-price">' + formatBRL(product.preco) + '</div>' +
+        '<div class="product-note">' + product.nota + '</div>' +
+        '<div class="product-sizes" role="group" aria-label="Escolher tamanho de ' + product.nome + '"></div>' +
+        '<button type="button" class="btn btn-accent btn-block add-to-cart-btn">Adicionar à sacola</button>' +
+      '</div>';
+
+    var sizesContainer = card.querySelector('.product-sizes');
+    SIZES.forEach(function(size){
+      var sizeBtn = document.createElement('button');
+      sizeBtn.type = 'button';
+      sizeBtn.className = 'size-btn';
+      sizeBtn.textContent = size;
+      sizeBtn.setAttribute('aria-pressed', size === 'M' ? 'true' : 'false');
+      sizeBtn.addEventListener('click', function(){
+        selectedSizes[product.id] = size;
+        sizesContainer.querySelectorAll('.size-btn').forEach(function(b){
+          b.setAttribute('aria-pressed', 'false');
+        });
+        sizeBtn.setAttribute('aria-pressed', 'true');
+      });
+      sizesContainer.appendChild(sizeBtn);
+    });
+
+    card.querySelector('.add-to-cart-btn').addEventListener('click', function(){
+      addToCart(product, selectedSizes[product.id]);
+    });
+
+    productGrid.appendChild(card);
+  });
+
+  /* ---------- Carrinho ---------- */
+  var CART_KEY = 'kataveiol_cart_v1';
+  var cart = [];
+  try {
+    cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+  } catch(e){ cart = []; }
+
+  var cartOverlay = document.getElementById('cartOverlay');
+  var cartDrawer = document.getElementById('cartDrawer');
+  var cartItemsEl = document.getElementById('cartItems');
+  var cartTotalEl = document.getElementById('cartTotal');
+  var cartCountEl = document.getElementById('cartCount');
+
+  function addToCart(product, size){
+    var existing = cart.find(function(item){ return item.id === product.id && item.size === size; });
+    if (existing){
+      existing.qty += 1;
+    } else {
+      cart.push({ id: product.id, nome: product.nome, preco: product.preco, icon: product.icon, size: size, qty: 1 });
+    }
+    saveCart();
+    renderCart();
+    openCart();
+  }
+
+  function removeFromCart(index){
+    cart.splice(index, 1);
+    saveCart();
+    renderCart();
+  }
+
+  function saveCart(){
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  }
+
+  function renderCart(){
+    var totalItems = cart.reduce(function(sum, item){ return sum + item.qty; }, 0);
+    var totalValue = cart.reduce(function(sum, item){ return sum + item.qty * item.preco; }, 0);
+
+    cartCountEl.textContent = totalItems;
+    cartTotalEl.textContent = formatBRL(totalValue);
+
+    if (cart.length === 0){
+      cartItemsEl.innerHTML = '<div class="cart-empty">Sua sacola está vazia. Escolha uma peça na coleção para começar.</div>';
+      return;
+    }
+
+    cartItemsEl.innerHTML = '';
+    cart.forEach(function(item, index){
+      var row = document.createElement('div');
+      row.className = 'cart-item';
+      row.innerHTML =
+        '<div class="cart-item-img">' + ICONS[item.icon] + '</div>' +
+        '<div class="cart-item-info">' +
+          '<strong>' + item.nome + '</strong>' +
+          '<span>Tamanho ' + item.size + ' · Qtd. ' + item.qty + '</span><br>' +
+          '<span>' + formatBRL(item.preco * item.qty) + '</span><br>' +
+          '<button type="button" class="cart-item-remove">Remover</button>' +
+        '</div>';
+      row.querySelector('.cart-item-remove').addEventListener('click', function(){
+        removeFromCart(index);
+      });
+      cartItemsEl.appendChild(row);
+    });
+  }
+
+  function openCart(){
+    cartOverlay.classList.add('open');
+    cartDrawer.classList.add('open');
+    document.getElementById('cartCloseBtn').focus();
+  }
+  function closeCart(){
+    cartOverlay.classList.remove('open');
+    cartDrawer.classList.remove('open');
+    document.getElementById('cartOpenBtn').focus();
+  }
+
+  document.getElementById('cartOpenBtn').addEventListener('click', openCart);
+  document.getElementById('cartCloseBtn').addEventListener('click', closeCart);
+  cartOverlay.addEventListener('click', closeCart);
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && cartDrawer.classList.contains('open')) closeCart();
+  });
+
+  document.getElementById('checkoutBtn').addEventListener('click', function(){
+    if (cart.length === 0){
+      alert('Sua sacola está vazia. Adicione uma peça antes de finalizar.');
+      return;
+    }
+    alert('Este é um site de demonstração: em uma loja real, aqui você seria levado para o pagamento seguro. Nenhuma cobrança foi feita.');
+  });
+
+  renderCart();
+
+  /* ---------- Formulário de contato (simulado) ---------- */
+  var contactForm = document.getElementById('contactForm');
+  var formSuccess = document.getElementById('formSuccess');
+  contactForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    if (!contactForm.checkValidity()){
+      contactForm.reportValidity();
+      return;
+    }
+    formSuccess.style.display = 'block';
+    contactForm.reset();
+  });
+
+})();
+</script>
+</body>
+</html>

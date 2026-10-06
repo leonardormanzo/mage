@@ -1,713 +1,1091 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Vigia Obra — Painel de Inspeção</title>
-<style>
-  :root {
-    color-scheme: light;
-    --bg: #f4f5f7;
-    --surface: #ffffff;
-    --surface-2: #eceff2;
-    --surface-3: #e0e4e8;
-    --text-primary: #14171a;
-    --text-secondary: #565b61;
-    --text-muted: #8a8f95;
-    --border: rgba(20, 23, 26, 0.12);
-    --border-strong: rgba(20, 23, 26, 0.24);
-    --accent: #2a78d6;
-    --accent-strong: #1c5cab;
-    --accent-ink: #ffffff;
-    --accent-soft: rgba(42, 120, 214, 0.12);
-    --good: #0ca30c;
-    --good-soft: rgba(12, 163, 12, 0.12);
-    --warning: #fab219;
-    --warning-soft: rgba(250, 178, 25, 0.16);
-    --critical: #d03b3b;
-    --critical-soft: rgba(208, 59, 59, 0.12);
-    --radius: 10px;
-    --radius-sm: 6px;
-    --shadow-1: 0 1px 2px rgba(20, 23, 26, 0.05), 0 6px 20px rgba(20, 23, 26, 0.05);
-    --font-display: ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", "Courier New", monospace;
-    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vigia Obra — Monitoramento em Tempo Real (Google Gemini AI)</title>
+  
+  <!-- Tipografia moderna Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  @media (prefers-color-scheme: dark) {
-    :root:where(:not([data-theme="light"])) {
-      color-scheme: dark;
-      --bg: #0d0e10;
-      --surface: #1a1c1f;
-      --surface-2: #212427;
-      --surface-3: #2b2e32;
-      --text-primary: #f5f6f7;
-      --text-secondary: #c4c9ce;
-      --text-muted: #8d9298;
-      --border: rgba(255, 255, 255, 0.12);
-      --border-strong: rgba(255, 255, 255, 0.24);
-      --accent: #3987e5;
-      --accent-strong: #6cabf0;
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-2: #f1f5f9;
+      --surface-3: #e2e8f0;
+      
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      
+      --border: rgba(15, 23, 42, 0.08);
+      --border-strong: rgba(15, 23, 42, 0.16);
+      
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-soft: rgba(37, 99, 235, 0.08);
       --accent-ink: #ffffff;
-      --accent-soft: rgba(57, 135, 229, 0.18);
-      --good: #0ca30c;
-      --good-soft: rgba(12, 163, 12, 0.2);
-      --warning: #fab219;
-      --warning-soft: rgba(250, 178, 25, 0.2);
-      --critical: #e66767;
-      --critical-soft: rgba(230, 103, 103, 0.2);
-      --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 6px 20px rgba(0, 0, 0, 0.35);
+      
+      --gemini-gradient: linear-gradient(135deg, #1a73e8, #8ab4f8, #d93025);
+      --gemini-color: #1a73e8;
+      
+      --good: #10b981;
+      --good-soft: rgba(16, 185, 129, 0.12);
+      
+      --warning: #f59e0b;
+      --warning-soft: rgba(245, 158, 11, 0.12);
+      
+      --critical: #ef4444;
+      --critical-soft: rgba(239, 68, 68, 0.12);
+      
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-lg: 16px;
+      
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.06);
+      --shadow-lg: 0 16px 32px -4px rgba(15, 23, 42, 0.1);
+      
+      --font-display: "JetBrains Mono", monospace;
+      --font-body: "Plus Jakarta Sans", sans-serif;
     }
-  }
-  :root[data-theme="dark"] {
-    color-scheme: dark;
-    --bg: #0d0e10;
-    --surface: #1a1c1f;
-    --surface-2: #212427;
-    --surface-3: #2b2e32;
-    --text-primary: #f5f6f7;
-    --text-secondary: #c4c9ce;
-    --text-muted: #8d9298;
-    --border: rgba(255, 255, 255, 0.12);
-    --border-strong: rgba(255, 255, 255, 0.24);
-    --accent: #3987e5;
-    --accent-strong: #6cabf0;
-    --accent-ink: #ffffff;
-    --accent-soft: rgba(57, 135, 229, 0.18);
-    --good: #0ca30c;
-    --good-soft: rgba(12, 163, 12, 0.2);
-    --warning: #fab219;
-    --warning-soft: rgba(250, 178, 25, 0.2);
-    --critical: #e66767;
-    --critical-soft: rgba(230, 103, 103, 0.2);
-    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 6px 20px rgba(0, 0, 0, 0.35);
-  }
-  :root[data-theme="light"] {
-    color-scheme: light;
-    --bg: #f4f5f7;
-    --surface: #ffffff;
-    --surface-2: #eceff2;
-    --surface-3: #e0e4e8;
-    --text-primary: #14171a;
-    --text-secondary: #565b61;
-    --text-muted: #8a8f95;
-    --border: rgba(20, 23, 26, 0.12);
-    --border-strong: rgba(20, 23, 26, 0.24);
-    --accent: #2a78d6;
-    --accent-strong: #1c5cab;
-    --accent-ink: #ffffff;
-    --accent-soft: rgba(42, 120, 214, 0.12);
-    --good: #0ca30c;
-    --good-soft: rgba(12, 163, 12, 0.12);
-    --warning: #fab219;
-    --warning-soft: rgba(250, 178, 25, 0.16);
-    --critical: #d03b3b;
-    --critical-soft: rgba(208, 59, 59, 0.12);
-    --shadow-1: 0 1px 2px rgba(20, 23, 26, 0.05), 0 6px 20px rgba(20, 23, 26, 0.05);
-  }
 
-  * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; }
-  body {
-    background: var(--bg);
-    color: var(--text-primary);
-    font-family: var(--font-body);
-    font-size: 15px;
-    line-height: 1.55;
-    -webkit-font-smoothing: antialiased;
-  }
-  a { color: var(--accent); }
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #0b0f19;
+      --surface: #111827;
+      --surface-2: #1e293b;
+      --surface-3: #334155;
+      
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.18);
+      
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-soft: rgba(59, 130, 246, 0.16);
+      --accent-ink: #ffffff;
+      
+      --good: #10b981;
+      --good-soft: rgba(16, 185, 129, 0.18);
+      
+      --warning: #f59e0b;
+      --warning-soft: rgba(245, 158, 11, 0.18);
+      
+      --critical: #ef4444;
+      --critical-soft: rgba(239, 68, 68, 0.2);
+      
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+      --shadow-md: 0 4px 14px rgba(0,0,0,0.5);
+      --shadow-lg: 0 16px 36px rgba(0,0,0,0.7);
+    }
 
-  .eyebrow {
-    font-family: var(--font-display);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-  }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.2s, color 0.2s;
+    }
 
-  /* ---------- shell ---------- */
-  .app {
-    max-width: 1180px;
-    margin: 0 auto;
-    padding: 28px 24px 64px;
-  }
+    .app {
+      max-width: 1260px;
+      margin: 0 auto;
+      padding: 20px 20px 80px;
+    }
 
-  header.brand {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 18px;
-    flex-wrap: wrap;
-  }
-  .brand-title {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-  }
-  .brand-title h1 {
-    font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    margin: 0;
-  }
-  .brand-title .tagline {
-    color: var(--text-secondary);
-    font-size: 13.5px;
-  }
-  .theme-toggle {
-    display: flex;
-    gap: 4px;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 3px;
-  }
-  .theme-toggle button {
-    font-family: var(--font-display);
-    font-size: 11px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    border: none;
-    background: transparent;
-    color: var(--text-secondary);
-    padding: 6px 12px;
-    border-radius: 999px;
-    cursor: pointer;
-  }
-  .theme-toggle button[aria-pressed="true"] {
-    background: var(--surface);
-    color: var(--text-primary);
-    box-shadow: var(--shadow-1);
-  }
+    /* ---------- Header ---------- */
+    header.brand {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .brand-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .brand-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, #1e40af, #3b82f6, #4f46e5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+      flex-shrink: 0;
+    }
+    .brand-title h1 {
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-title .tagline {
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .brand-badges {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+    .badge-pill {
+      font-family: var(--font-display);
+      font-size: 10.5px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .badge-pill.gemini-pill {
+      background: rgba(37, 99, 235, 0.1);
+      color: var(--accent);
+      border-color: rgba(37, 99, 235, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 700;
+    }
+    .badge-pill.status-live {
+      color: var(--good);
+      background: var(--good-soft);
+      border-color: rgba(16, 185, 129, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .badge-pill.status-live::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--good);
+      animation: pulse 1.6s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(0.8); }
+    }
 
-  /* ---------- disclaimer placard ---------- */
-  .placard {
-    position: relative;
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-    background: var(--warning-soft);
-    border: 1px solid rgba(250, 178, 25, 0.4);
-    border-radius: var(--radius);
-    padding: 14px 16px 14px 18px;
-    margin-bottom: 22px;
-    overflow: hidden;
-  }
-  .placard::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 4px;
-    background: repeating-linear-gradient(
-      135deg,
-      var(--warning) 0 10px,
-      var(--text-primary) 10px 20px
-    );
-    opacity: 0.55;
-  }
-  .placard-icon {
-    font-size: 18px;
-    line-height: 1;
-    margin-top: 2px;
-  }
-  .placard p {
-    margin: 0;
-    font-size: 13.5px;
-    color: var(--text-primary);
-  }
-  .placard strong { font-weight: 700; }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .theme-toggle {
+      display: flex;
+      gap: 2px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 3px;
+    }
+    .theme-toggle button {
+      font-size: 11.5px;
+      font-weight: 600;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      padding: 5px 11px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    .theme-toggle button[aria-pressed="true"] {
+      background: var(--surface);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-sm);
+    }
 
-  /* ---------- layout grid ---------- */
-  .layout {
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 22px;
-    align-items: start;
-  }
-  @media (max-width: 860px) {
-    .layout { grid-template-columns: 1fr; }
-  }
+    /* ---------- Placard ---------- */
+    .placard {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--warning);
+      border-radius: var(--radius);
+      padding: 10px 16px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    .placard strong { color: var(--text-primary); }
 
-  .panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-1);
-  }
+    /* ---------- Layout ---------- */
+    .layout {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+    @media (max-width: 960px) {
+      .layout { grid-template-columns: 1fr; }
+    }
 
-  /* ---------- config rail ---------- */
-  .rail { padding: 18px; display: flex; flex-direction: column; gap: 18px; position: sticky; top: 20px; }
-  .rail h2 {
-    font-family: var(--font-display);
-    font-size: 12px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin: 0 0 2px;
-  }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+    }
 
-  .video-source {
-    border: 1px dashed var(--border-strong);
-    border-radius: var(--radius-sm);
-    padding: 12px;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    background: var(--surface-2);
-  }
-  .video-source .thumb {
-    width: 44px;
-    height: 44px;
-    border-radius: var(--radius-sm);
-    flex-shrink: 0;
-    background:
-      repeating-linear-gradient(45deg, var(--warning) 0 6px, var(--text-primary) 6px 12px);
-    opacity: 0.85;
-  }
-  .video-source .meta { min-width: 0; }
-  .video-source .filename {
-    font-size: 13px;
-    font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .video-source .duration {
-    font-family: var(--font-display);
-    font-size: 12px;
-    color: var(--text-muted);
-    font-variant-numeric: tabular-nums;
-  }
+    /* ---------- Rail ---------- */
+    .rail {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .rail-title {
+      font-size: 12px;
+      font-family: var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
 
-  .field { display: flex; flex-direction: column; gap: 6px; }
-  .field label {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-secondary);
-  }
-  .field select,
-  .field input[type="number"] {
-    font-family: var(--font-body);
-    font-size: 13.5px;
-    padding: 8px 10px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border-strong);
-    background: var(--surface);
-    color: var(--text-primary);
-  }
-  .field select:focus-visible,
-  .field input:focus-visible,
-  button:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 1px;
-  }
-  .field-hint { font-size: 11.5px; color: var(--text-muted); }
+    /* Source Tabs (3 Abas: Câmera ao Vivo, Gravar Vídeo, Upload) */
+    .source-tabs {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 4px;
+      background: var(--surface-2);
+      padding: 4px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+    .source-tab-btn {
+      border: none;
+      background: transparent;
+      padding: 8px 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .source-tab-btn[aria-selected="true"] {
+      background: var(--surface);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-sm);
+    }
 
-  .btn {
-    font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 600;
-    padding: 10px 16px;
-    border-radius: var(--radius-sm);
-    border: 1px solid transparent;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
-  .btn-primary { background: var(--accent); color: var(--accent-ink); }
-  .btn-primary:hover { background: var(--accent-strong); }
-  .btn-primary:disabled { background: var(--surface-3); color: var(--text-muted); cursor: not-allowed; }
-  .btn-ghost {
-    background: transparent;
-    color: var(--text-secondary);
-    border-color: var(--border-strong);
-  }
-  .btn-ghost:hover { background: var(--surface-2); }
+    /* Webcam Container */
+    .webcam-container {
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #020617;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .webcam-viewport {
+      position: relative;
+      width: 100%;
+      height: 230px;
+      background: #090d16;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .webcam-viewport video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1);
+    }
+    .webcam-top-overlay {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 5;
+      pointer-events: none;
+    }
+    .live-badge {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.9);
+      color: #fff;
+      font-family: var(--font-display);
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+      letter-spacing: 0.05em;
+    }
+    .live-badge.active { display: inline-flex; }
+    .live-badge.monitoring {
+      background: rgba(220, 38, 38, 0.95);
+      animation: pulse-monitoring 1.2s infinite alternate;
+    }
+    @keyframes pulse-monitoring {
+      from { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.5); }
+      to { box-shadow: 0 0 0 8px rgba(220, 38, 38, 0); }
+    }
 
-  .progress-block { display: flex; flex-direction: column; gap: 8px; }
-  .progress-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12.5px;
-    color: var(--text-secondary);
-  }
-  .progress-label .count { font-family: var(--font-display); font-variant-numeric: tabular-nums; }
-  .progress-track {
-    height: 6px;
-    border-radius: 999px;
-    background: var(--surface-3);
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    background: var(--accent);
-    border-radius: 999px;
-    width: 0%;
-    transition: width 0.35s ease;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .progress-fill { transition: none; }
-  }
-  .progress-track.indeterminate .progress-fill {
-    width: 40%;
-    animation: indeterminate 1.4s ease-in-out infinite;
-  }
-  @keyframes indeterminate {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(250%); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .progress-track.indeterminate .progress-fill { animation: none; width: 60%; }
-  }
+    .alert-flash {
+      position: absolute;
+      inset: 0;
+      border: 4px solid var(--critical);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+      z-index: 4;
+    }
+    .alert-flash.flashing { opacity: 1; }
 
-  /* ---------- results column ---------- */
-  .results { display: flex; flex-direction: column; gap: 18px; }
+    .webcam-placeholder {
+      color: var(--text-muted);
+      font-size: 12.5px;
+      text-align: center;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
 
-  .stat-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-  }
-  @media (max-width: 640px) {
-    .stat-row { grid-template-columns: repeat(2, 1fr); }
-  }
-  .stat-tile {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 14px 16px;
-    box-shadow: var(--shadow-1);
-  }
-  .stat-tile .stat-label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    color: var(--text-secondary);
-    margin-bottom: 6px;
-  }
-  .stat-tile .dot {
-    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
-  }
-  .stat-tile .stat-value {
-    font-family: var(--font-display);
-    font-size: 26px;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-  }
-  .dot.total { background: var(--accent); }
-  .dot.baixa { background: var(--good); }
-  .dot.media { background: var(--warning); }
-  .dot.alta { background: var(--critical); }
+    .webcam-panel-controls {
+      background: var(--surface);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border-top: 1px solid var(--border);
+    }
 
-  .list-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .list-header h2 {
-    font-family: var(--font-display);
-    font-size: 12px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin: 0;
-  }
-  .view-toggle {
-    display: flex;
-    gap: 4px;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 3px;
-  }
-  .view-toggle button {
-    font-size: 12px;
-    font-weight: 600;
-    border: none;
-    background: transparent;
-    color: var(--text-secondary);
-    padding: 5px 12px;
-    border-radius: 999px;
-    cursor: pointer;
-  }
-  .view-toggle button[aria-pressed="true"] {
-    background: var(--surface);
-    color: var(--text-primary);
-    box-shadow: var(--shadow-1);
-  }
+    /* Upload Dropzone */
+    .dropzone {
+      border: 2px dashed var(--border-strong);
+      border-radius: var(--radius);
+      padding: 24px 16px;
+      text-align: center;
+      background: var(--surface-2);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .dropzone:hover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
 
-  .occ-list { display: flex; flex-direction: column; gap: 10px; }
+    /* Selected File Badge */
+    .file-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      margin-top: 10px;
+    }
+    .file-badge .meta { min-width: 0; flex: 1; font-size: 12px; }
+    .file-badge .name { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .file-badge .sub { color: var(--text-muted); font-family: var(--font-display); }
 
-  .occ-card {
-    display: flex;
-    gap: 14px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--sev-color, var(--border));
-    border-radius: var(--radius);
-    padding: 13px 16px;
-    box-shadow: var(--shadow-1);
-    animation: rise 0.28s ease both;
-  }
-  @keyframes rise {
-    from { opacity: 0; transform: translateY(6px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .occ-card { animation: none; }
-  }
-  .occ-main { min-width: 0; flex: 1; }
-  .occ-top {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 6px;
-  }
-  .occ-timestamp {
-    font-family: var(--font-display);
-    font-size: 12.5px;
-    color: var(--text-muted);
-    font-variant-numeric: tabular-nums;
-  }
-  .chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 11.5px;
-    font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 999px;
-    background: var(--surface-2);
-    color: var(--text-secondary);
-  }
-  .chip .dot { width: 7px; height: 7px; }
-  .chip-norma {
-    font-family: var(--font-display);
-    background: var(--accent-soft);
-    color: var(--accent);
-  }
-  .occ-risco { font-size: 14px; color: var(--text-primary); }
-  .confidence {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 11.5px;
-    color: var(--text-muted);
-  }
-  .confidence .ring {
-    width: 8px; height: 8px; border-radius: 50%;
-    border: 1.5px solid var(--text-muted);
-    background: transparent;
-  }
-  .confidence.alto .ring { background: var(--text-secondary); border-color: var(--text-secondary); }
-  .confidence.medio .ring { background: linear-gradient(90deg, var(--text-secondary) 50%, transparent 50%); }
-  .confidence.baixo .ring { background: transparent; }
+    /* Forms */
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+    }
+    .field select, .field input {
+      font-family: var(--font-body);
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--text-primary);
+    }
+    .field-hint { font-size: 11px; color: var(--text-muted); }
 
-  /* table view */
-  .occ-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
-  .occ-table thead th {
-    text-align: left;
-    font-size: 11px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    font-weight: 600;
-    padding: 8px 10px;
-    border-bottom: 1px solid var(--border-strong);
-  }
-  .occ-table tbody td {
-    padding: 9px 10px;
-    border-bottom: 1px solid var(--border);
-    vertical-align: top;
-  }
-  .occ-table .ts { font-family: var(--font-display); font-variant-numeric: tabular-nums; color: var(--text-muted); white-space: nowrap; }
-  .occ-table .sev-cell { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
-  .table-scroll { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); box-shadow: var(--shadow-1); }
-  .table-scroll table { min-width: 560px; }
+    /* Buttons */
+    .btn {
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 9px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.15s;
+    }
+    .btn-primary { background: var(--accent); color: var(--accent-ink); box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25); }
+    .btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
+    .btn-secondary { background: var(--surface-2); color: var(--text-primary); border-color: var(--border); }
+    .btn-secondary:hover:not(:disabled) { background: var(--surface-3); }
+    .btn-danger { background: var(--critical); color: #fff; }
+    .btn-danger:hover:not(:disabled) { background: #dc2626; }
+    .btn-success { background: var(--good); color: #fff; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3); }
+    .btn-success:hover:not(:disabled) { background: #059669; }
+    .btn-gemini {
+      background: linear-gradient(135deg, #1a73e8, #3b82f6);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(26, 115, 232, 0.3);
+    }
+    .btn-gemini:hover:not(:disabled) {
+      background: linear-gradient(135deg, #1557b0, #2563eb);
+    }
+    .btn-sm { padding: 6px 10px; font-size: 12px; }
+    .btn-block { width: 100%; }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
 
-  .error-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
-    border-radius: var(--radius-sm);
-    background: var(--critical-soft);
-    border: 1px solid rgba(208, 59, 59, 0.3);
-    font-size: 12.5px;
-    color: var(--text-primary);
-  }
-  .error-row .ts { font-family: var(--font-display); color: var(--text-muted); }
+    /* Progress Track */
+    .progress-block {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: var(--surface-2);
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+    .progress-track {
+      height: 7px;
+      border-radius: 999px;
+      background: var(--surface-3);
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #2563eb, #3b82f6);
+      width: 0%;
+      transition: width 0.3s;
+    }
 
-  .empty-state {
-    padding: 40px 20px;
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 13.5px;
-  }
+    /* Error & Success */
+    .error-row {
+      display: flex;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      background: var(--critical-soft);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      font-size: 12.5px;
+      color: var(--text-primary);
+    }
+    .toast-success {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--good-soft);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: var(--text-primary);
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 12.5px;
+    }
 
-  .toast {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--good-soft);
-    border: 1px solid rgba(12, 163, 12, 0.35);
-    color: var(--text-primary);
-    padding: 10px 14px;
-    border-radius: var(--radius-sm);
-    font-size: 13px;
-  }
+    /* ---------- Right Column ---------- */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
 
-  .visually-hidden {
-    position: absolute; width: 1px; height: 1px; overflow: hidden;
-    clip: rect(0 0 0 0); white-space: nowrap;
-  }
-</style>
+    /* Live Sentinel Monitor Bar */
+    .sentinel-bar {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--critical-soft);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      padding: 12px 18px;
+      border-radius: var(--radius);
+      animation: pulse-bar 2s infinite alternate;
+    }
+    .sentinel-bar.active { display: flex; }
+    @keyframes pulse-bar {
+      from { background: var(--critical-soft); }
+      to { background: rgba(239, 68, 68, 0.2); }
+    }
+    .sentinel-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 13.5px;
+    }
+    .sentinel-info .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--critical);
+      animation: blink 0.8s infinite alternate;
+    }
+
+    /* Player Panel (Para vídeos gravados) */
+    .player-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .player-viewport {
+      width: 100%;
+      height: 280px;
+      background: #020617;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .player-viewport video {
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    /* Stat Cards */
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 680px) {
+      .stat-row { grid-template-columns: repeat(2, 1fr); }
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 4px;
+    }
+    .stat-card.total::before { background: var(--accent); }
+    .stat-card.baixa::before { background: var(--good); }
+    .stat-card.media::before { background: var(--warning); }
+    .stat-card.alta::before { background: var(--critical); }
+    .stat-card .label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); }
+    .stat-card .val { font-family: var(--font-display); font-size: 28px; font-weight: 800; margin-top: 4px; }
+
+    /* Occurrences Container */
+    .occ-panel {
+      padding: 20px;
+    }
+    .occ-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .occ-header h2 { font-size: 15px; font-weight: 800; margin: 0; }
+    .filter-chips { display: flex; gap: 4px; }
+    .filter-chip {
+      font-size: 11.5px;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text-secondary);
+      padding: 3px 9px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    .filter-chip.active {
+      background: var(--text-primary);
+      color: var(--surface);
+      border-color: var(--text-primary);
+    }
+
+    /* Cards */
+    .occ-list { display: flex; flex-direction: column; gap: 10px; }
+    .occ-card {
+      display: flex;
+      gap: 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--sev-color, var(--border));
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .occ-card:hover { transform: translateX(3px); }
+    .occ-card .top {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .occ-ts {
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 2px 7px;
+      border-radius: 6px;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--surface-2);
+    }
+    .chip .dot { width: 7px; height: 7px; border-radius: 50%; }
+    .dot.baixa { background: var(--good); }
+    .dot.media { background: var(--warning); }
+    .dot.alta { background: var(--critical); }
+    .chip-norma {
+      font-family: var(--font-display);
+      background: rgba(37, 99, 235, 0.1);
+      color: var(--accent);
+    }
+    .occ-risco { font-size: 13.5px; font-weight: 600; color: var(--text-primary); }
+
+    .empty-state {
+      padding: 44px 20px;
+      text-align: center;
+      color: var(--text-muted);
+      background: var(--surface);
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .export-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+    }
+    .modal {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 520px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .gemini-callout {
+      background: rgba(26, 115, 232, 0.08);
+      border: 1px solid rgba(26, 115, 232, 0.25);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+    .gemini-callout a {
+      color: var(--accent);
+      font-weight: 700;
+      text-decoration: underline;
+    }
+
+    .visually-hidden {
+      position: absolute; width: 1px; height: 1px; overflow: hidden;
+      clip: rect(0 0 0 0); white-space: nowrap;
+    }
+  </style>
 </head>
 <body>
 <div class="app">
+  <!-- Header Principal -->
   <header class="brand">
-    <div class="brand-title">
-      <h1>Vigia Obra</h1>
-      <span class="tagline">Apoio à inspeção de segurança do trabalho — SESMT</span>
+    <div class="brand-left">
+      <div class="brand-icon">🛡️</div>
+      <div>
+        <div class="brand-title">
+          <h1>Vigia Obra</h1>
+        </div>
+        <div class="tagline">Inspeção Visual e Segurança do Trabalho — Câmeras em Tempo Real (SESMT)</div>
+        <div class="brand-badges">
+          <span class="badge-pill status-live" id="server-status-pill">Conectando...</span>
+          <span class="badge-pill gemini-pill" id="engine-badge">🛡️ Detector Local OpenCV</span>
+          <span class="badge-pill">NR-18 • NR-6 • NR-35</span>
+          <span class="badge-pill" id="cadence-badge">Cadência: 2s</span>
+        </div>
+      </div>
     </div>
-    <div class="theme-toggle" role="group" aria-label="Tema">
-      <button type="button" data-theme-btn="light" aria-pressed="false">Claro</button>
-      <button type="button" data-theme-btn="dark" aria-pressed="false">Escuro</button>
-      <button type="button" data-theme-btn="auto" aria-pressed="true">Auto</button>
+    <div class="header-actions">
+      <button class="btn btn-gemini btn-sm" id="gemini-key-quick-btn" type="button">
+        🔑 Chave Gemini Grátis
+      </button>
+      <button class="btn btn-secondary btn-sm" id="sound-toggle-btn" type="button" title="Ligar/Desligar alerta sonoro">
+        🔔 Som: Ligado
+      </button>
+      <div class="theme-toggle">
+        <button type="button" data-theme-btn="light">Claro</button>
+        <button type="button" data-theme-btn="dark">Escuro</button>
+        <button type="button" data-theme-btn="auto" aria-pressed="true">Auto</button>
+      </div>
     </div>
   </header>
 
-  <div class="placard" role="note">
-    <span class="placard-icon" aria-hidden="true">⚠️</span>
-    <p>
-      <strong>Análise assistiva por visão computacional.</strong>
-      Não substitui inspeção presencial. Todas as ocorrências abaixo devem ser
-      revisadas por um técnico do SESMT antes de qualquer ação.
-    </p>
+  <!-- Placard SESMT -->
+  <div class="placard">
+    <span style="font-size:20px;">⚠️</span>
+    <div>
+      <strong>Sistema de Inspeção Assistiva em Tempo Real:</strong> A inteligência visual apoia a equipe de segurança do canteiro detectando não-conformidades de EPI e área de risco. Toda detecção deve ser validada por um técnico responsável do SESMT.
+    </div>
   </div>
 
   <div class="layout">
-    <!-- ---------- rail: config ---------- -->
+    <!-- Coluna de Controles e Câmera -->
     <aside class="panel rail">
+      <!-- Origem -->
       <div>
-        <h2>Vídeo</h2>
-        <div class="video-source" style="margin-top:8px;">
-          <div class="thumb" aria-hidden="true"></div>
+        <div class="rail-title">Origem e Monitoramento</div>
+        
+        <div class="source-tabs" role="tablist">
+          <button class="source-tab-btn" id="tab-live" role="tab" aria-selected="true" type="button">
+            🔴 Ao Vivo
+          </button>
+          <button class="source-tab-btn" id="tab-record" role="tab" aria-selected="false" type="button">
+            📹 Gravar Clipe
+          </button>
+          <button class="source-tab-btn" id="tab-upload" role="tab" aria-selected="false" type="button">
+            📁 Arquivo
+          </button>
+        </div>
+
+        <!-- Seção 1: Câmera do PC (Ao Vivo e Gravação) -->
+        <div id="camera-section">
+          <div class="webcam-container">
+            <div class="webcam-viewport">
+              <video id="webcam-feed" autoplay playsinline muted></video>
+              <div class="alert-flash" id="alert-flash"></div>
+              <div class="webcam-top-overlay">
+                <span class="live-badge" id="live-indicator">
+                  <span style="width:6px; height:6px; border-radius:50%; background:#fff;"></span>
+                  <span id="live-indicator-text">AO VIVO</span>
+                </span>
+                <span id="live-counter-badge" style="display:none; font-family:var(--font-display); font-size:11px; background:rgba(0,0,0,0.6); color:#fff; padding:2px 7px; border-radius:999px;">0 frames</span>
+              </div>
+              <div class="webcam-placeholder" id="webcam-placeholder">
+                <span style="font-size:28px;">📷</span>
+                <span>Câmera desligada</span>
+                <span style="font-size:11px;">Clique abaixo para ligar a câmera do seu PC</span>
+              </div>
+            </div>
+
+            <div class="webcam-panel-controls">
+              <!-- Botão Ligar/Desligar -->
+              <button class="btn btn-secondary btn-block btn-sm" id="webcam-power-btn" type="button">
+                ⚡ Ligar Câmera do PC
+              </button>
+
+              <!-- Ações Modo Ao Vivo -->
+              <div id="live-actions" style="display:none; flex-direction:column; gap:8px;">
+                <button class="btn btn-success btn-block" id="start-sentinel-btn" type="button">
+                  🟢 Iniciar Vigilância Contínua (Ao Vivo)
+                </button>
+                <button class="btn btn-danger btn-block" id="stop-sentinel-btn" type="button" style="display:none;">
+                  ⏹ Parar Vigilância Contínua
+                </button>
+                <button class="btn btn-primary btn-block btn-sm" id="snap-frame-btn" type="button">
+                  📸 Inspecionar Agora (1 Frame)
+                </button>
+              </div>
+
+              <!-- Ações Modo Gravar Clipe -->
+              <div id="record-actions" style="display:none; flex-direction:column; gap:8px;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+                  <button class="btn btn-danger btn-sm" id="rec-quick-5s" type="button">🔴 Gravar 5s</button>
+                  <button class="btn btn-secondary btn-sm" id="rec-manual-btn" type="button">⏺ Manual</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção 2: Upload de Arquivo -->
+        <div id="upload-section" style="display:none;">
+          <input type="file" id="file-input" accept="video/*" class="visually-hidden" />
+          <label for="file-input" class="dropzone">
+            <span style="font-size:32px;">📂</span>
+            <span style="font-weight:700;">Clique para escolher um vídeo</span>
+            <span style="font-size:11.5px; color:var(--text-muted);">Formatos MP4, WebM, MOV de canteiro</span>
+          </label>
+        </div>
+
+        <!-- Card de Vídeo Gravado/Carregado -->
+        <div class="file-badge" id="file-badge" style="display:none;">
+          <span style="font-size:20px;">🎬</span>
           <div class="meta">
-            <div class="filename">canteiro-bloco-b_turno2.mp4</div>
-            <div class="duration">14:32 · 1080p</div>
+            <div class="name" id="file-badge-name">video.mp4</div>
+            <div class="sub" id="file-badge-sub">00:00 · 0 MB</div>
+          </div>
+          <button class="btn btn-secondary btn-sm" id="remove-file-btn" type="button">✕</button>
+        </div>
+      </div>
+
+      <!-- Parâmetros de Análise -->
+      <div>
+        <div class="rail-title">Motor de Inteligência Artificial</div>
+
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div class="field">
+            <label for="analysis-mode">Motor de Visão</label>
+            <select id="analysis-mode">
+              <option value="demo" selected>🛡️ Detector Local OpenCV (Instantâneo • Sem Cota • Reconhece Capacete)</option>
+              <option value="gemini-flash-lite-latest">✨ Google Gemini AI (Visão Multimodal em Nuvem)</option>
+              <option value="gemini-3.5-flash">✨ Google Gemini 3.5 Flash</option>
+              <option value="claude-sonnet-5">🤖 Claude Sonnet (Anthropic)</option>
+            </select>
+            <span class="field-hint" id="mode-hint">Inspeciona rigorosamente a presença/ausência de EPIs (Apenas Capacete NR-6/NR-18). OBS: Versão limitada para teste.</span>
+          </div>
+
+          <div class="field">
+            <label for="cadence">Intervalo de Verificação</label>
+            <select id="cadence">
+              <option value="1">A cada 1 segundo (Tempo Real / Alta Cadência)</option>
+              <option value="2" selected>A cada 2 segundos (Recomendado ao vivo)</option>
+              <option value="5">A cada 5 segundos (Economia de requisições)</option>
+              <option value="10">A cada 10 segundos</option>
+            </select>
           </div>
         </div>
       </div>
 
-      <div class="field">
-        <label for="interval">Intervalo entre frames</label>
-        <select id="interval">
-          <option value="5" selected>5 segundos</option>
-          <option value="10">10 segundos</option>
-          <option value="15">15 segundos</option>
-        </select>
-        <span class="field-hint">Intervalos menores custam mais e detalham mais.</span>
+      <!-- Botão para Iniciar Análise de Vídeo em Lote (quando houver arquivo/gravação) -->
+      <div id="batch-run-wrap" style="display:none;">
+        <button class="btn btn-primary btn-block" id="run-batch-btn" type="button">
+          ▶ Iniciar Análise do Vídeo Gravado
+        </button>
       </div>
 
-      <div class="field">
-        <label for="model">Modelo</label>
-        <select id="model">
-          <option value="claude-opus-5" selected>claude-opus-5</option>
-          <option value="claude-sonnet-5">claude-sonnet-5 (mais econômico)</option>
-        </select>
-      </div>
+      <!-- Feedback de Erro -->
+      <div class="error-row" id="server-error" style="display:none;"></div>
 
-      <div class="field">
-        <label for="effort">Nível de esforço</label>
-        <select id="effort">
-          <option value="low">Baixo</option>
-          <option value="medium" selected>Médio</option>
-          <option value="high">Alto</option>
-        </select>
-      </div>
-
-      <button class="btn btn-primary" id="run-btn" type="button">▶ Iniciar análise</button>
-
-      <div class="progress-block" id="progress-block" hidden>
+      <!-- Barra de Progresso (Modo Lote) -->
+      <div class="progress-block" id="progress-block" style="display:none;">
         <div class="progress-label">
-          <span id="progress-text">Preparando…</span>
-          <span class="count" id="progress-count">0 / 0</span>
+          <span id="progress-text">Analisando vídeo...</span>
+          <span id="progress-count">0 / 0</span>
         </div>
-        <div class="progress-track" id="progress-track">
+        <div class="progress-track">
           <div class="progress-fill" id="progress-fill"></div>
         </div>
       </div>
 
-      <div class="toast" id="done-toast" hidden>
-        <span aria-hidden="true">✓</span>
-        <span id="done-text"></span>
+      <!-- Toast Sucesso -->
+      <div class="toast-success" id="done-toast" style="display:none;">
+        <span>✓</span>
+        <span id="done-text">Análise concluída com sucesso.</span>
       </div>
-
-      <button class="btn btn-ghost" id="reset-btn" type="button" hidden>↺ Reiniciar simulação</button>
     </aside>
 
-    <!-- ---------- results ---------- -->
-    <main class="results">
-      <div class="stat-row">
-        <div class="stat-tile">
-          <div class="stat-label"><span class="dot total" aria-hidden="true"></span>Ocorrências</div>
-          <div class="stat-value" id="stat-total">0</div>
+    <!-- Área Principal de Resultados e Monitoramento -->
+    <main class="main-content">
+      <!-- Barra Alerta Vigilância Ativa -->
+      <div class="sentinel-bar" id="sentinel-bar">
+        <div class="sentinel-info">
+          <span class="dot"></span>
+          <span>VIGILÂNCIA AO VIVO ATIVA — Inspecionando canteiro em tempo real via câmera</span>
         </div>
-        <div class="stat-tile">
-          <div class="stat-label"><span class="dot baixa" aria-hidden="true"></span>Baixa</div>
-          <div class="stat-value" id="stat-baixa">0</div>
+        <button class="btn btn-danger btn-sm" id="stop-sentinel-bar-btn" type="button">Encerrar Vigilância</button>
+      </div>
+
+      <!-- Player de Inspeção Sincronizado (visível quando analisando vídeo em lote) -->
+      <div class="player-panel" id="batch-player-panel" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="font-weight:700; font-size:13px; color:var(--text-secondary);">
+            🎬 Inspeção Sincronizada do Vídeo Gravado
+          </div>
+          <div style="font-family:var(--font-display); font-size:12px; color:var(--accent);" id="player-ts">00:00</div>
         </div>
-        <div class="stat-tile">
-          <div class="stat-label"><span class="dot media" aria-hidden="true"></span>Média</div>
-          <div class="stat-value" id="stat-media">0</div>
+        <div class="player-viewport">
+          <video id="inspection-player" controls playsinline></video>
         </div>
-        <div class="stat-tile">
-          <div class="stat-label"><span class="dot alta" aria-hidden="true"></span>Alta</div>
-          <div class="stat-value" id="stat-alta">0</div>
+        <div style="font-size:11.5px; color:var(--text-muted);">
+          💡 Clique em qualquer ocorrência abaixo para saltar o vídeo para o momento da não-conformidade.
         </div>
       </div>
 
-      <div>
-        <div class="list-header">
-          <h2>Ocorrências detectadas</h2>
-          <div class="view-toggle" role="group" aria-label="Modo de exibição">
-            <button type="button" data-view-btn="cards" aria-pressed="true">Cartões</button>
-            <button type="button" data-view-btn="table" aria-pressed="false">Tabela</button>
+      <!-- KPIs / Métricas -->
+      <div class="stat-row">
+        <div class="stat-card total">
+          <div class="label">Total de Ocorrências</div>
+          <div class="val" id="stat-total">0</div>
+        </div>
+        <div class="stat-card baixa">
+          <div class="label">Severidade Baixa</div>
+          <div class="val" id="stat-baixa">0</div>
+        </div>
+        <div class="stat-card media">
+          <div class="label">Severidade Média</div>
+          <div class="val" id="stat-media">0</div>
+        </div>
+        <div class="stat-card alta">
+          <div class="label">Severidade Alta</div>
+          <div class="val" id="stat-alta">0</div>
+        </div>
+      </div>
+
+      <!-- Painel de Ocorrências Detectadas -->
+      <div class="panel occ-panel">
+        <div class="occ-header">
+          <div>
+            <h2>Feed de Não-Conformidades Detectadas</h2>
+            <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">
+              Registro cronológico de riscos observados nas câmeras
+            </div>
+          </div>
+          <div class="filter-chips">
+            <button class="filter-chip active" data-filter="all" type="button">Todas</button>
+            <button class="filter-chip" data-filter="alta" type="button">Alta</button>
+            <button class="filter-chip" data-filter="media" type="button">Média</button>
+            <button class="filter-chip" data-filter="baixa" type="button">Baixa</button>
           </div>
         </div>
-      </div>
 
-      <div id="occ-cards" class="occ-list">
-        <div class="empty-state" id="empty-state">
-          Nenhuma ocorrência ainda. Clique em "Iniciar análise" para simular o
-          processamento do vídeo, frame a frame.
+        <div id="occ-cards" class="occ-list">
+          <div class="empty-state" id="empty-state">
+            <span style="font-size:36px;">🛡️</span>
+            <div>
+              <div style="font-weight:700; color:var(--text-primary);">Nenhuma ocorrência registrada</div>
+              <div style="margin-top:4px;">Inicie a <strong>Vigilância ao Vivo</strong> com a câmera do seu PC ou envie um vídeo para inspecionar.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="export-row" id="export-row" style="display:none;">
+          <button class="btn btn-secondary btn-sm" id="export-json-btn" type="button">💾 Baixar JSON</button>
+          <button class="btn btn-primary btn-sm" id="export-print-btn" type="button">📄 Exportar Relatório SESMT</button>
         </div>
       </div>
-
-      <div id="occ-table-wrap" class="table-scroll" hidden>
-        <table class="occ-table">
-          <thead>
-            <tr>
-              <th scope="col">Timestamp</th>
-              <th scope="col">Severidade</th>
-              <th scope="col">Risco</th>
-              <th scope="col">Norma</th>
-              <th scope="col">Confiança</th>
-            </tr>
-          </thead>
-          <tbody id="occ-table-body"></tbody>
-        </table>
-      </div>
     </main>
+  </div>
+</div>
+
+<!-- Modal Config de Chave Gemini -->
+<div class="modal-backdrop" id="config-modal" style="display:none;">
+  <div class="modal">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <span style="font-weight:800; font-size:16px;">✨ Configurar Chave da IA (Google Gemini)</span>
+      <button class="btn btn-secondary btn-sm" id="close-modal-btn" type="button">✕</button>
+    </div>
+    
+    <div style="font-size:13px; color:var(--text-secondary); display:flex; flex-direction:column; gap:12px;">
+      <div class="gemini-callout">
+        <strong>🎁 Como obter sua chave gratuita do Gemini em 30 segundos:</strong><br/>
+        1. Abra o link: <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">aistudio.google.com/app/apikey</a><br/>
+        2. Faça login com sua conta Google.<br/>
+        3. Clique em <strong>"Create API key"</strong>, copie a chave (começa com <code>AIzaSy...</code>) e cole abaixo:
+      </div>
+      
+      <div class="field">
+        <label for="gemini-key-input">Chave Google Gemini (AIzaSy...)</label>
+        <input type="password" id="gemini-key-input" placeholder="AIzaSy..." autocomplete="off" />
+      </div>
+
+      <div id="modal-key-status" style="font-size:12px; color:var(--text-muted);">
+        Verificando status no servidor...
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:flex-end; gap:8px;">
+      <button class="btn btn-secondary btn-sm" id="cancel-modal-btn" type="button">Cancelar</button>
+      <button class="btn btn-gemini btn-sm" id="save-key-btn" type="button">Salvar Chave Gemini</button>
+    </div>
   </div>
 </div>
 
@@ -715,7 +1093,7 @@
 (function () {
   "use strict";
 
-  /* ---------- theme toggle ---------- */
+  /* ---------- Tema ---------- */
   var root = document.documentElement;
   var themeButtons = document.querySelectorAll("[data-theme-btn]");
   function setTheme(mode) {
@@ -724,76 +1102,423 @@
     themeButtons.forEach(function (b) {
       b.setAttribute("aria-pressed", String(b.dataset.themeBtn === mode));
     });
+    localStorage.setItem("vigia_theme", mode);
   }
   themeButtons.forEach(function (b) {
     b.addEventListener("click", function () { setTheme(b.dataset.themeBtn); });
   });
+  setTheme(localStorage.getItem("vigia_theme") || "auto");
 
-  /* ---------- view toggle (cards / table) ---------- */
-  var viewButtons = document.querySelectorAll("[data-view-btn]");
-  var cardsEl = document.getElementById("occ-cards");
-  var tableWrap = document.getElementById("occ-table-wrap");
-  function setView(mode) {
-    cardsEl.hidden = mode !== "cards";
-    tableWrap.hidden = mode !== "table";
-    viewButtons.forEach(function (b) {
-      b.setAttribute("aria-pressed", String(b.dataset.viewBtn === mode));
-    });
-  }
-  viewButtons.forEach(function (b) {
-    b.addEventListener("click", function () { setView(b.dataset.viewBtn); });
+  /* ---------- Alerta Sonoro (Web Audio API) ---------- */
+  var soundEnabled = true;
+  var soundToggleBtn = document.getElementById("sound-toggle-btn");
+  var audioCtx = null;
+
+  soundToggleBtn.addEventListener("click", function () {
+    soundEnabled = !soundEnabled;
+    soundToggleBtn.textContent = soundEnabled ? "🔔 Som: Ligado" : "🔕 Som: Mudo";
+    soundToggleBtn.classList.toggle("btn-secondary", soundEnabled);
   });
 
-  /* ---------- mock NDJSON stream (mesmo contrato do main.py) ---------- */
-  var mockEvents = [
-    { type: "start", total_frames_estimate: 9, interval: 5, model: "claude-opus-5" },
-    { type: "progress", frame_index: 0, timestamp: "00:00", ocorrencias: [] },
-    { type: "progress", frame_index: 1, timestamp: "00:05", ocorrencias: [
-      { timestamp: "00:05", risco: "Trabalhador sem capacete próximo à betoneira", norma: "NR-6, uso de EPI", confianca: "alto", severidade: "alta" }
-    ]},
-    { type: "progress", frame_index: 2, timestamp: "00:10", ocorrencias: [
-      { timestamp: "00:10", risco: "Ausência de guarda-corpo na abertura do piso 2", norma: "NR-18, item 18.15", confianca: "alto", severidade: "alta" }
-    ]},
-    { type: "progress", frame_index: 3, timestamp: "00:15", ocorrencias: [] },
-    { type: "progress", frame_index: 4, timestamp: "00:20", ocorrencias: [
-      { timestamp: "00:20", risco: "Capacete parcialmente oculto pelo ângulo da câmera", norma: "NR-6, uso de EPI", confianca: "baixo", severidade: "baixa" }
-    ]},
-    { type: "error", frame_index: 5, timestamp: "00:25", message: "Erro na API (529): serviço temporariamente sobrecarregado" },
-    { type: "progress", frame_index: 6, timestamp: "00:30", ocorrencias: [
-      { timestamp: "00:30", risco: "Trabalhador próximo à borda sem cinto de segurança visível", norma: "NR-35, item 35.4.1", confianca: "alto", severidade: "alta" },
-      { timestamp: "00:30", risco: "Sinalização de área de risco ausente ao redor da escavação", norma: "NR-18, item 18.6", confianca: "medio", severidade: "media" }
-    ]},
-    { type: "progress", frame_index: 7, timestamp: "00:35", ocorrencias: [] },
-    { type: "progress", frame_index: 8, timestamp: "00:40", ocorrencias: [
-      { timestamp: "00:40", risco: "Cone de sinalização isolado, sem fita indicando o perímetro", norma: "NR-18, item 18.6", confianca: "medio", severidade: "media" }
-    ]},
-    { type: "done", total_ocorrencias: 6, output_file: "ocorrencias.json",
-      disclaimer: "Esta análise é assistiva e não substitui inspeção presencial de um técnico de segurança do trabalho." }
-  ];
+  function playAlertSound(severity) {
+    if (!soundEnabled) return;
+    try {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === "suspended") {
+        audioCtx.resume();
+      }
+      var osc = audioCtx.createOscillator();
+      var gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
 
-  var runBtn = document.getElementById("run-btn");
-  var resetBtn = document.getElementById("reset-btn");
-  var progressBlock = document.getElementById("progress-block");
-  var progressText = document.getElementById("progress-text");
-  var progressCount = document.getElementById("progress-count");
-  var progressTrack = document.getElementById("progress-track");
-  var progressFill = document.getElementById("progress-fill");
-  var doneToast = document.getElementById("done-toast");
-  var doneText = document.getElementById("done-text");
-  var emptyState = document.getElementById("empty-state");
-  var tableBody = document.getElementById("occ-table-body");
+      var freq = severity === "alta" ? 880 : 587.33;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
 
+      osc.start(audioCtx.currentTime);
+      osc.stop(audioCtx.currentTime + 0.35);
+    } catch (e) {}
+  }
+
+  /* ---------- Abas de Origem (Ao Vivo, Gravar, Upload) ---------- */
+  var tabLive = document.getElementById("tab-live");
+  var tabRecord = document.getElementById("tab-record");
+  var tabUpload = document.getElementById("tab-upload");
+  var cameraSection = document.getElementById("camera-section");
+  var uploadSection = document.getElementById("upload-section");
+  var liveActions = document.getElementById("live-actions");
+  var recordActions = document.getElementById("record-actions");
+  var batchRunWrap = document.getElementById("batch-run-wrap");
+  var currentTab = "live";
+
+  function setTab(tab) {
+    currentTab = tab;
+    tabLive.setAttribute("aria-selected", String(tab === "live"));
+    tabRecord.setAttribute("aria-selected", String(tab === "record"));
+    tabUpload.setAttribute("aria-selected", String(tab === "upload"));
+
+    if (tab === "upload") {
+      cameraSection.style.display = "none";
+      uploadSection.style.display = "block";
+      batchRunWrap.style.display = selectedFile ? "block" : "none";
+    } else {
+      cameraSection.style.display = "block";
+      uploadSection.style.display = "none";
+      if (activeStream) {
+        liveActions.style.display = tab === "live" ? "flex" : "none";
+        recordActions.style.display = tab === "record" ? "flex" : "none";
+      }
+      batchRunWrap.style.display = (tab === "record" && selectedFile) ? "block" : "none";
+    }
+  }
+
+  tabLive.addEventListener("click", function () { setTab("live"); });
+  tabRecord.addEventListener("click", function () { setTab("record"); });
+  tabUpload.addEventListener("click", function () { setTab("upload"); });
+
+  /* ---------- Câmera do PC (Webcam) ---------- */
+  var webcamFeed = document.getElementById("webcam-feed");
+  var webcamPowerBtn = document.getElementById("webcam-power-btn");
+  var webcamPlaceholder = document.getElementById("webcam-placeholder");
+  var liveIndicator = document.getElementById("live-indicator");
+  var liveIndicatorText = document.getElementById("live-indicator-text");
+  var liveCounterBadge = document.getElementById("live-counter-badge");
+  var alertFlash = document.getElementById("alert-flash");
+
+  var activeStream = null;
+  var isCameraOn = false;
+
+  async function toggleCamera() {
+    if (isCameraOn) {
+      stopCamera();
+    } else {
+      await startCamera();
+    }
+  }
+
+  async function startCamera() {
+    try {
+      webcamPlaceholder.innerHTML = "<span>⏳ Conectando câmera...</span>";
+      var stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false
+      });
+      activeStream = stream;
+      webcamFeed.srcObject = stream;
+      isCameraOn = true;
+      webcamPlaceholder.style.display = "none";
+      liveIndicator.classList.add("active");
+      liveIndicatorText.textContent = "AO VIVO";
+      webcamPowerBtn.textContent = "⏹ Desligar Câmera";
+      webcamPowerBtn.classList.add("btn-danger");
+
+      if (currentTab === "live") liveActions.style.display = "flex";
+      if (currentTab === "record") recordActions.style.display = "flex";
+    } catch (err) {
+      webcamPlaceholder.innerHTML = '<span style="color:var(--critical);">❌ Erro ao acessar câmera</span><span style="font-size:11px;">' + err.message + '</span>';
+    }
+  }
+
+  function stopCamera() {
+    stopSentinel();
+    if (activeStream) {
+      activeStream.getTracks().forEach(function (t) { t.stop(); });
+      activeStream = null;
+    }
+    webcamFeed.srcObject = null;
+    isCameraOn = false;
+    webcamPlaceholder.style.display = "flex";
+    webcamPlaceholder.innerHTML = '<span style="font-size:28px;">📷</span><span>Câmera desligada</span><span style="font-size:11px;">Clique abaixo para ligar a câmera do seu PC</span>';
+    liveIndicator.classList.remove("active");
+    liveCounterBadge.style.display = "none";
+    webcamPowerBtn.textContent = "⚡ Ligar Câmera do PC";
+    webcamPowerBtn.classList.remove("btn-danger");
+    liveActions.style.display = "none";
+    recordActions.style.display = "none";
+  }
+
+  webcamPowerBtn.addEventListener("click", toggleCamera);
+
+  /* ---------- Modo 1: Vigilância ao Vivo Contínua (Tempo Real) ---------- */
+  var startSentinelBtn = document.getElementById("start-sentinel-btn");
+  var stopSentinelBtn = document.getElementById("stop-sentinel-btn");
+  var stopSentinelBarBtn = document.getElementById("stop-sentinel-bar-btn");
+  var sentinelBar = document.getElementById("sentinel-bar");
+  var cadenceSelect = document.getElementById("cadence");
+  var cadenceBadge = document.getElementById("cadence-badge");
+  var analysisMode = document.getElementById("analysis-mode");
+  var engineBadge = document.getElementById("engine-badge");
+
+  var isMonitoring = false;
+  var sentinelTimerId = null;
+  var isAnalyzingFrame = false;
+  var frameSequence = 0;
+  var offscreenCanvas = document.createElement("canvas");
+  var snapFrameBtn = document.getElementById("snap-frame-btn");
+
+  cadenceSelect.addEventListener("change", function () {
+    cadenceBadge.textContent = "Cadência: " + cadenceSelect.value + "s";
+  });
+
+  analysisMode.addEventListener("change", function () {
+    var val = analysisMode.value;
+    if (val.startsWith("gemini")) {
+      engineBadge.textContent = "✨ Google Gemini (Nuvem)";
+    } else if (val.startsWith("claude")) {
+      engineBadge.textContent = "🤖 Claude Vision (Anthropic)";
+    } else {
+      engineBadge.textContent = "🛡️ Detector Local OpenCV";
+    }
+  });
+
+  function flashAlert() {
+    alertFlash.classList.add("flashing");
+    setTimeout(function () {
+      alertFlash.classList.remove("flashing");
+    }, 450);
+  }
+
+  function captureBlob() {
+    return new Promise(function (resolve) {
+      if (!webcamFeed || !webcamFeed.videoWidth) return resolve(null);
+      offscreenCanvas.width = webcamFeed.videoWidth || 640;
+      offscreenCanvas.height = webcamFeed.videoHeight || 480;
+      var ctx = offscreenCanvas.getContext("2d");
+      ctx.drawImage(webcamFeed, 0, 0, offscreenCanvas.width, offscreenCanvas.height);
+      offscreenCanvas.toBlob(resolve, "image/png");
+    });
+  }
+
+  async function analyzeCurrentFrame(isManual) {
+    if ((!isMonitoring && !isManual) || !activeStream || !webcamFeed.videoWidth) return;
+    if (isAnalyzingFrame) return;
+    isAnalyzingFrame = true;
+
+    frameSequence++;
+    liveCounterBadge.textContent = "Frame #" + frameSequence;
+    if (isManual && snapFrameBtn) {
+      snapFrameBtn.disabled = true;
+      snapFrameBtn.textContent = "⏳ Inspecionando...";
+    }
+
+    try {
+      var blob = await captureBlob();
+      if (!blob) return;
+
+      var now = new Date();
+      var tsStr = now.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+
+      var formData = new FormData();
+      formData.append("frame", blob, "live-frame.png");
+      formData.append("timestamp", tsStr);
+      formData.append("frameIndex", String(frameSequence));
+      formData.append("model", analysisMode.value);
+      formData.append("demo", String(analysisMode.value === "demo"));
+
+      var geminiKey = localStorage.getItem("gemini_key") || "";
+      if (geminiKey) formData.append("apiKey", geminiKey);
+
+      var res = await fetch("/api/analyze-frame", { method: "POST", body: formData });
+      if (!res.ok) {
+        var errJson = await res.json().catch(function () { return {}; });
+        console.warn("[Vigia Obra] Erro no frame:", errJson);
+        return;
+      }
+      var data = await res.json();
+      if (data && data.engine) {
+        engineBadge.textContent = data.engine;
+      }
+      if (data && data.ocorrencias && data.ocorrencias.length > 0) {
+        flashAlert();
+        var maxSev = data.ocorrencias.some(function (o) { return o.severidade === "alta"; }) ? "alta" : "media";
+        playAlertSound(maxSev);
+        data.ocorrencias.forEach(function (occ) {
+          addOccurrence(occ);
+        });
+      }
+    } catch (err) {
+      console.error("[Vigia Obra] Erro de rede no frame:", err);
+    } finally {
+      isAnalyzingFrame = false;
+      if (isManual && snapFrameBtn) {
+        snapFrameBtn.disabled = false;
+        snapFrameBtn.textContent = "📸 Inspecionar Agora (1 Frame)";
+      }
+    }
+  }
+
+  async function runSentinelLoop() {
+    if (!isMonitoring) return;
+    await analyzeCurrentFrame(false);
+    if (isMonitoring) {
+      var intervalSec = Number(cadenceSelect.value) || 2;
+      sentinelTimerId = setTimeout(runSentinelLoop, intervalSec * 1000);
+    }
+  }
+
+  function startSentinel() {
+    if (!activeStream) return;
+    isMonitoring = true;
+    frameSequence = 0;
+    startSentinelBtn.style.display = "none";
+    stopSentinelBtn.style.display = "block";
+    sentinelBar.classList.add("active");
+    liveIndicator.classList.add("monitoring");
+    liveIndicatorText.textContent = "● VIGILÂNCIA ATIVA";
+    liveCounterBadge.style.display = "inline";
+
+    if (sentinelTimerId) clearTimeout(sentinelTimerId);
+    runSentinelLoop();
+  }
+
+  function stopSentinel() {
+    if (!isMonitoring) return;
+    isMonitoring = false;
+    if (sentinelTimerId) {
+      clearTimeout(sentinelTimerId);
+      sentinelTimerId = null;
+    }
+    startSentinelBtn.style.display = "block";
+    stopSentinelBtn.style.display = "none";
+    sentinelBar.classList.remove("active");
+    liveIndicator.classList.remove("monitoring");
+    liveIndicatorText.textContent = "AO VIVO";
+  }
+
+  startSentinelBtn.addEventListener("click", startSentinel);
+  stopSentinelBtn.addEventListener("click", stopSentinel);
+  stopSentinelBarBtn.addEventListener("click", stopSentinel);
+  if (snapFrameBtn) {
+    snapFrameBtn.addEventListener("click", function () {
+      analyzeCurrentFrame(true);
+    });
+  }
+
+  /* ---------- Modo 2: Gravação de Clipe da Webcam ---------- */
+  var recQuick5s = document.getElementById("rec-quick-5s");
+  var recManualBtn = document.getElementById("rec-manual-btn");
+  var mediaRecorder = null;
+  var recChunks = [];
+  var isRecording = false;
+
+  function startRecording(seconds) {
+    if (!activeStream) return;
+    recChunks = [];
+    var mime = MediaRecorder.isTypeSupported("video/webm;codecs=vp8") ? "video/webm;codecs=vp8" : "video/webm";
+    mediaRecorder = new MediaRecorder(activeStream, { mimeType: mime });
+
+    mediaRecorder.ondataavailable = function (e) {
+      if (e.data && e.data.size > 0) recChunks.push(e.data);
+    };
+
+    mediaRecorder.onstop = function () {
+      isRecording = false;
+      recManualBtn.textContent = "⏺ Manual";
+      recManualBtn.classList.remove("btn-danger");
+      recQuick5s.disabled = false;
+      liveIndicatorText.textContent = "AO VIVO";
+
+      var blob = new Blob(recChunks, { type: "video/webm" });
+      var file = new File([blob], "gravacao-webcam-" + Date.now() + ".webm", { type: "video/webm" });
+      setVideoSource(file, "Gravado da Câmera do PC");
+    };
+
+    mediaRecorder.start(200);
+    isRecording = true;
+    recQuick5s.disabled = true;
+    recManualBtn.textContent = "⏹ Parar";
+    recManualBtn.classList.add("btn-danger");
+    liveIndicatorText.textContent = "● GRAVANDO";
+
+    if (seconds) {
+      setTimeout(function () {
+        if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
+      }, seconds * 1000);
+    }
+  }
+
+  recQuick5s.addEventListener("click", function () { if (!isRecording) startRecording(5); });
+  recManualBtn.addEventListener("click", function () {
+    if (!isRecording) startRecording(null);
+    else if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
+  });
+
+  /* ---------- Modo 3: Arquivo do Disco ---------- */
+  var fileInput = document.getElementById("file-input");
+  var fileBadge = document.getElementById("file-badge");
+  var fileBadgeName = document.getElementById("file-badge-name");
+  var fileBadgeSub = document.getElementById("file-badge-sub");
+  var removeFileBtn = document.getElementById("remove-file-btn");
+  var batchPlayerPanel = document.getElementById("batch-player-panel");
+  var inspectionPlayer = document.getElementById("inspection-player");
+  var playerTs = document.getElementById("player-ts");
+  var runBatchBtn = document.getElementById("run-batch-btn");
+  var selectedFile = null;
+
+  function setVideoSource(file, label) {
+    selectedFile = file;
+    if (!file) {
+      fileBadge.style.display = "none";
+      batchPlayerPanel.style.display = "none";
+      batchRunWrap.style.display = "none";
+      inspectionPlayer.removeAttribute("src");
+      return;
+    }
+
+    fileBadge.style.display = "flex";
+    fileBadgeName.textContent = label ? label + " (" + file.name + ")" : file.name;
+    var mb = (file.size / (1024 * 1024)).toFixed(1);
+    fileBadgeSub.textContent = mb + " MB";
+    batchRunWrap.style.display = "block";
+
+    var url = URL.createObjectURL(file);
+    inspectionPlayer.src = url;
+    batchPlayerPanel.style.display = "flex";
+  }
+
+  fileInput.addEventListener("change", function () {
+    var f = fileInput.files && fileInput.files[0];
+    if (f) setVideoSource(f, null);
+  });
+
+  removeFileBtn.addEventListener("click", function () {
+    fileInput.value = "";
+    setVideoSource(null, null);
+  });
+
+  inspectionPlayer.addEventListener("timeupdate", function () {
+    var total = Math.round(inspectionPlayer.currentTime);
+    var m = Math.floor(total / 60);
+    var s = total % 60;
+    playerTs.textContent = (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
+  });
+
+  /* ---------- Ocorrências e Contadores ---------- */
   var statTotal = document.getElementById("stat-total");
   var statBaixa = document.getElementById("stat-baixa");
   var statMedia = document.getElementById("stat-media");
   var statAlta = document.getElementById("stat-alta");
+  var occCards = document.getElementById("occ-cards");
+  var emptyState = document.getElementById("empty-state");
+  var exportRow = document.getElementById("export-row");
+  var serverError = document.getElementById("server-error");
+  var progressBlock = document.getElementById("progress-block");
+  var progressText = document.getElementById("progress-text");
+  var progressCount = document.getElementById("progress-count");
+  var progressFill = document.getElementById("progress-fill");
+  var doneToast = document.getElementById("done-toast");
+  var doneText = document.getElementById("done-text");
 
+  var occurrencesList = [];
   var counts = { total: 0, baixa: 0, media: 0, alta: 0 };
-  var totalFrames = null;
+  var currentFilter = "all";
 
   var sevColor = { baixa: "var(--good)", media: "var(--warning)", alta: "var(--critical)" };
-  var sevLabel = { baixa: "Baixa", media: "Média", alta: "Alta" };
-  var confLabel = { alto: "Confiança alta", medio: "Confiança média", baixo: "Confiança baixa" };
+  var sevName = { baixa: "Baixa", media: "Média", alta: "Alta" };
 
   function updateStats() {
     statTotal.textContent = counts.total;
@@ -802,115 +1527,192 @@
     statAlta.textContent = counts.alta;
   }
 
+  function renderList() {
+    occCards.innerHTML = "";
+    var filtered = occurrencesList.filter(function (o) {
+      return currentFilter === "all" ? true : o.severidade === currentFilter;
+    });
+
+    if (filtered.length === 0) {
+      var ph = document.createElement("div");
+      ph.className = "empty-state";
+      ph.innerHTML = '<span style="font-size:32px;">🛡️</span><div>Nenhuma ocorrência neste filtro.</div>';
+      occCards.appendChild(ph);
+      return;
+    }
+
+    filtered.forEach(function (occ) {
+      var card = document.createElement("div");
+      card.className = "occ-card";
+      card.style.setProperty("--sev-color", sevColor[occ.severidade] || "var(--border)");
+      card.innerHTML =
+        '<div style="flex:1;">' +
+          '<div class="top">' +
+            '<span class="occ-ts">⏱ ' + occ.timestamp + '</span>' +
+            '<span class="chip"><span class="dot ' + occ.severidade + '"></span>' + sevName[occ.severidade] + '</span>' +
+            '<span class="chip chip-norma">' + occ.norma + '</span>' +
+            '<span style="font-size:11px; color:var(--text-muted);">' + occ.confianca + '</span>' +
+          '</div>' +
+          '<div class="occ-risco">' + occ.risco + '</div>' +
+        '</div>';
+      card.addEventListener("click", function () {
+        if (inspectionPlayer.src) {
+          var parts = (occ.timestamp || "00:00").split(":");
+          var sec = parts.length === 2 ? (parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10)) : 0;
+          inspectionPlayer.currentTime = sec;
+          inspectionPlayer.play().catch(function () {});
+        }
+      });
+      occCards.appendChild(card);
+    });
+  }
+
   function addOccurrence(occ) {
     if (emptyState) { emptyState.remove(); emptyState = null; }
-    counts.total += 1;
+    counts.total++;
     counts[occ.severidade] = (counts[occ.severidade] || 0) + 1;
     updateStats();
-
-    var card = document.createElement("div");
-    card.className = "occ-card";
-    card.style.setProperty("--sev-color", sevColor[occ.severidade] || "var(--border)");
-    card.innerHTML =
-      '<div class="occ-main">' +
-        '<div class="occ-top">' +
-          '<span class="occ-timestamp">' + occ.timestamp + '</span>' +
-          '<span class="chip"><span class="dot ' + occ.severidade + '"></span>' + sevLabel[occ.severidade] + '</span>' +
-          '<span class="chip chip-norma">' + occ.norma + '</span>' +
-          '<span class="confidence ' + occ.confianca + '"><span class="ring"></span>' + confLabel[occ.confianca] + '</span>' +
-        '</div>' +
-        '<div class="occ-risco">' + occ.risco + '</div>' +
-      '</div>';
-    cardsEl.appendChild(card);
-
-    var row = document.createElement("tr");
-    row.innerHTML =
-      '<td class="ts">' + occ.timestamp + '</td>' +
-      '<td><span class="sev-cell"><span class="dot ' + occ.severidade + '"></span>' + sevLabel[occ.severidade] + '</span></td>' +
-      '<td>' + occ.risco + '</td>' +
-      '<td class="ts">' + occ.norma + '</td>' +
-      '<td>' + confLabel[occ.confianca] + '</td>';
-    tableBody.appendChild(row);
+    occurrencesList.unshift(occ);
+    renderList();
+    exportRow.style.display = "flex";
   }
 
-  function addErrorRow(ev) {
-    var row = document.createElement("div");
-    row.className = "error-row";
-    row.innerHTML = '<span class="ts">' + ev.timestamp + '</span><span>' + ev.message + '</span>';
-    cardsEl.appendChild(row);
+  /* Filtros */
+  document.querySelectorAll(".filter-chip").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".filter-chip").forEach(function (b) { b.classList.remove("active"); });
+      btn.classList.add("active");
+      currentFilter = btn.dataset.filter;
+      renderList();
+    });
+  });
+
+  /* Análise em Lote do Vídeo Gravado */
+  runBatchBtn.addEventListener("click", function () {
+    if (!selectedFile) return;
+    runBatchBtn.disabled = true;
+    runBatchBtn.textContent = "⏳ Analisando Vídeo...";
+    progressBlock.style.display = "flex";
+    serverError.style.display = "none";
+
+    var formData = new FormData();
+    formData.append("video", selectedFile);
+    formData.append("interval", cadenceSelect.value);
+    formData.append("model", analysisMode.value);
+    formData.append("demo", String(analysisMode.value === "demo"));
+
+    var geminiKey = localStorage.getItem("gemini_key");
+    if (geminiKey) formData.append("apiKey", geminiKey);
+
+    fetch("/api/analyze", { method: "POST", body: formData })
+      .then(function (res) {
+        if (!res.ok) throw new Error("Erro HTTP " + res.status);
+        var reader = res.body.getReader();
+        var dec = new TextDecoder();
+        var buf = "";
+
+        function readStream() {
+          return reader.read().then(function (result) {
+            if (result.done) {
+              runBatchBtn.disabled = false;
+              runBatchBtn.textContent = "▶ Iniciar Análise do Vídeo Gravado";
+              doneToast.style.display = "flex";
+              return;
+            }
+            buf += dec.decode(result.value, { stream: true });
+            var lines = buf.split("\n");
+            buf = lines.pop();
+            lines.forEach(function (line) {
+              var tr = line.trim();
+              if (!tr) return;
+              try {
+                var ev = JSON.parse(tr);
+                if (ev.type === "progress" && ev.ocorrencias) {
+                  ev.ocorrencias.forEach(addOccurrence);
+                }
+              } catch (e) {}
+            });
+            return readStream();
+          });
+        }
+        return readStream();
+      })
+      .catch(function (err) {
+        serverError.style.display = "flex";
+        serverError.textContent = "Erro na análise: " + err.message;
+        runBatchBtn.disabled = false;
+        runBatchBtn.textContent = "▶ Iniciar Análise do Vídeo Gravado";
+      });
+  });
+
+  /* Exportação */
+  document.getElementById("export-json-btn").addEventListener("click", function () {
+    var blob = new Blob([JSON.stringify(occurrencesList, null, 2)], { type: "application/json" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "vigia-obra-ocorrencias-" + Date.now() + ".json";
+    a.click();
+  });
+  document.getElementById("export-print-btn").addEventListener("click", function () {
+    window.print();
+  });
+
+  /* Conexão e Configurações da Chave Gemini */
+  var serverStatusPill = document.getElementById("server-status-pill");
+  var configModal = document.getElementById("config-modal");
+  var geminiKeyQuickBtn = document.getElementById("gemini-key-quick-btn");
+  var closeModalBtn = document.getElementById("close-modal-btn");
+  var cancelModalBtn = document.getElementById("cancel-modal-btn");
+  var saveKeyBtn = document.getElementById("save-key-btn");
+  var geminiKeyInput = document.getElementById("gemini-key-input");
+  var modalKeyStatus = document.getElementById("modal-key-status");
+
+  function checkHealth() {
+    fetch("/api/health")
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d.ok) {
+          serverStatusPill.textContent = "🟢 Servidor Ativo";
+          if (d.geminiConfigured) {
+            modalKeyStatus.textContent = "✓ Chave Google Gemini configurada e ativa no servidor!";
+            modalKeyStatus.style.color = "var(--good)";
+            geminiKeyQuickBtn.textContent = "✓ Chave Gemini Ativa";
+          } else {
+            modalKeyStatus.textContent = "ℹ Nenhuma chave Gemini configurada no servidor.";
+            modalKeyStatus.style.color = "var(--warning)";
+          }
+        }
+      })
+      .catch(function () {
+        serverStatusPill.textContent = "🔴 Servidor Offline";
+      });
   }
+  checkHealth();
 
-  function handleEvent(ev) {
-    if (ev.type === "start") {
-      totalFrames = ev.total_frames_estimate;
-      progressTrack.classList.toggle("indeterminate", totalFrames === null);
-      progressText.textContent = "Analisando…";
-      progressCount.textContent = "0 / " + (totalFrames === null ? "?" : totalFrames);
-      return;
-    }
-    if (ev.type === "progress") {
-      progressText.textContent = "Frame " + (ev.frame_index + 1) + " · " + ev.timestamp;
-      if (totalFrames) {
-        progressCount.textContent = (ev.frame_index + 1) + " / " + totalFrames;
-        progressFill.style.width = Math.round(((ev.frame_index + 1) / totalFrames) * 100) + "%";
-      }
-      ev.ocorrencias.forEach(addOccurrence);
-      return;
-    }
-    if (ev.type === "error") {
-      progressText.textContent = "Frame " + (ev.frame_index + 1) + " · erro, pulando";
-      addErrorRow(ev);
-      return;
-    }
-    if (ev.type === "done") {
-      progressText.textContent = "Análise concluída";
-      progressFill.style.width = "100%";
-      doneToast.hidden = false;
-      doneText.textContent = ev.total_ocorrencias + " ocorrência(s) salvas em " + ev.output_file;
-      runBtn.disabled = false;
-      runBtn.textContent = "▶ Iniciar análise";
-      resetBtn.hidden = false;
-    }
-  }
+  geminiKeyQuickBtn.addEventListener("click", function () {
+    configModal.style.display = "flex";
+    geminiKeyInput.value = localStorage.getItem("gemini_key") || "";
+  });
+  closeModalBtn.addEventListener("click", function () { configModal.style.display = "none"; });
+  cancelModalBtn.addEventListener("click", function () { configModal.style.display = "none"; });
 
-  function resetUI() {
-    counts = { total: 0, baixa: 0, media: 0, alta: 0 };
-    updateStats();
-    cardsEl.innerHTML = "";
-    tableBody.innerHTML = "";
-    var placeholder = document.createElement("div");
-    placeholder.className = "empty-state";
-    placeholder.id = "empty-state";
-    placeholder.textContent = 'Nenhuma ocorrência ainda. Clique em "Iniciar análise" para simular o processamento do vídeo, frame a frame.';
-    cardsEl.appendChild(placeholder);
-    emptyState = placeholder;
-    progressBlock.hidden = true;
-    doneToast.hidden = true;
-    resetBtn.hidden = true;
-    progressFill.style.width = "0%";
-    progressTrack.classList.remove("indeterminate");
-  }
-
-  function runSimulation() {
-    resetUI();
-    progressBlock.hidden = false;
-    runBtn.disabled = true;
-    runBtn.textContent = "Analisando…";
-
-    var i = 0;
-    function step() {
-      if (i >= mockEvents.length) return;
-      handleEvent(mockEvents[i]);
-      i += 1;
-      if (i < mockEvents.length) {
-        window.setTimeout(step, 550);
-      }
+  saveKeyBtn.addEventListener("click", function () {
+    var k = geminiKeyInput.value.trim();
+    if (k) {
+      localStorage.setItem("gemini_key", k);
+      fetch("/api/save-key", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ apiKey: k, provider: "gemini" })
+      }).then(function () {
+        checkHealth();
+        configModal.style.display = "none";
+      });
+    } else {
+      configModal.style.display = "none";
     }
-    step();
-  }
-
-  runBtn.addEventListener("click", runSimulation);
-  resetBtn.addEventListener("click", resetUI);
+  });
 })();
 </script>
 </body>

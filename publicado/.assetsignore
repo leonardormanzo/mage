@@ -1,0 +1,14 @@
+node_modules/
+**/node_modules/
+server/
+.git/
+*.log
+*.zip
+**/.pytest_cache/
+**/__pycache__/
+# Segredos e ambientes locais: nunca publicar
+.env
+**/.env
+**/.env.*
+**/.venv/
+**/venv/

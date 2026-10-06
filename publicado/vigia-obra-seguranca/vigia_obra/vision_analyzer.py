@@ -17,9 +17,8 @@ Você recebe um frame extraído de um vídeo de canteiro de obra. O objetivo é 
 Objetivo:
 Verificar a presença/ausência dos seguintes itens quando aplicável à cena:
 - Capacete de segurança
-- Cinto de segurança / trava-quedas (quando houver trabalho em altura ou próximo a bordas)
-- Sinalização de área de risco (cones, fitas, placas)
-- Guarda-corpo / proteção lateral em andaimes ou aberturas
+
+NOTA: Esta é uma VERSÃO LIMITADA PARA TESTE. Avalie APENAS capacete.
 
 Só reporte uma não-conformidade quando a confiança da detecção for razoável. Quando a cena for ambígua (ex: capacete parcialmente oculto, ângulo ruim), classifique como "incerto" em vez de afirmar ausência.
 
@@ -65,10 +64,6 @@ def analyze_frame(client: anthropic.Anthropic, frame: Frame, model: str, effort:
         model=model,
         max_tokens=2048,
         system=SYSTEM_PROMPT,
-        output_config={
-            "effort": effort,
-            "format": {"type": "json_schema", "schema": OUTPUT_SCHEMA},
-        },
         messages=[
             {
                 "role": "user",

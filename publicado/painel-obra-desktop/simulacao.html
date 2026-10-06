@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agenda Overlay — Simulação</title>
+<style>
+  :root{
+    --purple:#5b3df5; --purple-dark:#4930d6;
+    --text:#242331; --muted:#777786;
+    --surface:#f7f7fb; --card:#ffffff; --line:#e7e6ee;
+    --red:#e5484d;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; padding:24px; min-height:100vh;
+    background:#e9eaee;
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    display:flex; flex-direction:column; align-items:center; gap:14px;
+  }
+  .titulo{font-size:13px;font-weight:700;color:#555;letter-spacing:.4px;align-self:flex-start;}
+  .dica{font-size:12px;color:#777;align-self:flex-start;margin-top:-8px;}
+
+  /* ---------- Monitor ---------- */
+  .monitor{
+    position:relative; width:1100px; max-width:100%; aspect-ratio:16/10;
+    border-radius:12px; overflow:hidden; user-select:none;
+    box-shadow:0 14px 44px rgba(0,0,0,.28);
+    background:
+      radial-gradient(ellipse 70% 55% at 72% 18%, rgba(91,61,245,.38), transparent 62%),
+      radial-gradient(ellipse 65% 65% at 18% 82%, rgba(46,155,214,.32), transparent 62%),
+      linear-gradient(140deg,#141833 0%,#241f4d 46%,#12304c 100%);
+  }
+  /* ícones falsos */
+  .icones{position:absolute;top:18px;left:18px;display:grid;grid-template-columns:repeat(2,72px);gap:6px 10px;}
+  .icone{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 2px;border-radius:6px;}
+  .icone .quadro{width:34px;height:34px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:16px;background:rgba(255,255,255,.16);backdrop-filter:blur(4px);}
+  .icone span{font-size:9.5px;color:rgba(255,255,255,.9);text-align:center;text-shadow:0 1px 2px rgba(0,0,0,.5);line-height:1.15;}
+  /* barra de tarefas */
+  .taskbar{
+    position:absolute;left:0;right:0;bottom:0;height:38px;z-index:5;
+    background:rgba(20,20,26,.55);backdrop-filter:blur(14px);
+    display:flex;align-items:center;justify-content:center;gap:14px;
+  }
+  .taskbar .app{font-size:15px;opacity:.85;}
+  .relogio{position:absolute;right:12px;font-size:10px;color:#fff;text-align:right;line-height:1.25;}
+
+  /* ---------- Aba (trigger) ---------- */
+  .trigger{
+    position:absolute;right:0;top:50%;transform:translateY(-50%);
+    width:22px;height:56px;border-radius:12px 0 0 12px;
+    background:rgba(235,234,241,.84);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;z-index:20;transition:opacity .2s;
+    box-shadow:-3px 0 10px rgba(0,0,0,.25);
+  }
+  .trigger span{color:var(--purple);font-size:11px;font-weight:700;}
+  .trigger.oculto{opacity:0;pointer-events:none;}
+  .badge{
+    position:absolute;width:22px;height:22px;border-radius:50%;
+    background:var(--red);color:#fff;font-size:10px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:21;
+    right:16px;top:calc(50% - 35px);box-shadow:0 1px 4px rgba(0,0,0,.35);
+  }
+  .badge.oculto{display:none;}
+
+  /* ---------- Scrim ---------- */
+  .scrim{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .3s;z-index:14;}
+  .scrim.ativo{opacity:.12;pointer-events:auto;}
+
+  /* ---------- Painel ---------- */
+  .painel{
+    position:absolute;top:8px;right:0;bottom:8px;width:360px;z-index:15;
+    background:rgba(247,247,251,.96);
+    display:flex;flex-direction:column;
+    border-radius:12px 0 0 12px;
+    box-shadow:-8px 0 32px rgba(0,0,0,.35);
+    transform:translateX(100%);
+    transition:transform .35s cubic-bezier(.2,.8,.2,1);
+  }
+  .painel.aberto{transform:translateX(0);}
+  .puller{
+    position:absolute;left:0;top:50%;transform:translateY(-50%);
+    width:23px;height:56px;background:#f0eff8;color:var(--purple);
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:700;cursor:pointer;border-radius:0 0 0 0;
+  }
+  .corpo{flex:1;min-height:0;display:flex;flex-direction:column;margin-left:23px;}
+  .cabecalho{height:54px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 12px 0 18px;}
+  .cabecalho .marca{color:var(--purple);font-weight:700;font-size:13px;letter-spacing:.5px;}
+  .cabecalho .fechar{background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;padding:0 6px;line-height:1;}
+  .abas{display:flex;padding:0 13px;}
+  .abas span{flex:1;text-align:center;font-size:11px;color:var(--text);padding:8px 0;}
+  .abas span.hoje{color:var(--purple);font-weight:700;}
+  .divisor{height:1px;background:var(--line);}
+
+  .metas{display:flex;gap:8px;padding:12px;}
+  .meta{flex:1;background:var(--card);border:1px solid var(--line);border-radius:4px;padding:9px;}
+  .meta .topo{display:flex;justify-content:space-between;align-items:center;}
+  .meta .topo .ic{color:var(--purple);font-size:15px;}
+  .meta .topo .men{color:var(--muted);font-size:14px;}
+  .meta h4{margin:2px 0 4px;font-size:11px;color:var(--text);font-weight:700;}
+  .meta .item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);padding:2px 0;cursor:pointer;}
+  .meta .item .bolinha{width:11px;height:11px;border-radius:50%;border:1.5px solid #c5c6d2;flex:none;display:flex;align-items:center;justify-content:center;font-size:7px;color:#fff;}
+  .meta .item.feito{text-decoration:line-through;opacity:.75;}
+  .meta .item.feito .bolinha{background:var(--purple);border-color:var(--purple);}
+
+  .lista{flex:1;min-height:0;overflow-y:auto;padding:0 0 4px;}
+  .lista::-webkit-scrollbar{width:8px;}
+  .lista::-webkit-scrollbar-thumb{background:#d6d5e0;border-radius:4px;}
+  .dia{background:var(--card);border:1px solid var(--line);border-radius:4px;margin:5px 16px;padding:10px 11px;}
+  .dia .cab{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+  .dia .nome{font-size:10px;font-weight:700;color:var(--purple);letter-spacing:.3px;}
+  .dia .add{font-size:10px;color:var(--purple);cursor:pointer;}
+  .dia .add:hover{text-decoration:underline;}
+  .dia .vazio{font-size:10px;color:var(--muted);}
+  .evento{display:flex;gap:6px;align-items:center;font-size:10px;color:var(--text);padding:3px 0;}
+  .evento .hora{font-weight:700;color:var(--purple);min-width:34px;}
+  .evento .apagar{margin-left:auto;color:var(--muted);cursor:pointer;font-size:11px;opacity:0;transition:opacity .15s;}
+  .evento:hover .apagar{opacity:1;}
+
+  .chat{margin:8px 12px 0;border:1px solid var(--line);background:var(--surface);display:flex;align-items:center;border-radius:3px;}
+  .chat input{flex:1;border:none;outline:none;background:var(--card);padding:9px 10px;font-size:11px;color:var(--text);font-family:inherit;}
+  .chat input::placeholder{color:var(--muted);}
+  .chat button{margin:4px;background:var(--purple);color:#fff;border:none;border-radius:3px;padding:7px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;min-width:62px;}
+  .chat button:disabled{opacity:.6;cursor:default;}
+  .aviso{font-size:10px;color:var(--muted);padding:4px 18px 6px;min-height:18px;}
+  .aviso.erro{color:#c0392b;}
+  .aviso.ok{color:#1d7a4c;}
+
+  .rodape{border-top:1px solid var(--line);padding:12px 18px 8px;flex:none;}
+  .rodape button{width:100%;background:var(--purple);color:#fff;border:none;padding:10px;font-size:12px;font-weight:700;cursor:pointer;border-radius:3px;font-family:inherit;}
+  .rodape .atualizado{text-align:center;font-size:10px;color:var(--muted);padding-top:6px;}
+
+  /* ---------- Diálogos ---------- */
+  .modal{position:absolute;inset:0;z-index:40;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.35);}
+  .modal.ativo{display:flex;}
+  .janela{background:var(--card);border-radius:6px;box-shadow:0 12px 40px rgba(0,0,0,.4);width:330px;overflow:hidden;font-size:12px;}
+  .janela .barra{background:#eceaf6;padding:8px 12px;font-size:11px;font-weight:600;color:var(--text);}
+  .janela .conteudo{padding:14px;}
+  .janela label{display:block;font-size:10.5px;color:var(--text);margin:8px 0 3px;}
+  .janela input{width:100%;border:1px solid #cfcedb;border-radius:3px;padding:6px 8px;font-size:11.5px;font-family:inherit;outline:none;}
+  .janela .linha{display:flex;gap:10px;}
+  .janela .erro{color:#c0392b;font-size:10.5px;min-height:15px;padding-top:6px;}
+  .janela .acoes{display:flex;justify-content:flex-end;gap:8px;padding:0 14px 14px;}
+  .janela .acoes button{border:none;border-radius:3px;padding:7px 14px;font-size:11.5px;cursor:pointer;font-family:inherit;}
+  .btn-ok{background:var(--purple);color:#fff;font-weight:700;}
+  .btn-cancel{background:#eceaf0;color:#555;}
+  .confirma-texto{white-space:pre-line;line-height:1.5;color:var(--text);}
+</style>
+</head>
+<body>
+
+<div class="titulo">SIMULAÇÃO — AGENDA OVERLAY NO DESKTOP</div>
+<div class="dica">Clique na abinha <strong>◀</strong> na borda direita da tela para abrir o painel. Tudo é interativo: metas, "+ Adicionar item", chat com IA e conexão com o Google.</div>
+
+<div class="monitor" id="monitor">
+
+  <div class="icones">
+    <div class="icone"><div class="quadro">🗑️</div><span>Lixeira</span></div>
+    <div class="icone"><div class="quadro">📁</div><span>Projetos</span></div>
+    <div class="icone"><div class="quadro">📄</div><span>Relatório</span></div>
+    <div class="icone"><div class="quadro">📊</div><span>Planilha</span></div>
+    <div class="icone"><div class="quadro">🌐</div><span>Navegador</span></div>
+    <div class="icone"><div class="quadro">📷</div><span>Fotos obra</span></div>
+  </div>
+
+  <div class="taskbar">
+    <span class="app">🪟</span><span class="app">🔍</span><span class="app">📧</span>
+    <span class="app">🌐</span><span class="app">📁</span>
+    <div class="relogio"><div id="relogioHora">--:--</div><div id="relogioData">--/--/----</div></div>
+  </div>
+
+  <div class="scrim" id="scrim"></div>
+
+  <div class="trigger" id="trigger"><span>◀</span></div>
+  <div class="badge oculto" id="badge">0</div>
+
+  <div class="painel" id="painel">
+    <div class="puller" id="puller">▶</div>
+    <div class="corpo">
+
+      <div class="cabecalho">
+        <span class="marca">AGENDA</span>
+        <button class="fechar" id="btnFechar" title="Fechar">»</button>
+      </div>
+
+      <div class="abas" id="abas"></div>
+      <div class="divisor"></div>
+
+      <div class="metas">
+        <div class="meta">
+          <div class="topo"><span class="ic">◎</span><span class="men">⋮</span></div>
+          <h4>Goal Week</h4>
+          <div id="metaSemana"></div>
+        </div>
+        <div class="meta">
+          <div class="topo"><span class="ic">▣</span><span class="men">⋮</span></div>
+          <h4>Goal Diário</h4>
+          <div id="metaDia"></div>
+        </div>
+      </div>
+
+      <div class="lista" id="lista"></div>
+
+      <div class="chat">
+        <input id="chatInput" placeholder="Ex: reunião com o cliente amanhã às 14h">
+        <button id="btnEnviar">Enviar</button>
+      </div>
+      <div class="aviso" id="aviso"></div>
+
+      <div class="rodape">
+        <button id="btnStatus">Conectar Google Agenda</button>
+        <div class="atualizado" id="atualizado"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- diálogo: novo compromisso -->
+  <div class="modal" id="modalAdd">
+    <div class="janela">
+      <div class="barra">Novo compromisso</div>
+      <div class="conteudo">
+        <div style="color:var(--purple);font-weight:700;font-size:11.5px;" id="addDia"></div>
+        <label>Título</label>
+        <input id="addTitulo" placeholder="Ex: Vistoria na obra">
+        <div class="linha">
+          <div style="flex:1"><label>Início (HH:MM)</label><input id="addInicio" value="09:00"></div>
+          <div style="flex:1"><label>Término (HH:MM)</label><input id="addFim" value="10:00"></div>
+        </div>
+        <div class="erro" id="addErro"></div>
+      </div>
+      <div class="acoes">
+        <button class="btn-cancel" id="addCancelar">Cancelar</button>
+        <button class="btn-ok" id="addSalvar">Adicionar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- diálogo: confirmar evento da IA -->
+  <div class="modal" id="modalConfirma">
+    <div class="janela">
+      <div class="barra">Confirmar compromisso</div>
+      <div class="conteudo"><div class="confirma-texto" id="confirmaTexto"></div></div>
+      <div class="acoes">
+        <button class="btn-cancel" id="confNao">Não</button>
+        <button class="btn-ok" id="confSim">Sim</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* =======================================================================
+   Simulação fiel do calendar_app/overlay_ui.py
+   - mesma paleta, mesmo layout, mesmos fluxos
+   - a "IA" usa o interpretador local (mesmo fallback do app)
+   - o "Google Agenda" é simulado em memória
+   ======================================================================= */
+
+const DIAS_CURTO = ["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"];
+const DIAS_LONGO = ["SEGUNDA","TERÇA","QUARTA","QUINTA","SEXTA","SÁBADO","DOMINGO"];
+const DIAS_FRASE = ["segunda-feira","terça-feira","quarta-feira","quinta-feira","sexta-feira","sábado","domingo"];
+
+const estado = {
+  aberto:false,
+  conectado:false,
+  eventos:[],            // {id, titulo, inicio:Date, fim:Date}
+  pendentes:1,           // badge de sugestões
+  metaSemana:[
+    {texto:"Revisar o planejamento", feito:false},
+    {texto:"Fechar pendências críticas", feito:false},
+    {texto:"Atualizar avanço físico", feito:false},
+  ],
+  metaDia:[
+    {texto:"Registrar diário da obra", feito:false},
+    {texto:"Validar entregas", feito:false},
+    {texto:"Revisar segurança", feito:false},
+  ],
+  diaSelecionado:null,
+};
+
+const $ = id => document.getElementById(id);
+const segundaBase = d => (d.getDay() + 6) % 7;   // 0 = segunda
+const iso = d => d.toISOString().slice(0,10);
+
+/* ---------------- relógio ---------------- */
+function tick(){
+  const agora = new Date();
+  $("relogioHora").textContent = agora.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+  $("relogioData").textContent = agora.toLocaleDateString("pt-BR");
+}
+tick(); setInterval(tick, 15000);
+
+/* ---------------- painel abrir/fechar ---------------- */
+function abrir(){
+  estado.aberto = true;
+  $("painel").classList.add("aberto");
+  $("scrim").classList.add("ativo");
+  $("trigger").classList.add("oculto");
+  $("badge").classList.add("oculto");
+}
+function fechar(){
+  estado.aberto = false;
+  $("painel").classList.remove("aberto");
+  $("scrim").classList.remove("ativo");
+  $("trigger").classList.remove("oculto");
+  renderBadge();
+}
+$("trigger").onclick = abrir;
+$("badge").onclick   = abrir;
+$("puller").onclick  = () => estado.aberto ? fechar() : abrir();
+$("btnFechar").onclick = fechar;
+$("scrim").onclick   = fechar;
+document.addEventListener("keydown", e => { if(e.key === "Escape" && estado.aberto) fechar(); });
+
+function renderBadge(){
+  const b = $("badge");
+  b.textContent = estado.pendentes > 99 ? "99+" : estado.pendentes;
+  b.classList.toggle("oculto", estado.pendentes === 0 || estado.aberto);
+}
+
+/* ---------------- abas da semana ---------------- */
+function renderAbas(){
+  const hoje = segundaBase(new Date());
+  $("abas").innerHTML = DIAS_CURTO
+    .map((d,i) => `<span class="${i===hoje?'hoje':''}">${d}</span>`).join("");
+}
+
+/* ---------------- metas ---------------- */
+function renderMetas(){
+  const pinta = (lista, alvo, chave) => {
+    $(alvo).innerHTML = lista.map((m,i) =>
+      `<div class="item ${m.feito?'feito':''}" data-lista="${chave}" data-i="${i}">
+         <span class="bolinha">${m.feito?'✓':''}</span>${m.texto}
+       </div>`).join("");
+  };
+  pinta(estado.metaSemana, "metaSemana", "metaSemana");
+  pinta(estado.metaDia,    "metaDia",    "metaDia");
+  document.querySelectorAll(".meta .item").forEach(el => {
+    el.onclick = () => {
+      const lista = estado[el.dataset.lista];
+      lista[+el.dataset.i].feito = !lista[+el.dataset.i].feito;
+      renderMetas();
+    };
+  });
+}
+
+/* ---------------- lista de 7 dias ---------------- */
+function renderDias(){
+  const hoje = new Date(); hoje.setHours(0,0,0,0);
+  let html = "";
+  for(let offset=0; offset<7; offset++){
+    const dia = new Date(hoje); dia.setDate(hoje.getDate()+offset);
+    const doDia = estado.eventos
+      .filter(ev => ev.inicio.toDateString() === dia.toDateString())
+      .sort((a,b) => a.inicio - b.inicio);
+    const dd = String(dia.getDate()).padStart(2,"0");
+    const mm = String(dia.getMonth()+1).padStart(2,"0");
+    html += `<div class="dia">
+      <div class="cab">
+        <span class="nome">${DIAS_LONGO[segundaBase(dia)]}  •  ${dd}/${mm}</span>
+        <span class="add" data-dia="${iso(dia)}">+ Adicionar item</span>
+      </div>`;
+    if(!doDia.length){
+      html += `<div class="vazio">Nenhum compromisso neste dia</div>`;
+    } else {
+      html += doDia.map(ev => `
+        <div class="evento">
+          <span class="hora">${ev.inicio.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}</span>
+          <span>${ev.titulo}</span>
+          <span class="apagar" data-id="${ev.id}" title="Excluir">✕</span>
+        </div>`).join("");
+    }
+    html += `</div>`;
+  }
+  $("lista").innerHTML = html;
+  document.querySelectorAll(".dia .add").forEach(el => {
+    el.onclick = () => abrirDialogoAdd(el.dataset.dia);
+  });
+  document.querySelectorAll(".evento .apagar").forEach(el => {
+    el.onclick = () => {
+      estado.eventos = estado.eventos.filter(ev => ev.id !== el.dataset.id);
+      renderDias(); marcarAtualizado();
+    };
+  });
+}
+
+/* ---------------- diálogo "+ Adicionar item" ---------------- */
+function abrirDialogoAdd(diaIso){
+  if(!estado.conectado){ aviso("Conecte o Google Agenda primeiro.","erro"); return; }
+  estado.diaSelecionado = diaIso;
+  const [a,m,d] = diaIso.split("-").map(Number);
+  const data = new Date(a, m-1, d);
+  $("addDia").textContent = `${DIAS_LONGO[segundaBase(data)]}  •  ${String(d).padStart(2,"0")}/${String(m).padStart(2,"0")}/${a}`;
+  $("addTitulo").value = ""; $("addInicio").value = "09:00"; $("addFim").value = "10:00";
+  $("addErro").textContent = "";
+  $("modalAdd").classList.add("ativo");
+  setTimeout(() => $("addTitulo").focus(), 50);
+}
+$("addCancelar").onclick = () => $("modalAdd").classList.remove("ativo");
+$("addSalvar").onclick = () => {
+  const titulo = $("addTitulo").value.trim();
+  const rx = /^([01]?\d|2[0-3]):([0-5]\d)$/;
+  const mi = $("addInicio").value.trim().match(rx);
+  const mf = $("addFim").value.trim().match(rx);
+  if(!titulo){ $("addErro").textContent = "O título é obrigatório."; return; }
+  if(!mi || !mf){ $("addErro").textContent = "Use o formato HH:MM, ex: 14:30."; return; }
+  const [a,m,d] = estado.diaSelecionado.split("-").map(Number);
+  const inicio = new Date(a, m-1, d, +mi[1], +mi[2]);
+  const fim    = new Date(a, m-1, d, +mf[1], +mf[2]);
+  if(fim <= inicio){ $("addErro").textContent = "O término deve ser posterior ao início."; return; }
+  criarEvento(titulo, inicio, fim);
+  $("modalAdd").classList.remove("ativo");
+  aviso("Compromisso adicionado.","ok");
+};
+
+function criarEvento(titulo, inicio, fim){
+  estado.eventos.push({ id: "ev"+Date.now()+Math.random(), titulo, inicio, fim });
+  renderDias(); marcarAtualizado();
+}
+
+/* ---------------- chat com IA ---------------- */
+function interpretar(texto){
+  // mesmo comportamento do parser: título + data + hora, com defaults sensatos
+  const agora = new Date();
+  const mh = texto.match(/(\d{1,2})\s*(?:horas?|hrs?|h|:)\s*(\d{2})?/i);
+  const md = texto.match(/(\d{1,2})\/(\d{1,2})/);
+  if(!mh && !md && !/amanh[ãa]|hoje|depois de amanh[ãa]/i.test(texto)) return null;
+
+  let dia = new Date(agora); dia.setHours(0,0,0,0);
+  if(/depois de amanh[ãa]/i.test(texto)) dia.setDate(dia.getDate()+2);
+  else if(/amanh[ãa]/i.test(texto)) dia.setDate(dia.getDate()+1);
+  if(md) dia = new Date(agora.getFullYear(), +md[2]-1, +md[1]);
+
+  let hora = 9, minuto = 0;
+  if(mh){ hora = +mh[1]; minuto = mh[2] ? +mh[2] : 0; }
+  if(hora > 23) return null;
+
+  const inicio = new Date(dia); inicio.setHours(hora, minuto, 0, 0);
+  // sem data explícita e horário já passou → joga para amanhã (regra do prompt)
+  if(!md && !/amanh[ãa]|hoje/i.test(texto) && inicio < agora) inicio.setDate(inicio.getDate()+1);
+  const fim = new Date(inicio.getTime() + 60*60*1000);
+
+  let titulo = texto
+    .replace(/(\d{1,2})\s*(?:horas?|hrs?|h|:)\s*(\d{2})?/ig,"")
+    .replace(/(\d{1,2})\/(\d{1,2})/g,"")
+    .replace(/(^|\s)(depois de amanh[ãa]|amanh[ãa]|hoje|às|as|no dia|dia|em)(?=\s|$)/ig," ")
+    .replace(/\s+/g," ").trim();
+  if(!titulo) titulo = "Compromisso";
+  titulo = titulo[0].toUpperCase() + titulo.slice(1);
+  return { titulo, inicio, fim };
+}
+
+let pendenteIA = null;
+$("btnEnviar").onclick = enviarChat;
+$("chatInput").addEventListener("keydown", e => { if(e.key === "Enter") enviarChat(); });
+
+function enviarChat(){
+  const texto = $("chatInput").value.trim();
+  if(!texto){ aviso("Digite um compromisso.","erro"); return; }
+  if(!estado.conectado){ aviso("Conecte o Google Agenda primeiro.","erro"); return; }
+  aviso("Interpretando…");
+  $("btnEnviar").disabled = true;
+  setTimeout(() => {
+    $("btnEnviar").disabled = false;
+    const r = interpretar(texto);
+    if(!r){ aviso("Não entendi, tente novamente.","erro"); return; }
+    pendenteIA = r;
+    $("confirmaTexto").textContent =
+      `${r.titulo}\n` +
+      `${DIAS_FRASE[segundaBase(r.inicio)]}, ${r.inicio.toLocaleDateString("pt-BR")}\n` +
+      `${r.inicio.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}–` +
+      `${r.fim.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}\n\n` +
+      `Adicionar à agenda principal?`;
+    $("modalConfirma").classList.add("ativo");
+    aviso("");
+  }, 850);
+}
+$("confNao").onclick = () => { $("modalConfirma").classList.remove("ativo"); aviso("Compromisso não adicionado."); };
+$("confSim").onclick = () => {
+  $("modalConfirma").classList.remove("ativo");
+  aviso("Adicionando à agenda…");
+  setTimeout(() => {
+    criarEvento(pendenteIA.titulo, pendenteIA.inicio, pendenteIA.fim);
+    $("chatInput").value = "";
+    aviso("Compromisso adicionado.","ok");
+    if(estado.pendentes > 0){ estado.pendentes--; renderBadge(); }
+  }, 500);
+};
+
+function aviso(msg, tipo){
+  const el = $("aviso");
+  el.textContent = msg;
+  el.className = "aviso" + (tipo ? " " + tipo : "");
+}
+
+/* ---------------- conectar / atualizar ---------------- */
+$("btnStatus").onclick = () => {
+  if(!estado.conectado){
+    $("btnStatus").textContent = "Conectando…";
+    setTimeout(() => {
+      estado.conectado = true;
+      semearEventos();
+      $("btnStatus").textContent = "Atualizar agora";
+      marcarAtualizado();
+      aviso("Conta conectada.","ok");
+    }, 900);
+  } else {
+    $("btnStatus").textContent = "Atualizando…";
+    setTimeout(() => { $("btnStatus").textContent = "Atualizar agora"; marcarAtualizado(); }, 700);
+  }
+};
+
+function marcarAtualizado(){
+  const agora = new Date();
+  $("atualizado").textContent = "Última atualização: " +
+    agora.toLocaleDateString("pt-BR") + " " +
+    agora.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+}
+
+function semearEventos(){
+  const base = new Date(); base.setHours(0,0,0,0);
+  const em = (dias,h,m) => { const d = new Date(base); d.setDate(d.getDate()+dias); d.setHours(h,m,0,0); return d; };
+  [
+    ["Reunião com o cliente", em(0,9,0),  em(0,10,0)],
+    ["Vistoria na obra",      em(0,15,30),em(0,16,30)],
+    ["Entrega de material",   em(1,11,0), em(1,12,0)],
+    ["Treinamento de segurança", em(3,10,0), em(3,11,30)],
+    ["Corte de ponto",        em(4,17,0), em(4,17,30)],
+  ].forEach(([t,i,f]) => estado.eventos.push({ id:"seed"+Math.random(), titulo:t, inicio:i, fim:f }));
+  renderDias();
+}
+
+/* ---------------- init ---------------- */
+renderAbas();
+renderMetas();
+renderDias();
+renderBadge();
+</script>
+</body>
+</html>
