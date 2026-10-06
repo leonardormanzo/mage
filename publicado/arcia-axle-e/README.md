@@ -6,6 +6,10 @@ interativo, simulação de obra jogável e ficha técnica gerada a partir do pr�
 
 Site estático, sem backend e sem build: HTML + JavaScript (módulos ES) com Three.js carregado de CDN.
 
+O firmware do carrinho real (ESP32-S3, C++17, FreeRTOS, localização por GPS RTK) está em
+[`firmware/`](firmware/README.md), com o mesmo ciclo, a mesma rota e o mesmo freio automático da
+simulação, testado no PC em malha fechada.
+
 ## Páginas
 
 | Página | O que faz |
@@ -68,6 +72,7 @@ arcia-axle-e/
 │   ├── trabalhadores/ e escavadeira/   imagens geradas no Gemini (prompts em docs/)
 │   └── prontas/                         recortes gerados por tools/preparar_texturas.py
 ├── imagens/           capturas da simulação e a ficha técnica exportada
+├── firmware/          programa embarcado do carrinho (ESP32-S3) — ver firmware/README.md
 ├── docs/prompts-texturas.md            prompts usados para gerar as texturas
 ├── tools/preparar_texturas.py          recorta coletes e rostos, mede a cor da pele, tira o fundo verde do adesivo
 └── serve.py           servidor local sem cache
@@ -96,11 +101,13 @@ Simulação acelerada (sem renderizar) no navegador:
 - freio automático parando o carrinho a 0,7–1,0 m de trabalhadores que cruzaram a via;
 - no modo manual, acelerando contra uma placa, parada a ~0,5 m dela com a ré liberada.
 
-Não há suíte de testes automatizados: essas verificações foram rodadas manualmente por script no console.
+A simulação web não tem suíte de testes automatizados: essas verificações foram rodadas manualmente por
+script no console. O firmware tem 74 testes automatizados (ver `firmware/README.md`).
 
 ## Limites
 
-- É um **conceito em simulação**: não existe hardware, firmware nem integração com sensores reais.
+- É um **conceito**: não existe hardware construído. O firmware compila e passa nos testes no PC, mas
+  nunca rodou numa placa nem com sensores reais.
 - A física é simplificada (estilo arcade): sem inércia das pedras na caçamba, pneus sem atrito lateral,
   colisões só com o chão, a caçamba e os outros obstáculos aproximados por círculos.
 - As especificações (200 kg, 70 V, 16 km/h manual / 10 km/h autônomo) são do conceito, não medidas.
