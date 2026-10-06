@@ -12,3 +12,34 @@ Desktop.ini
 *.bak
 *.tmp
 ~$*
+*.zip
+*.log
+CLAUDE.md.backup-local
+
+# Documentos pessoais soltos na raiz (não fazem parte de nenhum projeto publicado)
+/*.pdf
+
+# Configuração pessoal de editor
+.vscode/
+
+# Ambientes virtuais e cache Python (cada projeto Python usa o seu local)
+**/.venv/
+**/venv/
+**/__pycache__/
+*.py[cod]
+
+# Segredos locais (chaves de API etc.) — cada projeto usa o seu .env
+**/.env
+
+# Saída de análise do graphify e scratch de trabalho — não fazem parte de nenhum projeto
+/graphify-out/
+/tmp/
+
+# Artefatos de automação de navegador (screenshots/logs/snapshots temporários)
+/.playwright-mcp/
+
+# Cache de testes Python (cada projeto Python usa o seu local)
+**/.pytest_cache/
+
+# Dependências instaladas (cada projeto reinstala as suas)
+**/node_modules/

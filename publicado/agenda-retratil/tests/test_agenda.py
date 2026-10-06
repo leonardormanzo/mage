@@ -70,6 +70,32 @@ class AgendaTests(unittest.TestCase):
         self.assertEqual("Alinhamento", event["title"])
         self.assertEqual("aceita", self.db.rows("SELECT status FROM suggestions WHERE id=?", (suggestion_id,))[0]["status"])
 
+    def test_open_item_toggle_and_delete(self):
+        item_id = self.service.save_open_item({"label": "Aguardando aprovação do projeto"})
+        self.service.toggle_open_item(item_id)
+        self.assertEqual(1, self.db.rows("SELECT done FROM open_items WHERE id=?", (item_id,))[0]["done"])
+        self.service.delete_open_item(item_id)
+        self.assertEqual([], self.db.rows("SELECT * FROM open_items WHERE id=?", (item_id,)))
+
+    def test_bootstrap_stores_synced_events_snapshot(self):
+        self.calendar.events.append({"id": "ev1", "title": "Vistoria", "start": "2026-08-01T09:00:00-03:00",
+                                      "end": "2026-08-01T10:00:00-03:00", "etag": "v1"})
+        self.service.bootstrap()
+        rows = self.db.rows("SELECT * FROM synced_events")
+        self.assertEqual(1, len(rows))
+        self.assertEqual("Vistoria", rows[0]["title"])
+
+    def test_publish_snapshot_writes_static_page(self):
+        self.service.save_open_item({"label": "Liberar acesso do fornecedor"})
+        self.service.save_goal({"label": "Concretar laje 3", "period": "semana"})
+        self.service.save_goal({"label": "Zero acidentes no trimestre", "period": "geral"})
+        out_dir = Path(self.temp.name) / "painel-obra"
+        out_file = self.service.publish_snapshot(str(out_dir))
+        content = Path(out_file).read_text(encoding="utf-8")
+        self.assertIn("Liberar acesso do fornecedor", content)
+        self.assertIn("Concretar laje 3", content)
+        self.assertIn("Zero acidentes no trimestre", content)
+
 
 if __name__ == "__main__":
     unittest.main()

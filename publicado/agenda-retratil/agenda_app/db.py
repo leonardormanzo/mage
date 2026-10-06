@@ -14,6 +14,8 @@ PRAGMA foreign_keys=ON;
 CREATE TABLE IF NOT EXISTS schema_version(version INTEGER NOT NULL);
 INSERT INTO schema_version SELECT 1 WHERE NOT EXISTS(SELECT 1 FROM schema_version);
 CREATE TABLE IF NOT EXISTS goals(id INTEGER PRIMARY KEY,label TEXT NOT NULL,period TEXT NOT NULL,done INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE IF NOT EXISTS open_items(id INTEGER PRIMARY KEY,label TEXT NOT NULL,done INTEGER NOT NULL DEFAULT 0,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE IF NOT EXISTS synced_events(id TEXT PRIMARY KEY,title TEXT NOT NULL,start TEXT NOT NULL,end TEXT NOT NULL,location TEXT,html_link TEXT);
 CREATE TABLE IF NOT EXISTS suggestions(
  id INTEGER PRIMARY KEY,title TEXT NOT NULL,starts_at TEXT NOT NULL,ends_at TEXT NOT NULL,
  status TEXT NOT NULL DEFAULT 'pendente',location TEXT,description TEXT,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -67,7 +69,8 @@ class Database:
         return str(out)
 
     def export_json(self) -> str:
-        payload = {t: self.rows(f"SELECT * FROM {t}") for t in ("goals", "suggestions", "preferences", "sync_state")}
+        payload = {t: self.rows(f"SELECT * FROM {t}") for t in
+                   ("goals", "open_items", "synced_events", "suggestions", "preferences", "sync_state")}
         out = self.data_dir / f"exportacao-{datetime.now():%Y%m%d-%H%M%S}.json"
         out.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
         return str(out)

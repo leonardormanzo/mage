@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loja Cris | Moda Feminina em Osasco</title>
+<meta name="description" content="Loja Cris — moda feminina popular em Osasco-SP. Blusas, calças, bodys, plus size e novidades toda semana. Monte seu pedido e finalize pelo WhatsApp.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2248%22 fill=%22%23FF8A3D%22/><text x=%2250%22 y=%2262%22 font-size=%2255%22 text-anchor=%22middle%22>💗</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink:#EC1E79;
+    --pink-dark:#B8115C;
+    --orange:#FF8A3D;
+    --orange-light:#FFB067;
+    --cream:#FFF8F3;
+    --card:#FFFFFF;
+    --ink:#3A1220;
+    --ink-soft:#7A4B58;
+    --muted:#FCEEE3;
+    --border:#FFD9BE;
+    --whatsapp:#25D366;
+    --whatsapp-dark:#1DA851;
+    --danger:#DC2626;
+    --radius-lg:24px;
+    --radius-md:16px;
+    --radius-sm:10px;
+    --shadow:0 8px 24px rgba(184,17,92,.12);
+    --shadow-lg:0 20px 48px rgba(184,17,92,.18);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Nunito Sans',sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  img{max-width:100%;display:block}
+  h1,h2,h3,.font-display{font-family:'Baloo 2',sans-serif}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none}
+  .container{max-width:1180px;margin:0 auto;padding:0 20px}
+  .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+  :focus-visible{outline:3px solid var(--pink-dark);outline-offset:2px}
+
+  /* ===== Header ===== */
+  .site-header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(255,248,243,.92);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .header-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 20px;}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand-badge{
+    width:48px;height:48px;border-radius:50%;
+    background:linear-gradient(145deg,var(--orange-light),var(--orange));
+    border:3px solid var(--pink);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:var(--shadow);
+    flex-shrink:0;
+  }
+  .brand-badge svg{width:24px;height:24px}
+  .brand-name{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:1.3rem;color:var(--pink-dark);letter-spacing:-.5px}
+  .brand-sub{font-size:.68rem;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em}
+
+  .main-nav{display:none;gap:28px;align-items:center}
+  .main-nav a{font-weight:700;font-size:.95rem;color:var(--ink);padding:8px 4px;position:relative}
+  .main-nav a:hover{color:var(--pink)}
+  .main-nav a::after{content:'';position:absolute;left:0;bottom:0;width:0;height:2px;background:var(--pink);transition:width .2s}
+  .main-nav a:hover::after{width:100%}
+
+  .header-actions{display:flex;align-items:center;gap:10px}
+  .icon-btn{
+    position:relative;width:44px;height:44px;border-radius:50%;
+    background:var(--card);border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .2s,box-shadow .2s;
+  }
+  .icon-btn:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+  .icon-btn svg{width:22px;height:22px;stroke:var(--ink)}
+  .cart-badge{
+    position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 5px;
+    background:var(--pink);color:#fff;font-size:.7rem;font-weight:800;
+    border-radius:999px;display:flex;align-items:center;justify-content:center;
+    border:2px solid var(--cream);
+  }
+  .menu-toggle{display:flex}
+  .mobile-nav{max-height:0;overflow:hidden;transition:max-height .3s ease;background:#fff;border-bottom:1px solid var(--border)}
+  .mobile-nav.open{max-height:320px}
+  .mobile-nav ul{list-style:none;display:flex;flex-direction:column;padding:8px 20px 16px}
+  .mobile-nav a{display:block;padding:12px 0;font-weight:700;border-bottom:1px solid var(--muted)}
+
+  /* ===== Hero ===== */
+  .hero{
+    position:relative;overflow:hidden;
+    padding:56px 0 64px;
+    background:radial-gradient(circle at 85% 20%, rgba(255,138,61,.25), transparent 55%),
+               radial-gradient(circle at 10% 90%, rgba(236,30,121,.15), transparent 50%);
+  }
+  .hero-grid{display:grid;gap:36px;align-items:center}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--muted);color:var(--pink-dark);font-weight:800;font-size:.78rem;
+    padding:8px 14px;border-radius:999px;text-transform:uppercase;letter-spacing:.05em;
+    border:1px solid var(--border);
+  }
+  .eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--whatsapp);animation:pulse 1.6s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .hero h1{
+    font-size:clamp(2.1rem,6vw,3.4rem);font-weight:800;line-height:1.05;
+    margin:18px 0 16px;color:var(--pink-dark);
+  }
+  .hero h1 span{color:var(--orange)}
+  .hero p.lead{font-size:1.08rem;color:var(--ink-soft);max-width:46ch;margin-bottom:26px}
+  .hero-ctas{display:flex;flex-wrap:wrap;gap:14px}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:14px 26px;border-radius:999px;font-weight:800;font-size:.98rem;
+    transition:transform .18s ease,box-shadow .18s ease,background .18s ease;
+    min-height:48px;
+  }
+  .btn svg{width:19px;height:19px}
+  .btn-primary{background:var(--pink);color:#fff;box-shadow:0 10px 24px rgba(236,30,121,.35)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(236,30,121,.42);background:var(--pink-dark)}
+  .btn-outline{background:#fff;color:var(--pink-dark);border:2px solid var(--border)}
+  .btn-outline:hover{border-color:var(--pink);transform:translateY(-2px)}
+  .btn-whatsapp{background:var(--whatsapp);color:#fff;box-shadow:0 10px 24px rgba(37,211,102,.35)}
+  .btn-whatsapp:hover{background:var(--whatsapp-dark);transform:translateY(-2px)}
+  .btn-block{width:100%}
+  .btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
+
+  .hero-stats{display:flex;gap:28px;margin-top:34px;flex-wrap:wrap}
+  .stat b{display:block;font-family:'Baloo 2',sans-serif;font-size:1.6rem;color:var(--pink-dark)}
+  .stat span{font-size:.82rem;color:var(--ink-soft);font-weight:600}
+
+  .hero-visual{
+    position:relative;aspect-ratio:1/1;max-width:420px;justify-self:center;width:100%;
+  }
+  .hero-visual .ring{
+    position:absolute;inset:0;border-radius:50%;
+    background:conic-gradient(from 180deg, var(--pink), var(--orange), var(--pink));
+    padding:10px;animation:spin 18s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .hero-visual .ring-inner{
+    width:100%;height:100%;border-radius:50%;background:var(--cream);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .hero-logo{
+    width:78%;height:78%;border-radius:50%;
+    background:linear-gradient(155deg,var(--orange-light),var(--orange));
+    display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;
+    box-shadow:var(--shadow-lg);
+  }
+  .hero-logo strong{font-family:'Baloo 2',sans-serif;color:var(--pink);font-size:1.7rem;font-weight:800;text-shadow:0 2px 0 rgba(255,255,255,.35)}
+  .hero-logo svg{width:46px;height:46px}
+  .float-badge{
+    position:absolute;background:#fff;border-radius:var(--radius-md);padding:10px 14px;
+    box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:8px;font-weight:800;font-size:.85rem;
+    animation:float 4s ease-in-out infinite;
+  }
+  .float-badge.b1{top:6%;left:-6%}
+  .float-badge.b2{bottom:8%;right:-8%;animation-delay:1.2s}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+  /* ===== Section shell ===== */
+  section{padding:60px 0}
+  .section-head{max-width:640px;margin-bottom:32px}
+  .section-tag{color:var(--pink);font-weight:800;font-size:.8rem;text-transform:uppercase;letter-spacing:.08em}
+  .section-head h2{font-size:clamp(1.6rem,4vw,2.2rem);margin:8px 0 10px;color:var(--ink)}
+  .section-head p{color:var(--ink-soft)}
+
+  /* ===== Categories ===== */
+  .cat-scroller{display:flex;gap:14px;overflow-x:auto;padding:4px 4px 14px;scrollbar-width:thin}
+  .cat-chip{
+    flex:0 0 auto;display:flex;align-items:center;gap:10px;
+    background:#fff;border:2px solid var(--border);border-radius:999px;
+    padding:10px 18px;font-weight:800;font-size:.9rem;white-space:nowrap;
+    transition:.18s;
+  }
+  .cat-chip svg{width:18px;height:18px}
+  .cat-chip:hover,.cat-chip.active{background:var(--pink);border-color:var(--pink);color:#fff}
+
+  /* ===== Products ===== */
+  .product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:22px}
+  .card{
+    background:var(--card);border-radius:var(--radius-lg);overflow:hidden;
+    box-shadow:var(--shadow);border:1px solid var(--border);
+    display:flex;flex-direction:column;
+    transition:transform .22s ease,box-shadow .22s ease;
+  }
+  .card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
+  .card-media{
+    aspect-ratio:4/5;position:relative;display:flex;align-items:center;justify-content:center;
+    color:#fff;overflow:hidden;
+  }
+  .card-media svg{width:64px;height:64px;opacity:.9}
+  .card-media::after{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(circle at 30% 20%, rgba(255,255,255,.28), transparent 55%);
+  }
+  .badge-new{
+    position:absolute;top:10px;left:10px;background:#fff;color:var(--pink-dark);
+    font-size:.68rem;font-weight:800;padding:5px 10px;border-radius:999px;
+    text-transform:uppercase;letter-spacing:.04em;z-index:2;
+  }
+  .card-body{padding:16px;display:flex;flex-direction:column;gap:6px;flex:1}
+  .card-cat{font-size:.72rem;font-weight:800;color:var(--pink);text-transform:uppercase;letter-spacing:.04em}
+  .card-title{font-weight:700;font-size:.98rem;color:var(--ink)}
+  .card-price-row{display:flex;align-items:baseline;gap:8px;margin-top:2px}
+  .card-price{font-family:'Baloo 2',sans-serif;font-weight:700;font-size:1.25rem;color:var(--ink)}
+  .card-price-old{font-size:.82rem;color:var(--ink-soft);text-decoration:line-through}
+  .card-add{
+    margin-top:auto;display:flex;align-items:center;justify-content:center;gap:8px;
+    background:var(--muted);color:var(--pink-dark);font-weight:800;padding:11px;
+    border-radius:var(--radius-sm);font-size:.9rem;transition:.18s;min-height:44px;
+  }
+  .card-add:hover{background:var(--pink);color:#fff}
+  .card-add.added{background:var(--whatsapp);color:#fff}
+  .empty-state{text-align:center;padding:40px 20px;color:var(--ink-soft);font-weight:700}
+
+  /* ===== Sobre / Loja física ===== */
+  .about{background:linear-gradient(180deg,#fff,var(--muted))}
+  .about-grid{display:grid;gap:32px;align-items:center}
+  .about-card{
+    background:#fff;border-radius:var(--radius-lg);padding:26px;box-shadow:var(--shadow);
+    border:1px solid var(--border);display:flex;gap:14px;align-items:flex-start;
+  }
+  .about-card svg{width:28px;height:28px;stroke:var(--pink);flex-shrink:0;margin-top:2px}
+  .about-card h3{font-size:1.02rem;margin-bottom:4px;font-family:'Nunito Sans',sans-serif;font-weight:800}
+  .about-card p{color:var(--ink-soft);font-size:.92rem}
+  .about-cards{display:grid;gap:16px}
+  .map-frame{
+    border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-lg);
+    border:1px solid var(--border);aspect-ratio:4/3;
+  }
+  .map-frame iframe{width:100%;height:100%;border:0}
+
+  /* ===== Depoimentos ===== */
+  .testi-note{
+    background:#fff;border:1px dashed var(--border);border-radius:var(--radius-lg);
+    padding:24px;text-align:center;color:var(--ink-soft);font-weight:600;
+  }
+  .testi-note a{color:var(--pink);font-weight:800}
+
+  /* ===== CTA final ===== */
+  .cta-final{
+    background:linear-gradient(135deg,var(--pink),var(--pink-dark));
+    border-radius:var(--radius-lg);padding:48px 32px;text-align:center;color:#fff;
+    position:relative;overflow:hidden;
+  }
+  .cta-final::before{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(circle at 80% 0%, rgba(255,138,61,.35), transparent 55%);
+  }
+  .cta-final h2{position:relative;font-size:clamp(1.5rem,4vw,2rem);margin-bottom:10px}
+  .cta-final p{position:relative;opacity:.92;margin-bottom:22px}
+  .cta-final .btn-row{position:relative;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+  /* ===== Footer ===== */
+  footer{background:#2A0D18;color:#F4D9E2;padding:48px 0 24px}
+  .footer-grid{display:grid;gap:28px}
+  .footer-brand{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  footer h4{font-family:'Baloo 2',sans-serif;font-size:1rem;margin-bottom:14px;color:#fff}
+  footer p, footer a{color:#D9A9BB;font-size:.9rem}
+  footer ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+  footer a:hover{color:#fff}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.1);margin-top:32px;padding-top:20px;font-size:.8rem;color:#B98298;display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between}
+  .social-row{display:flex;gap:10px;margin-top:10px}
+  .social-row a{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center}
+  .social-row svg{width:18px;height:18px}
+
+  /* ===== Cart drawer ===== */
+  .overlay{
+    position:fixed;inset:0;background:rgba(58,18,32,.45);opacity:0;pointer-events:none;
+    transition:opacity .25s;z-index:80;
+  }
+  .overlay.open{opacity:1;pointer-events:auto}
+  .cart-drawer{
+    position:fixed;top:0;right:0;height:100%;width:min(420px,92vw);background:#fff;
+    z-index:90;transform:translateX(100%);transition:transform .3s ease;
+    display:flex;flex-direction:column;box-shadow:-10px 0 40px rgba(0,0,0,.2);
+  }
+  .cart-drawer.open{transform:translateX(0)}
+  .cart-head{display:flex;align-items:center;justify-content:space-between;padding:20px;border-bottom:1px solid var(--border)}
+  .cart-head h3{font-family:'Baloo 2',sans-serif;color:var(--pink-dark);font-size:1.2rem}
+  .cart-close{width:38px;height:38px;border-radius:50%;background:var(--muted);display:flex;align-items:center;justify-content:center}
+  .cart-close svg{width:18px;height:18px}
+  .cart-items{flex:1;overflow-y:auto;padding:14px 20px;display:flex;flex-direction:column;gap:14px}
+  .cart-empty{text-align:center;padding:60px 20px;color:var(--ink-soft)}
+  .cart-empty svg{width:52px;height:52px;margin:0 auto 12px;stroke:var(--border)}
+  .cart-item{display:flex;gap:12px;align-items:center;border-bottom:1px solid var(--muted);padding-bottom:14px}
+  .cart-item-thumb{
+    width:56px;height:56px;border-radius:var(--radius-sm);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;color:#fff;
+  }
+  .cart-item-thumb svg{width:26px;height:26px}
+  .cart-item-info{flex:1;min-width:0}
+  .cart-item-info .name{font-weight:700;font-size:.9rem}
+  .cart-item-info .price{color:var(--pink);font-weight:800;font-size:.88rem}
+  .qty-control{display:flex;align-items:center;gap:8px}
+  .qty-control button{
+    width:26px;height:26px;border-radius:50%;background:var(--muted);color:var(--pink-dark);
+    font-weight:800;display:flex;align-items:center;justify-content:center;font-size:1rem;
+  }
+  .qty-control button:hover{background:var(--pink);color:#fff}
+  .remove-item{color:var(--danger);font-size:.78rem;font-weight:700;margin-top:4px}
+  .cart-footer{padding:18px 20px 22px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:12px}
+  .cart-total-row{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:1.1rem}
+  .cart-hint{font-size:.78rem;color:var(--ink-soft);text-align:center}
+
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translate(-50%,120%);
+    background:var(--ink);color:#fff;padding:12px 22px;border-radius:999px;
+    font-weight:700;font-size:.88rem;z-index:120;transition:transform .3s ease;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);max-width:90vw;text-align:center;
+  }
+  .toast.show{transform:translate(-50%,0)}
+
+  .whatsapp-float{
+    position:fixed;bottom:24px;right:24px;z-index:60;
+    width:58px;height:58px;border-radius:50%;background:var(--whatsapp);
+    display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px rgba(37,211,102,.45);
+    transition:transform .2s;
+  }
+  .whatsapp-float:hover{transform:scale(1.08)}
+  .whatsapp-float svg{width:28px;height:28px;fill:#fff}
+
+  @media (min-width:760px){
+    .main-nav{display:flex}
+    .menu-toggle{display:none}
+    .hero-grid{grid-template-columns:1.1fr .9fr}
+    .about-grid{grid-template-columns:1fr 1fr}
+  }
+  @media (min-width:760px){
+    .mobile-nav{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  }
+</style>
+</head>
+<body>
+
+<a href="#produtos" class="visually-hidden">Pular para os produtos</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="#topo" class="brand" aria-label="Loja Cris, página inicial">
+      <span class="brand-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#EC1E79" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7.5-4.6-10-9.3C.4 8 2 4.5 5.4 4c2-.3 3.7.7 4.6 2.2C10.9 4.7 12.6 3.7 14.6 4c3.4.5 5 4 3.4 7.7C15.5 16.4 12 21 12 21z"/></svg>
+      </span>
+      <span>
+        <span class="brand-name" style="display:block;line-height:1">Loja Cris</span>
+        <span class="brand-sub">Moda feminina · Osasco</span>
+      </span>
+    </a>
+
+    <nav class="main-nav" aria-label="Navegação principal">
+      <a href="#produtos">Produtos</a>
+      <a href="#novidades">Novidades</a>
+      <a href="#loja">A loja</a>
+      <a href="#contato">Contato</a>
+    </nav>
+
+    <div class="header-actions">
+      <a class="icon-btn" id="waHeaderBtn" href="#" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      </a>
+      <button class="icon-btn" id="cartBtn" aria-label="Abrir carrinho de compras" aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
+        <span class="cart-badge" id="cartCount">0</span>
+      </button>
+      <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+  <nav class="mobile-nav" id="mobileNav" aria-label="Navegação mobile">
+    <ul>
+      <li><a href="#produtos">Produtos</a></li>
+      <li><a href="#novidades">Novidades</a></li>
+      <li><a href="#loja">A loja</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="topo">
+
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow"><span class="dot"></span> Novidade todo dia · Osasco-SP</span>
+        <h1>Moda feminina com <span>preço que cabe</span> no seu bolso</h1>
+        <p class="lead">Blusas, calças, bodys, plus size e muito mais — direto da loja física do Centro de Osasco. Monte sua sacola aqui e finalize o pedido em segundos pelo WhatsApp.</p>
+        <div class="hero-ctas">
+          <a href="#produtos" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
+            Ver catálogo
+          </a>
+          <a href="#contato" class="btn btn-outline">Como chegar na loja</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><b>17,8 mil</b><span>seguidoras no Instagram</span></div>
+          <div class="stat"><b>8,8 mil+</b><span>publicações de looks</span></div>
+          <div class="stat"><b>Diária</b><span>chegada de novidades</span></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="ring"><div class="ring-inner">
+          <div class="hero-logo">
+            <svg viewBox="0 0 24 24" fill="#EC1E79" stroke="#EC1E79"><path d="M12 21s-7.5-4.6-10-9.3C.4 8 2 4.5 5.4 4c2-.3 3.7.7 4.6 2.2C10.9 4.7 12.6 3.7 14.6 4c3.4.5 5 4 3.4 7.7C15.5 16.4 12 21 12 21z"/></svg>
+            <strong>LOJA CRIS</strong>
+          </div>
+        </div></div>
+        <div class="float-badge b1">✨ Lançamento R$ 35</div>
+        <div class="float-badge b2">📍 Centro de Osasco</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="produtos">
+    <div class="container">
+      <div class="section-head">
+        <span class="section-tag">Catálogo</span>
+        <h2>Escolha, adicione na sacola e finalize no WhatsApp</h2>
+        <p>Filtre por categoria. Cada item vai para o seu carrinho — no fim, geramos a mensagem prontinha para enviar à loja.</p>
+      </div>
+
+      <div class="cat-scroller" id="catScroller" role="tablist" aria-label="Categorias de produtos"></div>
+      <div class="product-grid" id="productGrid"></div>
+    </div>
+  </section>
+
+  <section id="novidades" style="background:var(--muted)">
+    <div class="container">
+      <div class="section-head">
+        <span class="section-tag">Toda semana</span>
+        <h2>Novidades chegando direto do fornecedor</h2>
+        <p>A Loja Cris posta looks novos praticamente todos os dias no Instagram. Aqui no site reunimos os destaques — para ver tudo em primeira mão, siga <a href="https://www.instagram.com/loja__cris/" target="_blank" rel="noopener" style="color:var(--pink);font-weight:800">@loja__cris</a>.</p>
+      </div>
+      <div class="product-grid" id="newGrid"></div>
+    </div>
+  </section>
+
+  <section id="loja" class="about">
+    <div class="container about-grid">
+      <div>
+        <span class="section-tag">Loja física</span>
+        <h2 style="margin:8px 0 16px">Visite a gente no Centro de Osasco</h2>
+        <div class="about-cards">
+          <div class="about-card">
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <div><h3>Endereço</h3><p>Rua Natanael Tito Salmon, 147 — Centro de Osasco, SP</p></div>
+          </div>
+          <div class="about-card">
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <div><h3>Horário de funcionamento</h3><p>Consulte o horário atualizado direto pelo grupo do WhatsApp — pode variar em feriados e datas especiais.</p></div>
+          </div>
+          <div class="about-card">
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            <div><h3>Grupo de novidades no WhatsApp</h3><p>Entre no grupo oficial para receber looks novos, promoções e tirar dúvidas antes de comprar.</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="map-frame">
+        <iframe
+          title="Mapa com a localização da Loja Cris"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          src="https://www.google.com/maps?q=Rua+Natanael+Tito+Salmon,+147,+Centro,+Osasco,+SP&output=embed">
+        </iframe>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="section-head">
+        <span class="section-tag">Comunidade</span>
+        <h2>O que dizem por aí</h2>
+      </div>
+      <p class="testi-note">
+        Os depoimentos e fotos de clientes reais ficam nos destaques
+        <strong>"Clientes"</strong> e <strong>"Feedback"</strong> do perfil
+        <a href="https://www.instagram.com/loja__cris/" target="_blank" rel="noopener">@loja__cris</a> no Instagram —
+        preferimos linkar direto para lá em vez de inventar depoimentos aqui no site.
+      </p>
+    </div>
+  </section>
+
+  <section id="contato">
+    <div class="container">
+      <div class="cta-final">
+        <h2>Fechou o pedido? Finaliza no WhatsApp</h2>
+        <p>Monte sua sacola no botão do carrinho ou fale direto com a loja para tirar dúvidas sobre tamanho, cor e disponibilidade.</p>
+        <div class="btn-row">
+          <button class="btn btn-whatsapp" id="ctaWhatsapp">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            Entrar no grupo do WhatsApp
+          </button>
+          <a class="btn btn-outline" href="https://www.instagram.com/loja__cris/" target="_blank" rel="noopener" style="background:transparent;border-color:rgba(255,255,255,.5);color:#fff">Seguir no Instagram</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container footer-grid" style="grid-template-columns:1.3fr 1fr 1fr">
+    <div>
+      <div class="footer-brand">
+        <span class="brand-badge" style="width:40px;height:40px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#EC1E79" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M12 21s-7.5-4.6-10-9.3C.4 8 2 4.5 5.4 4c2-.3 3.7.7 4.6 2.2C10.9 4.7 12.6 3.7 14.6 4c3.4.5 5 4 3.4 7.7C15.5 16.4 12 21 12 21z"/></svg>
+        </span>
+        <strong style="font-family:'Baloo 2',sans-serif;color:#fff;font-size:1.1rem">Loja Cris</strong>
+      </div>
+      <p>Moda feminina popular no Centro de Osasco-SP. Perfil oficial da loja mais querida da região — novidade todo dia.</p>
+      <div class="social-row">
+        <a href="https://www.instagram.com/loja__cris/" target="_blank" rel="noopener" aria-label="Instagram da Loja Cris">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+        </a>
+        <a href="#" id="waFooterBtn" target="_blank" rel="noopener" aria-label="Grupo do WhatsApp da Loja Cris">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div>
+      <h4>Navegação</h4>
+      <ul>
+        <li><a href="#produtos">Produtos</a></li>
+        <li><a href="#novidades">Novidades</a></li>
+        <li><a href="#loja">A loja</a></li>
+        <li><a href="#contato">Contato</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Contato</h4>
+      <ul>
+        <li>Rua Natanael Tito Salmon, 147</li>
+        <li>Centro de Osasco — SP</li>
+        <li><a href="https://www.instagram.com/loja__cris/" target="_blank" rel="noopener">@loja__cris</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <span>© 2026 Loja Cris. Site demonstrativo — não é o site oficial da loja.</span>
+    <span>Feito com 💗 em Osasco-SP</span>
+  </div>
+</footer>
+
+<button class="whatsapp-float" id="waFloatBtn" aria-label="Falar com a Loja Cris no WhatsApp" title="Falar no WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.29-1.39a9.9 9.9 0 0 0 4.75 1.21h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2zm0 18.06h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.14.82.84-3.06-.2-.31a8.15 8.15 0 0 1-1.26-4.27c0-4.51 3.68-8.19 8.2-8.19a8.16 8.16 0 0 1 8.19 8.19c0 4.52-3.68 8.19-8.13 8.19zm4.5-6.14c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.56.13-.16.25-.64.81-.78.97-.14.17-.29.19-.53.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.48-1.39-1.73-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43-.14-.01-.31-.01-.48-.01-.16 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.68 4.25 3.75.59.26 1.06.41 1.42.53.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.17-.48-.29z"/></svg>
+</button>
+
+<div class="overlay" id="overlay"></div>
+<aside class="cart-drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+  <div class="cart-head">
+    <h3 id="cartTitle">Sua sacola</h3>
+    <button class="cart-close" id="cartClose" aria-label="Fechar carrinho">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer">
+    <div class="cart-total-row"><span>Total</span><span id="cartTotal">R$ 0,00</span></div>
+    <button class="btn btn-whatsapp btn-block" id="checkoutBtn" disabled>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      Finalizar pedido
+    </button>
+    <p class="cart-hint">A loja não tem checkout automático: ao finalizar, copiamos seu pedido e abrimos o grupo do WhatsApp para você colar e enviar.</p>
+  </div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/GzxNO9oGUl07hyZ1RtvCiq";
+
+  var CATEGORIES = [
+    { id:"todos", label:"Todos" },
+    { id:"blusas", label:"Blusas" },
+    { id:"calcas", label:"Calças" },
+    { id:"bodys", label:"Bodys" },
+    { id:"plus", label:"Plus Size" },
+    { id:"fitness", label:"Fitness" },
+    { id:"acessorios", label:"Acessórios" }
+  ];
+
+  var CATEGORY_COLORS = {
+    blusas:["#EC1E79","#FF8A3D"],
+    calcas:["#B8115C","#EC1E79"],
+    bodys:["#FF8A3D","#EC1E79"],
+    plus:["#EC1E79","#B8115C"],
+    fitness:["#FF8A3D","#FFB067"],
+    acessorios:["#B8115C","#FF8A3D"]
+  };
+
+  var PRODUCTS = [
+    { id:1, name:"Blusa Cropped Canelada", cat:"blusas", price:35.00, isNew:true },
+    { id:2, name:"Cardigan Tricot Básico", cat:"blusas", price:49.90, isNew:false },
+    { id:3, name:"Blusa Manga Longa Gola Alta", cat:"blusas", price:39.90, isNew:true },
+    { id:4, name:"Calça Wide Leg Alfaiataria", cat:"calcas", price:69.90, isNew:false },
+    { id:5, name:"Calça Legging Suplex", cat:"calcas", price:44.90, isNew:false },
+    { id:6, name:"Body Tule Plus Size", cat:"bodys", price:44.90, oldPrice:54.90, isNew:true, plus:true },
+    { id:7, name:"Body Canelado Manga Longa", cat:"bodys", price:39.90, isNew:false },
+    { id:8, name:"Blusa Plus Size Estampada", cat:"plus", price:45.00, isNew:false, plus:true },
+    { id:9, name:"Peplum Plus Size", cat:"plus", price:35.00, isNew:true, plus:true },
+    { id:10, name:"Conjunto Fitness Cropped + Legging", cat:"fitness", price:59.90, isNew:false },
+    { id:11, name:"Top Fitness Nadador", cat:"fitness", price:29.90, isNew:false },
+    { id:12, name:"Cinto Trançado Fivela", cat:"acessorios", price:24.90, isNew:false },
+    { id:13, name:"Bolsa Transversal Couro Sintético", cat:"acessorios", price:59.90, isNew:false },
+    { id:14, name:"Peplum Estampado Lançamento", cat:"blusas", price:35.00, isNew:true },
+    { id:15, name:"Calça Cargo Jogger", cat:"calcas", price:54.90, isNew:true },
+    { id:16, name:"Body Renda Plus Size", cat:"plus", price:49.90, isNew:false, plus:true }
+  ];
+
+  var fmt = function(v){ return "R$ " + v.toFixed(2).replace(".", ","); };
+
+  var iconSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>';
+
+  var cart = {}; // id -> qty
+
+  function productCardHTML(p){
+    var colors = CATEGORY_COLORS[p.cat] || ["#EC1E79","#FF8A3D"];
+    var catLabel = CATEGORIES.find(function(c){return c.id===p.cat;}).label;
+    return (
+      '<article class="card" data-id="'+p.id+'">' +
+        '<div class="card-media" style="background:linear-gradient(150deg,'+colors[0]+','+colors[1]+')">' +
+          (p.isNew ? '<span class="badge-new">Novidade</span>' : '') +
+          iconSvg +
+        '</div>' +
+        '<div class="card-body">' +
+          '<span class="card-cat">'+catLabel+(p.plus ? ' · Plus Size' : '')+'</span>' +
+          '<span class="card-title">'+p.name+'</span>' +
+          '<div class="card-price-row">' +
+            '<span class="card-price">'+fmt(p.price)+'</span>' +
+            (p.oldPrice ? '<span class="card-price-old">'+fmt(p.oldPrice)+'</span>' : '') +
+          '</div>' +
+          '<button class="card-add" data-add="'+p.id+'" aria-label="Adicionar '+p.name+' na sacola">Adicionar à sacola</button>' +
+        '</div>' +
+      '</article>'
+    );
+  }
+
+  function renderCategories(){
+    var el = document.getElementById("catScroller");
+    el.innerHTML = CATEGORIES.map(function(c){
+      return '<button class="cat-chip'+(c.id==="todos" ? " active" : "")+'" data-cat="'+c.id+'" role="tab" aria-selected="'+(c.id==="todos")+'">'+c.label+'</button>';
+    }).join("");
+  }
+
+  function renderProducts(filter){
+    var grid = document.getElementById("productGrid");
+    var list = filter && filter !== "todos" ? PRODUCTS.filter(function(p){return p.cat===filter;}) : PRODUCTS;
+    grid.innerHTML = list.length
+      ? list.map(productCardHTML).join("")
+      : '<p class="empty-state">Nenhum produto nessa categoria por enquanto — volte em breve, tem novidade chegando todo dia!</p>';
+    bindAddButtons(grid);
+  }
+
+  function renderNew(){
+    var grid = document.getElementById("newGrid");
+    var list = PRODUCTS.filter(function(p){return p.isNew;}).slice(0,4);
+    grid.innerHTML = list.map(productCardHTML).join("");
+    bindAddButtons(grid);
+  }
+
+  function bindAddButtons(scope){
+    scope.querySelectorAll("[data-add]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var id = Number(btn.getAttribute("data-add"));
+        addToCart(id);
+        btn.textContent = "Adicionado ✓";
+        btn.classList.add("added");
+        setTimeout(function(){
+          btn.textContent = "Adicionar à sacola";
+          btn.classList.remove("added");
+        }, 1200);
+      });
+    });
+  }
+
+  function addToCart(id){
+    cart[id] = (cart[id] || 0) + 1;
+    updateCartUI();
+    showToast("Item adicionado à sacola 💗");
+  }
+
+  function changeQty(id, delta){
+    if (!cart[id]) return;
+    cart[id] += delta;
+    if (cart[id] <= 0) delete cart[id];
+    updateCartUI();
+  }
+
+  function removeFromCart(id){
+    delete cart[id];
+    updateCartUI();
+  }
+
+  function cartEntries(){
+    return Object.keys(cart).map(function(id){
+      var product = PRODUCTS.find(function(p){ return p.id === Number(id); });
+      return { product: product, qty: cart[id] };
+    }).filter(function(e){ return e.product; });
+  }
+
+  function updateCartUI(){
+    var entries = cartEntries();
+    var count = entries.reduce(function(sum,e){ return sum + e.qty; }, 0);
+    var total = entries.reduce(function(sum,e){ return sum + e.qty * e.product.price; }, 0);
+
+    document.getElementById("cartCount").textContent = count;
+    document.getElementById("cartTotal").textContent = fmt(total);
+    document.getElementById("checkoutBtn").disabled = count === 0;
+
+    var itemsEl = document.getElementById("cartItems");
+    if (!entries.length){
+      itemsEl.innerHTML = '<div class="cart-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg><p>Sua sacola está vazia.<br>Adicione peças do catálogo!</p></div>';
+      return;
+    }
+
+    itemsEl.innerHTML = entries.map(function(e){
+      var colors = CATEGORY_COLORS[e.product.cat] || ["#EC1E79","#FF8A3D"];
+      return (
+        '<div class="cart-item" data-id="'+e.product.id+'">' +
+          '<div class="cart-item-thumb" style="background:linear-gradient(150deg,'+colors[0]+','+colors[1]+')">'+iconSvg+'</div>' +
+          '<div class="cart-item-info">' +
+            '<div class="name">'+e.product.name+'</div>' +
+            '<div class="price">'+fmt(e.product.price)+'</div>' +
+            '<div class="qty-control">' +
+              '<button data-dec="'+e.product.id+'" aria-label="Diminuir quantidade">−</button>' +
+              '<span>'+e.qty+'</span>' +
+              '<button data-inc="'+e.product.id+'" aria-label="Aumentar quantidade">+</button>' +
+            '</div>' +
+            '<button class="remove-item" data-remove="'+e.product.id+'">Remover</button>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+
+    itemsEl.querySelectorAll("[data-inc]").forEach(function(b){
+      b.addEventListener("click", function(){ changeQty(Number(b.getAttribute("data-inc")), 1); });
+    });
+    itemsEl.querySelectorAll("[data-dec]").forEach(function(b){
+      b.addEventListener("click", function(){ changeQty(Number(b.getAttribute("data-dec")), -1); });
+    });
+    itemsEl.querySelectorAll("[data-remove]").forEach(function(b){
+      b.addEventListener("click", function(){ removeFromCart(Number(b.getAttribute("data-remove"))); });
+    });
+  }
+
+  function buildOrderText(){
+    var entries = cartEntries();
+    var total = entries.reduce(function(sum,e){ return sum + e.qty * e.product.price; }, 0);
+    var lines = ["Oi! Vim pelo site e quero fazer este pedido:", ""];
+    entries.forEach(function(e){
+      lines.push("• " + e.qty + "x " + e.product.name + " — " + fmt(e.product.price * e.qty));
+    });
+    lines.push("");
+    lines.push("Total: " + fmt(total));
+    return lines.join("\n");
+  }
+
+  function showToast(msg, duration){
+    var t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(t._timer);
+    t._timer = setTimeout(function(){ t.classList.remove("show"); }, duration || 2600);
+  }
+
+  function openCart(){
+    document.getElementById("cartDrawer").classList.add("open");
+    document.getElementById("overlay").classList.add("open");
+  }
+  function closeCart(){
+    document.getElementById("cartDrawer").classList.remove("open");
+    document.getElementById("overlay").classList.remove("open");
+  }
+
+  document.addEventListener("DOMContentLoaded", function(){
+    renderCategories();
+    renderProducts("todos");
+    renderNew();
+    updateCartUI();
+
+    [document.getElementById("waHeaderBtn"), document.getElementById("waFooterBtn")].forEach(function(el){
+      if (el) el.href = WHATSAPP_GROUP_URL;
+    });
+    document.getElementById("ctaWhatsapp").addEventListener("click", function(){
+      window.open(WHATSAPP_GROUP_URL, "_blank", "noopener");
+    });
+    document.getElementById("waFloatBtn").addEventListener("click", function(){
+      window.open(WHATSAPP_GROUP_URL, "_blank", "noopener");
+    });
+
+    document.getElementById("catScroller").addEventListener("click", function(e){
+      var btn = e.target.closest("[data-cat]");
+      if (!btn) return;
+      document.querySelectorAll(".cat-chip").forEach(function(c){
+        c.classList.remove("active");
+        c.setAttribute("aria-selected","false");
+      });
+      btn.classList.add("active");
+      btn.setAttribute("aria-selected","true");
+      renderProducts(btn.getAttribute("data-cat"));
+    });
+
+    document.getElementById("cartBtn").addEventListener("click", openCart);
+    document.getElementById("cartClose").addEventListener("click", closeCart);
+    document.getElementById("overlay").addEventListener("click", closeCart);
+    document.addEventListener("keydown", function(e){
+      if (e.key === "Escape") closeCart();
+    });
+
+    document.getElementById("checkoutBtn").addEventListener("click", function(){
+      var text = buildOrderText();
+      var finish = function(copied){
+        showToast(copied
+          ? "Pedido copiado! Cole no WhatsApp que vai abrir agora."
+          : "Não deu para copiar automático — abrimos o WhatsApp, é só descrever seu pedido lá.", 3200);
+        window.open(WHATSAPP_GROUP_URL, "_blank", "noopener");
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(function(){ finish(true); }).catch(function(){ finish(false); });
+      } else {
+        finish(false);
+      }
+    });
+
+    var menuToggle = document.getElementById("menuToggle");
+    var mobileNav = document.getElementById("mobileNav");
+    menuToggle.addEventListener("click", function(){
+      var isOpen = mobileNav.classList.toggle("open");
+      menuToggle.setAttribute("aria-expanded", String(isOpen));
+    });
+    mobileNav.addEventListener("click", function(e){
+      if (e.target.closest("a")) mobileNav.classList.remove("open");
+    });
+  });
+})();
+</script>
+</body>
+</html>

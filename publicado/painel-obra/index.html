@@ -1,0 +1,31 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Painel da Obra</title><style>
+:root{--bg:#16191c;--panel:#20252a;--line:#394149;--text:#f2f3ee;--muted:#9ca6ac;--orange:#ff7a1a;--green:#42bd79}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-serif;min-height:100vh;border-top:4px solid var(--orange)}
+header{padding:22px 18px 16px;display:flex;gap:12px;align-items:center;border-bottom:1px solid var(--line)}
+header span{width:38px;height:38px;border:2px solid var(--orange);display:grid;place-items:center;color:var(--orange);font-weight:800;flex:none}
+header h1{font-size:16px;margin:0}
+header small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+main{max-width:640px;margin:0 auto;padding:18px 16px 60px}
+section{margin-bottom:26px}
+section h2{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--orange);margin:0 0 10px;font-weight:700}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px;margin-bottom:8px}
+.card.event{display:grid;grid-template-columns:52px 1fr;gap:10px;border-left:3px solid var(--orange)}
+.card time{color:var(--orange);font-size:12px;font-weight:700}
+.card strong{display:block;font-size:13px}
+.card small{color:var(--muted);font-size:11px}
+.empty{border:1px dashed var(--line);border-radius:8px;padding:20px;text-align:center;color:var(--muted);font-size:12px}
+.sync{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px;margin-bottom:16px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block}
+footer{text-align:center;color:var(--muted);font-size:10px;padding:20px;border-top:1px solid var(--line)}
+</style></head>
+<body>
+<header><span>CH3</span><div><h1>Painel da Obra</h1><small>Situação atual, publicada pelo gestor</small></div></header>
+<main>
+<div class="sync"><span class="dot"></span>Última sincronização com o Google Agenda: nunca</div>
+<section><h2>Itens em aberto</h2><div class='empty'>Nenhum item em aberto no momento.</div></section><section><h2>Metas da semana</h2><div class='empty'>Nenhuma meta definida para a semana.</div></section><section><h2>Metas gerais</h2><div class='empty'>Nenhuma meta geral definida.</div></section><section><h2>Agenda do gestor</h2><div class='empty'>Nenhum compromisso sincronizado.</div></section>
+</main>
+<footer>Atualizado manualmente pelo gestor · não é ao vivo</footer>
+</body></html>

@@ -57,6 +57,9 @@ class Api:
     def delete_document(self, doc_id: int) -> dict[str, Any]:
         return self._result(self.docs.delete_document, int(doc_id))
 
+    def delete_entity_item(self, entity: str, item_id: int) -> dict[str, Any]:
+        return self._result(self.ops.delete, entity, int(item_id))
+
     def ask_documents(self, question: str) -> dict[str, Any]:
         return self._result(self.docs.ask, question)
 

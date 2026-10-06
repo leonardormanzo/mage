@@ -1,0 +1,54 @@
+.wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  min-height: var(--touch-min);
+  padding: 0 var(--space-4);
+  box-shadow: var(--shadow-sm);
+}
+
+.wrapper:focus-within {
+  border-color: var(--color-primary);
+}
+
+.icon {
+  flex: none;
+  color: var(--color-text-faint);
+  margin-right: var(--space-2);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  font-size: var(--text-base);
+  height: 100%;
+  padding: var(--space-2) 0;
+  color: var(--color-text);
+}
+
+.input:focus {
+  outline: none;
+}
+
+.input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.clear {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-surface-alt);
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
