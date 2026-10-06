@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%231c1d1f%27/%3E%3Cpath d=%27M6 12h20l-3 8H9z%27 fill=%27%23f2b705%27/%3E%3Ccircle cx=%2711%27 cy=%2724%27 r=%273%27 fill=%27%23cfcbc3%27/%3E%3Ccircle cx=%2721%27 cy=%2724%27 r=%273%27 fill=%27%23cfcbc3%27/%3E%3C/svg%3E">
+<title>Terra-Botics Obra</title>
+<style>
+  :root { --ink:#1d1a15; --paper:#eadfc8; --accent:#e0a21b; --ok:#2bd46b; --warn:#ffb000; --brake:#ff2a1a; --auto:#1f8fff; }
+  * { box-sizing:border-box; }
+  html, body { margin:0; height:100%; overflow:hidden; background:#bfd0dc; font-family:"Segoe UI", system-ui, sans-serif; color:var(--ink); }
+  canvas#c3d { display:block; touch-action:none; }
+  .hud { position:fixed; background:rgba(234,223,200,.88); border:1.5px solid var(--ink); border-radius:10px; padding:10px 14px; backdrop-filter:blur(4px); }
+  #stats { top:12px; right:12px; width:230px; pointer-events:none; font-size:13px; }
+  #stats .row { display:flex; justify-content:space-between; gap:12px; margin:2px 0; }
+  #stats b { font-variant-numeric:tabular-nums; }
+  #stats .big { font-size:22px; }
+  .bar { height:8px; background:#0002; border-radius:4px; overflow:hidden; margin:3px 0 6px; }
+  .bar i { display:block; height:100%; width:0; background:var(--accent); transition:width .2s; }
+  #mode { font-weight:800; letter-spacing:.5px; }
+  #alert { top:12px; left:50%; transform:translateX(-50%); font-weight:800; font-size:20px; padding:10px 22px; display:none; pointer-events:none; text-align:center; color:#fff; border-color:#0006; }
+  #alert.warn { display:block; background:var(--warn); color:#1d1a15; }
+  #alert.brake { display:block; background:var(--brake); animation:pulse .35s infinite alternate; }
+  #alert small { display:block; font-size:12px; font-weight:600; opacity:.85; }
+  @keyframes pulse { to { filter:brightness(1.3); transform:translateX(-50%) scale(1.04); } }
+  #msg { bottom:150px; left:50%; transform:translateX(-50%); font-weight:700; opacity:0; transition:opacity .3s; pointer-events:none; text-align:center; }
+  #auto { bottom:12px; right:12px; width:260px; }
+  #autoBtn { width:100%; font:inherit; font-weight:800; font-size:15px; padding:10px; border-radius:8px; border:1.5px solid var(--ink); background:var(--auto); color:#fff; cursor:pointer; }
+  #autoBtn.on { background:var(--brake); }
+  #autoBtn:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+  #steps { list-style:none; margin:8px 0 0; padding:0; font-size:12.5px; }
+  #steps li { padding:2px 6px; border-radius:5px; opacity:.55; }
+  #steps li.now { opacity:1; background:var(--ink); color:var(--paper); font-weight:700; }
+  #keys { bottom:12px; left:12px; font-size:12px; line-height:1.75; pointer-events:none; }
+  kbd { background:var(--ink); color:var(--paper); border-radius:4px; padding:1px 6px; font:600 11px/1.4 inherit; }
+  #map { top:12px; left:12px; padding:6px; }
+  #map canvas { display:block; width:190px; height:190px; }
+  @media (max-width:900px){ #keys{ display:none; } #map canvas{ width:130px; height:130px; } #alert{ top:auto; bottom:170px; } }
+</style>
+</head>
+<body>
+<canvas id="c3d"></canvas>
+<div class="hud" id="map"><canvas id="mapc" width="380" height="380" aria-label="Mapa da obra"></canvas></div>
+<div class="hud" id="alert" role="alert"></div>
+<div class="hud" id="msg"></div>
+<div class="hud" id="stats">
+  <div class="row"><span>Modo</span><span id="mode">MANUAL</span></div>
+  <div class="row"><span>Velocidade</span><b class="big" id="spd">0 km/h</b></div>
+  <div class="row"><span>Caçamba</span><b id="ang">0°</b></div>
+  <div class="bar"><i id="angBar"></i></div>
+  <div class="row"><span>Sensor de peso</span><b id="kg">0 / 200 kg</b></div>
+  <div class="bar"><i id="kgBar"></i></div>
+  <div class="row"><span>Total descarregado</span><b id="deliv">0 kg</b></div>
+  <div class="row"><span>Bateria</span><b id="bat">100%</b></div>
+  <div class="row"><span>Sensor de colisão</span><b id="sens">livre</b></div>
+</div>
+<div class="hud" id="auto">
+  <button id="autoBtn" type="button">▶ Iniciar auto-execução</button>
+  <ul id="steps">
+    <li data-p="TO_LOAD">1. Ir ao carregamento</li>
+    <li data-p="WAIT_LOAD">2. Aguardar carga (sensor de peso)</li>
+    <li data-p="TO_DUMP">3. Levar à descarga</li>
+    <li data-p="DUMP">4. Bascular caçamba</li>
+    <li data-p="LOWER">5. Recolher caçamba</li>
+    <li data-p="REVERSE">6. Manobra de ré</li>
+  </ul>
+</div>
+<div class="hud" id="keys">
+  <kbd>W</kbd><kbd>S</kbd> acelerar / ré · <kbd>A</kbd><kbd>D</kbd> virar · <kbd>Espaço</kbd> freio<br>
+  <kbd>E</kbd> levantar caçamba · <kbd>Q</kbd> baixar · <kbd>P</kbd> auto-execução<br>
+  <kbd>L</kbd> faróis · <kbd>M</kbd> som · <kbd>C</kbd> câmera · <kbd>H</kbd> reiniciar<br>
+  Pare na baia amarela para a escavadeira carregar
+</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { buildCart } from './js/cart.js';
+import { createSite, WORLD, PILE, EXCAVATOR_POS } from './js/site.js';
+import { createExcavator } from './js/excavator.js';
+import { createWorkers } from './js/workers.js';
+import { createRocks } from './js/rocks.js';
+import { createSafety, ensureAudio, toggleMute, AUTO_BRAKE_DECEL } from './js/safety.js';
+import {
+  createAutopilot, ROUTE, START, BAY, ZONE_CENTER, ZONE_HALF, PHASE_LABEL, LOAD_TARGET_KG, CAPACITY_KG, inBay,
+} from './js/autopilot.js';
+
+// ---------- constantes ----------
+const WHEELBASE = 1.9;
+const MAX_FWD = 4.5, MAX_REV = 2.5;
+const ACCEL = 3.5, BRAKE = 8, ROLL_DRAG = 2.2, HANDBRAKE = 10;
+const MAX_STEER = 0.6;
+const DUMP_MAX = 0.62, DUMP_RATE = 0.35;
+const BATTERY_USE = 0.12; // % por metro
+const BODY = [[-0.85, 0.95], [0, 0.95], [0.85, 0.95], [-1.75, 0.45]]; // [offset longitudinal, raio]
+const WORKER_ROUTES = [
+  [[-5, -8], [-5, 15]],                                  // cruza as duas vias
+  [[3, -3], [3, 6.5]],                                    // cruza o retorno leste
+  [[-20, -6], [-20, 6]],                                  // cruza o retorno oeste
+  [[7, -9.4], [25, -9.4], [25, -30], [7, -30]],           // ronda do prédio
+  [[-26, -12], [-16, -12], [-16, -8]],                    // canteiro
+  [[-10.5, 13.2]],                                        // sinaleiro da baia (parado)
+];
+const CONE_POS = [[7.2, 6], [6.37, 2.9], [4.1, 0.63], [-24.2, 6], [-23.4, 9.1], [-23.4, 2.9], [-11.4, 7.6], [-16.6, 7.6]];
+
+// ---------- cena ----------
+const renderer = new THREE.WebGLRenderer({ antialias: true, canvas: document.getElementById('c3d') });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xbfd0dc);
+scene.fog = new THREE.Fog(0xbfd0dc, 55, 150);
+scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 400);
+
+const sun = new THREE.DirectionalLight(0xfff1d6, 2.4);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -20, right: 20, top: 20, bottom: -20, near: 1, far: 80 });
+sun.shadow.bias = -0.0004;
+scene.add(sun, sun.target, new THREE.HemisphereLight(0xfff4dd, 0x8a7a5a, 0.6));
+
+const site = createSite(scene);
+const excavator = createExcavator(scene, { position: EXCAVATOR_POS, pile: PILE });
+const crew = createWorkers(scene, WORKER_ROUTES);
+
+const coneGeo = new THREE.ConeGeometry(0.22, 0.6, 14);
+const coneMat = new THREE.MeshStandardMaterial({ color: 0xe9791a, roughness: 0.5 });
+const cones = CONE_POS.map(([x, z]) => {
+  const mesh = new THREE.Mesh(coneGeo, coneMat);
+  mesh.castShadow = true; scene.add(mesh);
+  return { mesh, x, z, ox: x, oz: z, r: 0.3 };
+});
+
+// ---------- carrinho ----------
+const cart = buildCart();
+scene.add(cart.root);
+const { bucket, wheels, frontGate, BY, BL, TILT } = cart;
+const hinge = new THREE.Group();            // dobradiça frontal: levantar = descarregar para frente
+hinge.position.set(0, BY, BL / 2);
+cart.root.add(hinge);
+hinge.add(bucket);
+bucket.position.set(0, -BY, -BL / 2);
+cart.root.rotation.order = 'YXZ';
+
+const car = { x: 0, z: 0, heading: 0, v: 0, steer: 0, pitch: 0, roll: 0, dump: 0, battery: 100, lights: true };
+const rocks = createRocks(scene, cart, { count: 260, zone: { x: ZONE_CENTER[0], z: ZONE_CENTER[1], half: ZONE_HALF } });
+const safety = createSafety(cart.root, WHEELBASE);
+const autopilot = createAutopilot({ wheelbase: WHEELBASE, dumpMax: DUMP_MAX });
+const colliderSets = [site.colliders, excavator.colliders, crew.colliders, cones];
+
+// ---------- poeira ----------
+const DUST = 160;
+const dustGeo = new THREE.BufferGeometry();
+dustGeo.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(DUST * 3).fill(-50), 3));
+const dustTex = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 64; const g = c.getContext('2d');
+  const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+  grad.addColorStop(0, 'rgba(190,165,125,0.8)'); grad.addColorStop(1, 'rgba(190,165,125,0)');
+  g.fillStyle = grad; g.fillRect(0, 0, 64, 64); return new THREE.CanvasTexture(c);
+})();
+const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({ size: 0.9, map: dustTex, transparent: true, depthWrite: false, opacity: 0.55 }));
+dust.frustumCulled = false;
+scene.add(dust);
+const dustP = Array.from({ length: DUST }, () => ({ life: 0, x: 0, y: -50, z: 0, vx: 0, vy: 0, vz: 0 }));
+let dustNext = 0, dustAcc = 0;
+function updateDust(dt) {
+  dustAcc += Math.max(0, Math.abs(car.v) - 0.8) * dt * 10;
+  const sh = Math.sin(car.heading), ch = Math.cos(car.heading);
+  while (dustAcc > 1) {
+    dustAcc -= 1;
+    const p = dustP[dustNext]; dustNext = (dustNext + 1) % DUST;
+    const side = Math.random() < 0.5 ? -1 : 1, back = Math.sign(car.v) * -0.95;
+    p.x = car.x + sh * back + ch * side * 0.94; p.z = car.z + ch * back - sh * side * 0.94; p.y = 0.15;
+    p.vx = (Math.random() - 0.5) * 0.6; p.vz = (Math.random() - 0.5) * 0.6; p.vy = 0.3 + Math.random() * 0.3; p.life = 1.4;
+  }
+  const arr = dustGeo.attributes.position.array;
+  dustP.forEach((p, i) => {
+    if (p.life > 0) { p.life -= dt; p.x += p.vx * dt; p.y += p.vy * dt; p.z += p.vz * dt; p.vy *= 0.97; }
+    const alive = p.life > 0;
+    arr[i * 3] = p.x; arr[i * 3 + 1] = alive ? p.y : -50; arr[i * 3 + 2] = p.z;
+  });
+  dustGeo.attributes.position.needsUpdate = true;
+}
+
+// ---------- entrada ----------
+const keys = new Set();
+const DRIVE_KEYS = ['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' ', 'e', 'q'];
+const down = (...ks) => ks.some(k => keys.has(k));
+addEventListener('keydown', e => {
+  const k = e.key.toLowerCase();
+  ensureAudio();
+  if (DRIVE_KEYS.includes(k)) e.preventDefault();
+  if (e.repeat) return;
+  keys.add(k);
+  if (autopilot.active && DRIVE_KEYS.includes(k)) { setAuto(false); say('Auto-execução interrompida (comando manual)'); }
+  if (k === 'p') setAuto(!autopilot.active);
+  if (k === 'c') camMode = (camMode + 1) % 3;
+  if (k === 'h') resetGame();
+  if (k === 'l') { car.lights = !car.lights; cart.setLights(car.lights); say(car.lights ? 'Faróis ligados' : 'Faróis desligados'); }
+  if (k === 'm') say(toggleMute() ? 'Som desligado' : 'Som ligado');
+});
+addEventListener('keyup', e => keys.delete(e.key.toLowerCase()));
+addEventListener('blur', () => keys.clear());
+
+const autoBtn = document.getElementById('autoBtn');
+autoBtn.addEventListener('click', () => { ensureAudio(); setAuto(!autopilot.active); autoBtn.blur(); });
+function setAuto(on) {
+  if (on) { autopilot.start(rocks.weightKg); say('Auto-execução iniciada'); }
+  else autopilot.stop();
+  autoBtn.textContent = on ? '■ Parar auto-execução' : '▶ Iniciar auto-execução';
+  autoBtn.classList.toggle('on', on);
+}
+
+let camMode = 0, camYaw = 0, camPitch = 0, camDist = 1, dragging = false;
+const cv = renderer.domElement;
+cv.addEventListener('pointerdown', e => { ensureAudio(); dragging = true; cv.setPointerCapture(e.pointerId); });
+cv.addEventListener('pointerup', () => { dragging = false; });
+cv.addEventListener('pointermove', e => {
+  if (!dragging) return;
+  camYaw -= e.movementX * 0.005;
+  camPitch = THREE.MathUtils.clamp(camPitch + e.movementY * 0.004, -0.5, 0.9);
+});
+cv.addEventListener('wheel', e => { camDist = THREE.MathUtils.clamp(camDist * (1 + Math.sign(e.deltaY) * 0.1), 0.5, 2.5); }, { passive: true });
+
+const msgEl = document.getElementById('msg');
+let msgTimer = 0;
+function say(t, ms = 2200) { msgEl.textContent = t; msgEl.style.opacity = 1; clearTimeout(msgTimer); msgTimer = setTimeout(() => { msgEl.style.opacity = 0; }, ms); }
+
+function resetGame() {
+  setAuto(false);
+  Object.assign(car, { x: START.x, z: START.z, heading: START.heading, v: 0, steer: 0, dump: 0, battery: 100 });
+  rocks.clear();
+  cones.forEach(c => { c.x = c.ox; c.z = c.oz; });
+  say('Reiniciado');
+}
+
+// ---------- controle ----------
+function manualControl() {
+  const fwd = down('w', 'arrowup'), back = down('s', 'arrowdown');
+  const left = down('a', 'arrowleft'), right = down('d', 'arrowright'), hand = down(' ');
+  let accel, towardZero = false;
+  if (hand) { accel = -Math.sign(car.v) * HANDBRAKE; towardZero = true; }
+  else if (fwd && !back) accel = car.v < 0 ? BRAKE : ACCEL * (1 - Math.max(0, car.v) / (MAX_FWD + 1));
+  else if (back && !fwd) accel = car.v > 0 ? -BRAKE : -ACCEL * 0.8;
+  else { accel = -Math.sign(car.v) * ROLL_DRAG; towardZero = true; }
+  return {
+    accel, towardZero,
+    intent: fwd && !back ? 1 : back && !fwd ? -1 : 0,
+    steer: ((left ? 1 : 0) - (right ? 1 : 0)) * MAX_STEER / (1 + Math.abs(car.v) * 0.12),
+    dumpCmd: (down('e') ? 1 : 0) - (down('q') ? 1 : 0),
+  };
+}
+
+function autoControl(dt) {
+  const c = autopilot.control(dt, car, rocks.weightKg);
+  return {
+    accel: THREE.MathUtils.clamp(3 * (c.targetV - car.v), -BRAKE, ACCEL),
+    towardZero: c.targetV === 0,
+    intent: Math.sign(c.targetV),
+    steer: THREE.MathUtils.clamp(c.steer, -MAX_STEER, MAX_STEER),
+    dumpCmd: c.dumpCmd,
+  };
+}
+
+let sens = { state: 'ok', free: Infinity, dir: 1 }, crashFlash = 0;
+function stepCar(dt) {
+  const ctl = autopilot.active ? autoControl(dt) : manualControl();
+  sens = safety.update(dt, car, colliderSets, ctl.intent);
+
+  // freio automático: desacelera se estiver indo em direção ao obstáculo; impede arrancar contra ele
+  if (sens.state === 'brake') {
+    if (Math.abs(car.v) > 0.02 && Math.sign(car.v) === sens.dir) { ctl.accel = -Math.sign(car.v) * AUTO_BRAKE_DECEL; ctl.towardZero = true; }
+    else if (ctl.intent === sens.dir) { ctl.accel = 0; car.v = 0; }
+  }
+
+  const prevV = car.v, nv = car.v + ctl.accel * dt;
+  car.v = ctl.towardZero && prevV !== 0 && Math.sign(nv) !== Math.sign(prevV) ? 0 : nv;
+  car.v = THREE.MathUtils.clamp(car.v, -MAX_REV, MAX_FWD);
+
+  car.steer += (ctl.steer - car.steer) * Math.min(1, 6 * dt);
+  car.heading += (car.v / WHEELBASE) * Math.tan(car.steer) * dt;
+  car.x += Math.sin(car.heading) * car.v * dt;
+  car.z += Math.cos(car.heading) * car.v * dt;
+  car.battery = Math.max(3, car.battery - Math.abs(car.v) * dt * BATTERY_USE);
+  car.dump = THREE.MathUtils.clamp(car.dump + ctl.dumpCmd * DUMP_RATE * dt, 0, DUMP_MAX);
+
+  resolveCollisions();
+  const acc = (car.v - prevV) / dt;
+  car.pitch += (-acc * 0.006 - car.pitch) * Math.min(1, 6 * dt);
+  car.roll += (-car.steer * car.v * 0.02 - car.roll) * Math.min(1, 6 * dt);
+}
+
+function bodyCircles() {
+  const sh = Math.sin(car.heading), ch = Math.cos(car.heading);
+  return BODY.map(([off, r]) => ({ x: car.x + sh * off, z: car.z + ch * off, r }));
+}
+
+// Colisão física (caso o freio não evite): empurra o carrinho para fora e zera a velocidade.
+function resolveCollisions() {
+  const sh = Math.sin(car.heading), ch = Math.cos(car.heading);
+  for (const [off, br] of BODY) {
+    for (const c of cones) {
+      const bx = car.x + sh * off, bz = car.z + ch * off;
+      const dx = c.x - bx, dz = c.z - bz, d = Math.hypot(dx, dz), min = br + c.r;
+      if (d < min && d > 1e-4) { c.x = bx + dx / d * min; c.z = bz + dz / d * min; }
+    }
+    for (const w of crew.workers) {                       // trabalhador é afastado, nunca arrasta o carrinho
+      const bx = car.x + sh * off, bz = car.z + ch * off;
+      const dx = w.x - bx, dz = w.z - bz, d = Math.hypot(dx, dz), min = br + w.r;
+      if (d < min && d > 1e-4) { w.x = bx + dx / d * min; w.z = bz + dz / d * min; if (Math.abs(car.v) > 0.5) crashFlash = 1.2; }
+    }
+    for (const set of [site.colliders, excavator.colliders]) for (const c of set) {
+      const bx = car.x + sh * off, bz = car.z + ch * off;
+      const dx = bx - c.x, dz = bz - c.z, min = br + c.r;
+      if (Math.abs(dx) > min || Math.abs(dz) > min) continue;
+      const d = Math.hypot(dx, dz);
+      if (d >= min || d < 1e-4) continue;
+      car.x += dx / d * (min - d); car.z += dz / d * (min - d);
+      if (Math.abs(car.v) > 0.5) crashFlash = 1.2;
+      car.v = 0;
+    }
+  }
+  const lim = WORLD - 1.5;
+  car.x = THREE.MathUtils.clamp(car.x, -lim, lim);
+  car.z = THREE.MathUtils.clamp(car.z, -lim, lim);
+}
+
+function applyCar(dt) {
+  cart.root.position.set(car.x, 0, car.z);
+  cart.root.rotation.set(car.pitch, car.heading, car.roll);
+  hinge.rotation.x = car.dump;
+  frontGate.rotation.x = TILT + THREE.MathUtils.clamp((car.dump - 0.05) / 0.15, 0, 1) * 1.35;
+  for (const w of wheels) {
+    w.spin.rotation.x += car.v / cart.WHEEL_R * dt;
+    if (w.sz > 0) w.pivot.rotation.y = car.steer * 1.3;
+  }
+  cones.forEach(c => c.mesh.position.set(c.x, 0.3, c.z));
+}
+
+// ---------- escavadeira ----------
+const cartTarget = new THREE.Vector3();
+function updateExcavator(dt) {
+  cartTarget.set(0, BY + 0.3, 0); bucket.localToWorld(cartTarget);
+  const wantLoad = inBay(car.x, car.z) && Math.abs(car.v) < 0.15 && car.dump < 0.02 && rocks.weightKg < LOAD_TARGET_KG;
+  excavator.update(dt, { wantLoad, cartTarget, drop: rocks.drop });
+}
+
+// ---------- câmera ----------
+const camPos = new THREE.Vector3(), camLook = new THREE.Vector3(), desired = new THREE.Vector3(), look = new THREE.Vector3();
+function updateCamera(dt) {
+  if (!dragging) { camYaw *= Math.exp(-1.5 * dt); camPitch *= Math.exp(-1.5 * dt); }
+  const base = [{ d: 8.5, h: 3.8 }, { d: 8, h: 16 }, { d: 11, h: 2.4, side: true }][camMode];
+  const ang = car.heading + Math.PI + camYaw + (base.side ? Math.PI / 2 : 0);
+  const d = base.d * camDist, h = base.h * camDist + camPitch * 6;
+  desired.set(car.x + Math.sin(ang) * d, h, car.z + Math.cos(ang) * d);
+  camPos.lerp(desired, 1 - Math.exp(-5 * dt));
+  look.set(car.x, 1.1, car.z);
+  camLook.lerp(look, 1 - Math.exp(-8 * dt));
+  camera.position.copy(camPos);
+  camera.lookAt(camLook);
+  sun.position.set(car.x + 18, 30, car.z + 12);
+  sun.target.position.set(car.x, 0, car.z);
+}
+
+// ---------- HUD + minimapa ----------
+const $ = id => document.getElementById(id);
+const alertEl = $('alert');
+const stepEls = [...document.querySelectorAll('#steps li')];
+let hudTimer = 0, lastAlert = '';
+function updateHud(dt) {
+  const kmh = Math.abs(car.v) * 3.6, kg = rocks.weightKg;
+  hudTimer -= dt;
+  // alerta de colisão
+  let alertKind = crashFlash > 0 ? 'brake' : sens.state === 'ok' ? '' : sens.state;
+  const html = crashFlash > 0 ? 'COLISÃO!'
+    : sens.state === 'brake' ? `FREIO AUTOMÁTICO<small>obstáculo a ${Math.max(0, sens.free).toFixed(1)} m ${sens.dir > 0 ? 'à frente' : 'atrás'}</small>`
+    : sens.state === 'warn' ? `⚠ ALERTA DE COLISÃO<small>obstáculo a ${sens.free.toFixed(1)} m ${sens.dir > 0 ? 'à frente' : 'atrás'}</small>` : '';
+  if (html !== lastAlert) { alertEl.innerHTML = html; lastAlert = html; }
+  alertEl.className = 'hud ' + alertKind;
+  cart.setStatus(sens.state !== 'ok' ? sens.state : autopilot.active ? 'auto' : 'ok');
+
+  if (hudTimer > 0) return;
+  hudTimer = 0.1;
+  $('mode').textContent = autopilot.active ? 'AUTO' : 'MANUAL';
+  $('mode').style.color = autopilot.active ? 'var(--auto)' : 'inherit';
+  $('spd').textContent = Math.round(kmh) + ' km/h';
+  $('ang').textContent = Math.round(car.dump * 180 / Math.PI) + '°';
+  $('angBar').style.width = (car.dump / DUMP_MAX * 100) + '%';
+  $('kg').textContent = `${Math.round(kg)} / ${CAPACITY_KG} kg`;
+  $('kgBar').style.width = Math.min(100, kg / CAPACITY_KG * 100) + '%';
+  $('kgBar').style.background = kg >= LOAD_TARGET_KG ? 'var(--ok)' : 'var(--accent)';
+  $('deliv').textContent = Math.round(rocks.deliveredKg) + ' kg';
+  $('bat').textContent = Math.round(car.battery) + '%';
+  $('sens').textContent = sens.state === 'ok' ? 'livre' : `${Math.max(0, sens.free).toFixed(1)} m`;
+  $('sens').style.color = sens.state === 'brake' ? 'var(--brake)' : sens.state === 'warn' ? '#b07800' : 'inherit';
+  stepEls.forEach(li => li.classList.toggle('now', autopilot.active && li.dataset.p === autopilot.phase));
+  cart.setDisplay({ speed: kmh, load: kg, dump: car.dump * 180 / Math.PI, battery: car.battery, mode: autopilot.active ? 'AUTO' : 'MANUAL' });
+  drawMap();
+}
+
+const mapc = $('mapc'), mg = mapc.getContext('2d');
+const MS = mapc.width / (WORLD * 2);
+const mx = x => (x + WORLD) * MS, mz = z => (WORLD - z) * MS;
+function drawMap() {
+  mg.fillStyle = '#c9b48c'; mg.fillRect(0, 0, mapc.width, mapc.height);
+  mg.lineCap = 'round'; mg.strokeStyle = '#8d7656'; mg.lineWidth = 3.4 * MS;
+  for (const p of [ROUTE.toLoad, ROUTE.toDump]) { mg.beginPath(); p.pts.forEach(([x, z], i) => (i ? mg.lineTo : mg.moveTo).call(mg, mx(x), mz(z))); mg.stroke(); }
+  mg.fillStyle = 'rgba(242,194,0,.7)'; mg.fillRect(mx(BAY.x - BAY.halfX), mz(BAY.z + BAY.halfZ), BAY.halfX * 2 * MS, BAY.halfZ * 2 * MS);
+  mg.fillStyle = 'rgba(224,120,27,.6)'; mg.fillRect(mx(ZONE_CENTER[0] - ZONE_HALF), mz(ZONE_CENTER[1] + ZONE_HALF), ZONE_HALF * 2 * MS, ZONE_HALF * 2 * MS);
+  mg.fillStyle = '#7d7d7d'; mg.fillRect(mx(8.4), mz(-12.4), 15.2 * MS, 15.2 * MS);
+  mg.fillStyle = '#5d5852'; mg.beginPath(); mg.arc(mx(PILE.x), mz(PILE.z), PILE.r * MS, 0, Math.PI * 2); mg.fill();
+  mg.fillStyle = '#e8a317'; mg.fillRect(mx(EXCAVATOR_POS.x) - 7, mz(EXCAVATOR_POS.z) - 9, 14, 18);
+  mg.fillStyle = '#ff7a00';
+  for (const w of crew.workers) { mg.beginPath(); mg.arc(mx(w.x), mz(w.z), 5, 0, Math.PI * 2); mg.fill(); }
+  mg.save(); mg.translate(mx(car.x), mz(car.z)); mg.rotate(car.heading);
+  mg.fillStyle = autopilot.active ? '#1f8fff' : '#1d1a15';
+  mg.beginPath(); mg.moveTo(0, -14); mg.lineTo(9, 10); mg.lineTo(-9, 10); mg.closePath(); mg.fill();
+  mg.restore();
+}
+
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+// ---------- loop ----------
+function tick(dt, render = true) {
+  stepCar(dt);
+  applyCar(dt);
+  cart.update(dt);
+  crew.update.blockers = bodyCircles();
+  crew.update(dt);
+  site.update(dt);
+  updateExcavator(dt);
+  rocks.step(dt, car);
+  rocks.sync();
+  updateDust(dt);
+  crashFlash = Math.max(0, crashFlash - dt);
+  updateHud(dt);
+  updateCamera(dt);
+  if (render) renderer.render(scene, camera);
+}
+resetGame();
+camPos.set(START.x + 8, 4, START.z);
+say('P ou botão azul: auto-execução · W/A/S/D: dirigir', 4000);
+window.__game = { car, rocks, autopilot, safety, excavator, crew, tick, setAuto, camera, render: () => renderer.render(scene, camera) }; // depuração
+
+const clock = new THREE.Clock();
+(function loop() {
+  requestAnimationFrame(loop);
+  const dt = THREE.MathUtils.clamp(clock.getDelta(), 1 / 240, 1 / 30);
+  if (!window.__game.paused) tick(dt);
+})();
+</script>
+</body>
+</html>
