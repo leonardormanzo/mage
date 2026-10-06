@@ -12,3 +12,5 @@ server/
 **/.env.*
 **/.venv/
 **/venv/
+# Firmware embarcado: build do PlatformIO não vai para o site
+**/.pio/
