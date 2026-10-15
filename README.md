@@ -15,7 +15,14 @@ somente neste computador.
     consulta documental com fontes.
   - `agenda-retratil/`: MVP desktop Windows com metas locais e integração segura com
     Google Calendar.
-- `privado/`: conteúdo exclusivamente local, ignorado pelo Git.
+  - Há outros projetos nesta pasta; cada um tem o seu próprio `README.md`.
+- `ch3-diario-obra/`: app de Diário de Obra (RDO) em produção, com git próprio e
+  repositório privado no GitHub.
+- `em-desenvolvimento/`: projetos locais ainda em andamento (e `estudos/`), ignorados
+  pelo Git. Quando um projeto fica pronto, ele passa para `publicado/`.
+- `privado/`: conteúdo exclusivamente local, ignorado pelo Git (documentos de
+  clientes, rascunhos e arquivos pessoais).
+- `projetos prontos/`: clones e demos de terceiros, ignorados pelo Git.
 - `.gitignore`: regras que impedem o envio de arquivos privados e temporários.
 
 ## Regra prática

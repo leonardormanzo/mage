@@ -3,6 +3,15 @@ privado/
 cv leo/
 projetos prontos/
 
+# Projetos em andamento (locais; quando ficam prontos, vão para publicado/)
+em-desenvolvimento/
+
+# Repositório privado próprio (não aninhar dentro do repo público)
+/ch3-diario-obra/
+
+# Saídas geradas de currículos
+/output/
+
 # Atalhos e arquivos temporários do Windows
 *.lnk
 Thumbs.db

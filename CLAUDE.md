@@ -11,6 +11,12 @@ Repositório pessoal de Leonardo Manzo (Mago da IA). Separa projetos públicos
   Cloudflare, e `_redirects` manda `/` para `/publicado/portfolio/`.
 - Antes de publicar, rode `git status` para conferir que nada de `privado/` foi
   incluído.
+- Fora de `publicado/`: `ch3-diario-obra/` fica na raiz (app em produção, git
+  próprio), `em-desenvolvimento/` guarda projetos locais em andamento e
+  `estudos/`, e `privado/` guarda documentos de clientes e arquivos pessoais.
+  Os três últimos são ignorados pelo Git (ver `.gitignore`).
+- Alguns scripts têm caminhos absolutos da raiz (ex.: `generate_official_cvs.py`
+  grava em `cv leo/`); por isso `cv leo/` e esse script ficam onde estão.
 - Os padrões detalhados de cada tipo de projeto (site estático, app desktop
   Python, pipeline de IA) estão documentados em
   `.claude/skills/odin/knowledge.md`.
