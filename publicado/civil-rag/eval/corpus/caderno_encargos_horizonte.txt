@@ -1,0 +1,35 @@
+CADERNO DE ENCARGOS E PROCEDIMENTOS DE EXECUÇÃO
+OBRA: EDIFÍCIO HORIZONTE AZUL - RESIDENCIAL MULTIFAMILIAR
+DOCUMENTO FICTÍCIO PARA AVALIAÇÃO DO SISTEMA
+
+1. CANTEIRO E SERVIÇOS PRELIMINARES
+1.1. O canteiro será cercado por tapume em chapa metálica trapezoidal com altura mínima de 2,20 metros, pintado na cor branca, com portão de acesso de veículos de 6 metros de vão.
+1.2. A ligação provisória de energia será feita em padrão trifásico de 380 V, com quadro geral de distribuição dotado de dispositivo DR de 30 mA em todos os circuitos de tomadas.
+1.3. As áreas de vivência seguirão a NR 18, com vestiário, refeitório para 60 trabalhadores e instalações sanitárias na proporção de um conjunto para cada 20 trabalhadores.
+
+2. CONCRETAGEM
+2.1. Todo caminhão-betoneira deverá passar por ensaio de abatimento (slump test) antes do lançamento. O abatimento aceito para pilares e vigas é de 100 ± 20 mm.
+2.2. Serão moldados corpos de prova cilíndricos de 10x20 cm a cada caminhão, com rompimento aos 7 e aos 28 dias em laboratório acreditado.
+2.3. O intervalo máximo entre a mistura na central e o fim do lançamento é de 150 minutos. Concreto que ultrapassar esse prazo deverá ser recusado.
+2.4. A cura úmida das lajes será mantida por no mínimo 7 dias, com molhagem a cada 3 horas durante o dia ou uso de manta de cura.
+2.5. A desforma de fundos de laje só poderá ocorrer após 14 dias e mediante liberação do engenheiro responsável pela estrutura.
+
+3. IMPERMEABILIZAÇÃO
+3.1. As lajes de cobertura receberão manta asfáltica de 4 mm com proteção mecânica em argamassa de 3 cm, sobre regularização com caimento mínimo de 1% para os ralos.
+3.2. Os banheiros e áreas de serviço receberão impermeabilização com membrana acrílica em três demãos, subindo 30 cm nas paredes e 1,10 m no box.
+3.3. Após a impermeabilização, todas as áreas passarão por teste de estanqueidade com lâmina d'água por 72 horas antes da proteção mecânica.
+
+4. REVESTIMENTOS DE FACHADA
+4.1. A fachada receberá chapisco rolado, emboço com espessura máxima de 3 cm e textura acrílica na cor cinza claro.
+4.2. A tela de reforço galvanizada será obrigatória na ligação entre alvenaria e estrutura, transpassando 15 cm para cada lado.
+4.3. Serão executadas juntas de movimentação horizontais a cada pavimento, preenchidas com selante de poliuretano.
+
+5. PRAZOS E MARCOS
+5.1. O prazo total de execução da obra é de 30 meses, contados da emissão da ordem de serviço.
+5.2. O marco de conclusão da estrutura é o 14º mês, e o habite-se deverá ser solicitado até o 29º mês.
+5.3. O relatório diário de obra (RDO) será preenchido todos os dias úteis e assinado pelo engenheiro residente.
+
+6. SEGURANÇA DO TRABALHO
+6.1. É obrigatória a instalação de bandejas de proteção (plataformas) a cada três pavimentos, com projeção mínima de 2,50 metros.
+6.2. Todo trabalho acima de 2 metros de altura exige cinto de segurança tipo paraquedista com talabarte duplo e linha de vida certificada.
+6.3. O elevador de cremalheira passará por inspeção mensal registrada em livro próprio.

@@ -1,0 +1,163 @@
+{
+  "recuperador": "bm25",
+  "perguntas": 30,
+  "trechos": 17,
+  "metricas": {
+    "hit@1": 0.8666666666666667,
+    "hit@3": 0.9666666666666667,
+    "hit@5": 1.0,
+    "MRR@5": 0.9083333333333333
+  },
+  "por_pergunta": [
+    {
+      "id": "q01",
+      "pergunta": "Qual o diâmetro das estacas previstas para o prédio?",
+      "posicao": 1
+    },
+    {
+      "id": "q02",
+      "pergunta": "Que resistência o concreto dos blocos de coroamento precisa ter?",
+      "posicao": 1
+    },
+    {
+      "id": "q03",
+      "pergunta": "Qual o fck especificado para pilares e lajes?",
+      "posicao": 1
+    },
+    {
+      "id": "q04",
+      "pergunta": "Quanto de cobrimento as armaduras das vigas devem ter?",
+      "posicao": 1
+    },
+    {
+      "id": "q05",
+      "pergunta": "Qual aço será usado nos estribos?",
+      "posicao": 1
+    },
+    {
+      "id": "q06",
+      "pergunta": "Qual o tamanho do bloco usado nas paredes externas?",
+      "posicao": 1
+    },
+    {
+      "id": "q07",
+      "pergunta": "Qual isolamento acústico as paredes entre apartamentos devem garantir?",
+      "posicao": 1
+    },
+    {
+      "id": "q08",
+      "pergunta": "De que material são os tubos de água quente?",
+      "posicao": 3
+    },
+    {
+      "id": "q09",
+      "pergunta": "Os apartamentos terão medidor de gás próprio?",
+      "posicao": 3
+    },
+    {
+      "id": "q10",
+      "pergunta": "Que espessura de vidro vai nas janelas dos quartos?",
+      "posicao": 1
+    },
+    {
+      "id": "q11",
+      "pergunta": "Qual piso será usado nos banheiros e cozinhas?",
+      "posicao": 1
+    },
+    {
+      "id": "q12",
+      "pergunta": "Qual a altura mínima do fechamento do canteiro?",
+      "posicao": 1
+    },
+    {
+      "id": "q13",
+      "pergunta": "Qual a sensibilidade do DR exigido nos circuitos de tomadas da obra?",
+      "posicao": 1
+    },
+    {
+      "id": "q14",
+      "pergunta": "Quantos banheiros o canteiro precisa ter por trabalhador?",
+      "posicao": 4
+    },
+    {
+      "id": "q15",
+      "pergunta": "Qual o slump aceito para concretar pilares?",
+      "posicao": 1
+    },
+    {
+      "id": "q16",
+      "pergunta": "Com quantos dias os corpos de prova são rompidos?",
+      "posicao": 1
+    },
+    {
+      "id": "q17",
+      "pergunta": "Quanto tempo o concreto pode levar da usina até terminar de ser lançado?",
+      "posicao": 3
+    },
+    {
+      "id": "q18",
+      "pergunta": "Por quantos dias as lajes devem ser molhadas depois de concretadas?",
+      "posicao": 1
+    },
+    {
+      "id": "q19",
+      "pergunta": "Quando é permitido retirar as formas de baixo da laje?",
+      "posicao": 1
+    },
+    {
+      "id": "q20",
+      "pergunta": "Que impermeabilizante vai na cobertura?",
+      "posicao": 1
+    },
+    {
+      "id": "q21",
+      "pergunta": "Por quanto tempo dura o teste de água da impermeabilização?",
+      "posicao": 1
+    },
+    {
+      "id": "q22",
+      "pergunta": "Qual a espessura máxima do reboco da fachada?",
+      "posicao": 1
+    },
+    {
+      "id": "q23",
+      "pergunta": "Em quantos meses a obra deve ficar pronta?",
+      "posicao": 1
+    },
+    {
+      "id": "q24",
+      "pergunta": "A cada quantos andares precisa ter bandeja de proteção?",
+      "posicao": 1
+    },
+    {
+      "id": "q25",
+      "pergunta": "Quantos furos de sondagem foram feitos no terreno?",
+      "posicao": 1
+    },
+    {
+      "id": "q26",
+      "pergunta": "Até que profundidade vai a camada de aterro?",
+      "posicao": 1
+    },
+    {
+      "id": "q27",
+      "pergunta": "Em que profundidade aparece o lençol freático?",
+      "posicao": 1
+    },
+    {
+      "id": "q28",
+      "pergunta": "Por que não dá para usar sapata nesse terreno?",
+      "posicao": 1
+    },
+    {
+      "id": "q29",
+      "pergunta": "Qual ensaio deve ser feito nas estacas antes de executar as definitivas?",
+      "posicao": 1
+    },
+    {
+      "id": "q30",
+      "pergunta": "Como os prédios vizinhos serão monitorados durante a escavação?",
+      "posicao": 1
+    }
+  ]
+}

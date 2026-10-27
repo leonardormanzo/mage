@@ -1,0 +1,1 @@
+"""Arc Copilot application package."""

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block body %}
+<main class="project-picker">
+  <header>
+    <div><div class="brand-mark">ARC<span>_</span></div><p class="eyebrow">COPILOT 1.0</p></div>
+    <div class="user-card light"><span>{{ user.name }}</span><small>Selecione o contexto de trabalho</small></div>
+  </header>
+  <section>
+    <p class="eyebrow">OBRAS AUTORIZADAS</p>
+    <h1>Em qual obra você está?</h1>
+    <p class="muted">Toda consulta, registro e movimentação ficará limitada à obra escolhida.</p>
+    <div class="project-grid">
+      {% for project in projects %}
+      <a href="/projects/{{ project.id }}" class="project-option">
+        <span>{{ project.code }}</span>
+        <h2>{{ project.name }}</h2>
+        <p>{{ project.address or 'Endereço não informado' }}</p>
+        <strong>Acessar obra →</strong>
+      </a>
+      {% else %}
+      <div class="empty">Nenhuma obra autorizada para este usuário.</div>
+      {% endfor %}
+    </div>
+  </section>
+</main>
+{% endblock %}

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>{{ project.name }} · Arc</title>
+<style>
+:root{--ink:#10241f;--forest:#15372f;--mint:#a9e8c7;--paper:#f4f5ef;--line:#d9dfda;--muted:#66736e}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{background:var(--paper);color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;flex-direction:column}
+header{background:var(--forest);color:#fff;padding:.8rem 1rem;display:flex;justify-content:space-between;align-items:center;gap:.5rem}
+header b{font-size:1.1rem;letter-spacing:-.05em}header b i{color:#38b47d;font-style:normal}
+header small{display:block;color:var(--mint);font-size:.75rem}
+#who{background:none;border:1px solid #fff5;color:#fff;border-radius:6px;padding:.35rem .6rem;font-size:.8rem}
+#log{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:.6rem}
+.b{max-width:85%;padding:.7rem .9rem;border-radius:12px;line-height:1.4;white-space:pre-wrap;word-wrap:break-word}
+.bot{background:#fff;border:1px solid var(--line);align-self:flex-start}
+.user{background:var(--forest);color:#fff;align-self:flex-end}
+.err{background:#fbeaea;border:1px solid #e3b5b5;color:#7a2b29;align-self:flex-start}
+.acts{display:flex;gap:.6rem;align-self:flex-start}
+.acts button{padding:.8rem 1.2rem;border-radius:8px;border:1px solid var(--forest);font-size:1rem}
+.ok{background:var(--forest);color:#fff}.no{background:#fff;color:var(--forest)}
+form{display:flex;gap:.5rem;padding:.7rem;padding-bottom:calc(.7rem + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--line)}
+input{flex:1;min-width:0;font:inherit;font-size:16px;padding:.85rem;border:1px solid var(--line);border-radius:8px}
+form button{border:0;background:var(--forest);color:#fff;border-radius:8px;padding:0 1.2rem;font-size:1rem}
+form button:disabled,input:disabled{opacity:.5}
+#nameBox{position:fixed;inset:0;background:var(--paper);display:flex;flex-direction:column;justify-content:center;padding:2rem;gap:1rem}
+#nameBox[hidden]{display:none}#nameBox h1{margin:0;font-size:1.6rem;letter-spacing:-.04em}
+#nameBox p{color:var(--muted);margin:0}#nameBox button{padding:1rem;border:0;border-radius:8px;background:var(--forest);color:#fff;font-size:1rem}
+</style>
+</head>
+<body>
+<header><div><b>ARC<i>_</i></b><small>{{ project.name }}</small></div><button id="who" type="button"></button></header>
+<div id="log"><div class="b bot">Mande o que foi feito ou usado na obra. Ex.: “Usamos 20 sacos de cimento na alvenaria.”</div></div>
+<form id="f" autocomplete="off"><input id="t" placeholder="Digite o registro…" required maxlength="2000"><button id="s">Enviar</button></form>
+<div id="nameBox" hidden>
+  <h1>Quem está registrando?</h1><p>Seu nome aparece no registro da obra.</p>
+  <input id="nameIn" placeholder="Seu nome" maxlength="40" minlength="2"><button id="nameOk" type="button">Começar</button>
+</div>
+<script>
+const base = location.pathname.replace(/\/$/, '');
+const log = document.getElementById('log'), t = document.getElementById('t'), s = document.getElementById('s');
+let sender = '', recordId = null;
+try { sender = localStorage.getItem('arc_sender') || ''; } catch (e) {}
+const who = document.getElementById('who'), box = document.getElementById('nameBox'), nameIn = document.getElementById('nameIn');
+function paintWho(){ who.textContent = sender ? sender + ' · trocar' : ''; box.hidden = !!sender; }
+document.getElementById('nameOk').onclick = () => { const v = nameIn.value.trim(); if (v.length < 2) return; sender = v; try { localStorage.setItem('arc_sender', v); } catch (e) {} paintWho(); t.focus(); };
+who.onclick = () => { sender = ''; nameIn.value = ''; paintWho(); };
+paintWho();
+function say(text, cls){ const d = document.createElement('div'); d.className = 'b ' + cls; d.textContent = text; log.appendChild(d); log.scrollTop = log.scrollHeight; return d; }
+async function call(path, body){
+  const r = await fetch(base + path, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+  let data = null; try { data = await r.json(); } catch (e) {}
+  if (!r.ok) throw new Error(typeof data?.detail === 'string' ? data.detail : 'Não foi possível enviar. Tente de novo.');
+  return data;
+}
+function lock(v){ t.disabled = v; s.disabled = v; }
+function actions(){
+  lock(true);
+  const a = document.createElement('div'); a.className = 'acts';
+  const ok = document.createElement('button'); ok.className = 'ok'; ok.textContent = 'Confirmar';
+  const no = document.createElement('button'); no.className = 'no'; no.textContent = 'Cancelar';
+  const done = async (path) => { ok.disabled = no.disabled = true; try { const d = await call(path, {record_id: recordId}); a.remove(); say(d.bot, 'bot'); recordId = null; lock(false); t.focus(); } catch (e) { ok.disabled = no.disabled = false; say(e.message, 'err'); } };
+  ok.onclick = () => done('/confirm'); no.onclick = () => done('/cancel');
+  a.append(ok, no); log.appendChild(a); log.scrollTop = log.scrollHeight;
+}
+document.getElementById('f').addEventListener('submit', async e => {
+  e.preventDefault(); const text = t.value.trim(); if (!text || !sender) return;
+  say(text, 'user'); t.value = ''; lock(true);
+  try {
+    const d = recordId
+      ? await call('/answer', {record_id: recordId, answer: text})
+      : await call('/send', {content: text, sender, external_id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random()});
+    recordId = d.record_id; say(d.bot, 'bot');
+    if (d.record_status === 'awaiting_confirmation') { actions(); return; }
+    if (d.record_status !== 'incomplete') recordId = null;
+  } catch (err) { say(err.message, 'err'); t.value = text; }
+  lock(false); t.focus();
+});
+</script>
+</body>
+</html>

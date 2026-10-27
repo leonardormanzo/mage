@@ -1,0 +1,30 @@
+{"id": "q01", "pergunta": "Qual o diâmetro das estacas previstas para o prédio?", "arquivo": "memorial_edificio_horizonte.txt", "evidencia": "diâmetro nominal de 50 cm"}
+{"id": "q02", "pergunta": "Que resistência o concreto dos blocos de coroamento precisa ter?", "arquivo": "memorial_edificio_horizonte.txt", "evidencia": "fck mínimo de 35 MPa"}
+{"id": "q03", "pergunta": "Qual o fck especificado para pilares e lajes?", "arquivo": "memorial_edificio_horizonte.txt", "evidencia": "fck = 40 MPa"}
+{"id": "q04", "pergunta": "Quanto de cobrimento as armaduras das vigas devem ter?", "arquivo": "memorial_edificio_horizonte.txt", "evidencia": "3,0 cm para vigas e pilares"}
+{"id": "q05", "pergunta": "Qual aço será usado nos estribos?", "arquivo": "memorial_edificio_horizonte.txt", "evidencia": "CA-60 para estribos"}
+{"id": "q06", "pergunta": "Qual o tamanho do bloco usado nas paredes externas?", "arquivo": "memorial_edificio_horizonte.txt", "evidencia": "14x19x39 cm"}
+{"id": "q07", "pergunta": "Qual isolamento acústico as paredes entre apartamentos devem garantir?", "arquivo": "memorial_edificio_horizonte.txt", "evidencia": "45 dB"}
+{"id": "q08", "pergunta": "De que material são os tubos de água quente?", "arquivo": "memorial_edificio_horizonte.txt", "evidencia": "CPVC ou PPR"}
+{"id": "q09", "pergunta": "Os apartamentos terão medidor de gás próprio?", "arquivo": "memorial_edificio_horizonte.txt", "evidencia": "medição individualizada de água e gás"}
+{"id": "q10", "pergunta": "Que espessura de vidro vai nas janelas dos quartos?", "arquivo": "memorial_edificio_horizonte.txt", "evidencia": "vidros laminados de 6 mm"}
+{"id": "q11", "pergunta": "Qual piso será usado nos banheiros e cozinhas?", "arquivo": "memorial_edificio_horizonte.txt", "evidencia": "porcelanato acetinado 80x80 cm"}
+{"id": "q12", "pergunta": "Qual a altura mínima do fechamento do canteiro?", "arquivo": "caderno_encargos_horizonte.txt", "evidencia": "altura mínima de 2,20 metros"}
+{"id": "q13", "pergunta": "Qual a sensibilidade do DR exigido nos circuitos de tomadas da obra?", "arquivo": "caderno_encargos_horizonte.txt", "evidencia": "DR de 30 mA"}
+{"id": "q14", "pergunta": "Quantos banheiros o canteiro precisa ter por trabalhador?", "arquivo": "caderno_encargos_horizonte.txt", "evidencia": "um conjunto para cada 20 trabalhadores"}
+{"id": "q15", "pergunta": "Qual o slump aceito para concretar pilares?", "arquivo": "caderno_encargos_horizonte.txt", "evidencia": "100 ± 20 mm"}
+{"id": "q16", "pergunta": "Com quantos dias os corpos de prova são rompidos?", "arquivo": "caderno_encargos_horizonte.txt", "evidencia": "aos 7 e aos 28 dias"}
+{"id": "q17", "pergunta": "Quanto tempo o concreto pode levar da usina até terminar de ser lançado?", "arquivo": "caderno_encargos_horizonte.txt", "evidencia": "150 minutos"}
+{"id": "q18", "pergunta": "Por quantos dias as lajes devem ser molhadas depois de concretadas?", "arquivo": "caderno_encargos_horizonte.txt", "evidencia": "no mínimo 7 dias"}
+{"id": "q19", "pergunta": "Quando é permitido retirar as formas de baixo da laje?", "arquivo": "caderno_encargos_horizonte.txt", "evidencia": "após 14 dias"}
+{"id": "q20", "pergunta": "Que impermeabilizante vai na cobertura?", "arquivo": "caderno_encargos_horizonte.txt", "evidencia": "manta asfáltica de 4 mm"}
+{"id": "q21", "pergunta": "Por quanto tempo dura o teste de água da impermeabilização?", "arquivo": "caderno_encargos_horizonte.txt", "evidencia": "72 horas"}
+{"id": "q22", "pergunta": "Qual a espessura máxima do reboco da fachada?", "arquivo": "caderno_encargos_horizonte.txt", "evidencia": "espessura máxima de 3 cm"}
+{"id": "q23", "pergunta": "Em quantos meses a obra deve ficar pronta?", "arquivo": "caderno_encargos_horizonte.txt", "evidencia": "30 meses"}
+{"id": "q24", "pergunta": "A cada quantos andares precisa ter bandeja de proteção?", "arquivo": "caderno_encargos_horizonte.txt", "evidencia": "a cada três pavimentos"}
+{"id": "q25", "pergunta": "Quantos furos de sondagem foram feitos no terreno?", "arquivo": "laudo_sondagem_horizonte.txt", "evidencia": "6 furos de sondagem"}
+{"id": "q26", "pergunta": "Até que profundidade vai a camada de aterro?", "arquivo": "laudo_sondagem_horizonte.txt", "evidencia": "até 4 metros ocorre aterro"}
+{"id": "q27", "pergunta": "Em que profundidade aparece o lençol freático?", "arquivo": "laudo_sondagem_horizonte.txt", "evidencia": "3,2 metros de profundidade"}
+{"id": "q28", "pergunta": "Por que não dá para usar sapata nesse terreno?", "arquivo": "laudo_sondagem_horizonte.txt", "evidencia": "não se recomenda o uso de fundação direta"}
+{"id": "q29", "pergunta": "Qual ensaio deve ser feito nas estacas antes de executar as definitivas?", "arquivo": "laudo_sondagem_horizonte.txt", "evidencia": "prova de carga estática"}
+{"id": "q30", "pergunta": "Como os prédios vizinhos serão monitorados durante a escavação?", "arquivo": "laudo_sondagem_horizonte.txt", "evidencia": "marcos topográficos"}

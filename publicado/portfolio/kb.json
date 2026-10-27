@@ -1,0 +1,245 @@
+[
+ {
+  "id": "como_funciona_agente",
+  "t": "Como Funciona o Agente RAG",
+  "te": "How the RAG Agent Works",
+  "s": "#sobre",
+  "k": "como funciona isso funciona agente rag assistente bot inteligente o que faz ajuda sistema duvida como usa responder",
+  "x": "Este é o Agente Virtual de IA do portfólio de Leonardo Rabello Manzo (Engenheiro de Soluções de IA e Automação). Ele analisa perguntas em linguagem natural, consulta a base de conhecimento oficial (10+ anos de experiência, pós em Engenharia de IA na Faculdade Impacta Digital, consultoria na Arquitetool, gestão na CH3 e projetos técnicos como Síndico Inteligente, Agenda Retrátil, Gerador de Cronograma Físico-Financeiro e Vigia Obra) e sintetiza respostas fundamentadas com fontes.",
+  "xe": "This is the Virtual AI Agent for Leonardo Rabello Manzo's portfolio (AI Solutions & Automation Engineer). It processes natural language questions, queries the official knowledge base (10+ years background, AI Engineering postgrad at Impacta Digital, consultancy at Arquitetool, management at CH3, and technical projects like Síndico Inteligente, Agenda Retrátil, Cost-Loaded Schedule Generator, and Vigia Obra), and synthesizes grounded answers with sources."
+ },
+ {
+  "id": "saudacao_apresentacao",
+  "t": "Apresentação do Agente",
+  "te": "Agent Introduction",
+  "s": "#sobre",
+  "k": "oi ola quem e voce sobre o que pode falar ajuda recursos capacidades funcionalidades hello hi agent who are you",
+  "x": "Sou o assistente do portfólio de Leonardo Rabello Manzo. Respondo sobre a experiência dele em gestão de projetos e operações de construção, engenharia de IA aplicada, projetos técnicos em Python, stack e formas de contratação. Respondo só com base nas informações publicadas aqui.",
+  "xe": "I am the assistant for Leonardo Rabello Manzo's portfolio. I answer questions about his experience in project management and construction operations, applied AI engineering, Python projects, tech stack and how to hire him. I only answer from the information published here."
+ },
+ {
+  "id": "projeto_axle_e",
+  "t": "Axle-E · Carrinho Autônomo de Obra",
+  "te": "Axle-E · Autonomous Site Cart",
+  "s": "#projetos",
+  "k": "axle-e axle carrinho autonomo obra canteiro simulacao 3d threejs three.js webgl caçamba basculante escavadeira freio automatico colisao sensor peso pure pursuit autonomous cart site simulation dump brake collision weight",
+  "x": "Axle-E é um conceito de carrinho elétrico 4x4 autônomo para canteiro de obras, apresentado como simulação 3D jogável em Three.js. O carrinho cumpre sozinho o ciclo carregar (escavadeira), levar, bascular e voltar, com sensor de peso que libera a saída, alerta de colisão que prevê o arco da trajetória e freio automático. Foi validado por simulação acelerada (8 ciclos seguidos sem travar); não há hardware real.",
+  "xe": "Axle-E is a concept for an autonomous 4x4 electric cart for construction sites, presented as a playable Three.js 3D simulation. The cart runs the load (excavator), haul, dump and return cycle on its own, with a weight sensor that releases departure, a collision warning that predicts the path arc and automatic braking. It was validated through accelerated simulation (8 consecutive cycles without stalling); there is no real hardware."
+ },
+ {
+  "id": "posicionamento",
+  "t": "Posicionamento e Resumo Profissional",
+  "te": "Positioning & Professional Summary",
+  "s": "#topo",
+  "k": "cargo posicao vaga perfil quem resumo objetivo busca procura role position job profile who summary goal looking",
+  "x": "Leonardo Rabello Manzo é Engenheiro de Soluções de IA e Automação (ConTech / PropTech), pós-graduado em Engenharia de IA, com mais de 10 anos de experiência em operações de construção, gestão de projetos e melhoria de processos. Desenvolve soluções em Python e IA generativa com APIs REST, OAuth, SQL/SQLite, busca documental, IA multimodal e structured outputs. Aderente a vagas de AI Solutions, AI Automation, Implementation, ConTech e PropTech.",
+  "xe": "Leonardo Rabello Manzo is an AI Solutions and Automation Engineer (ConTech / PropTech), post-graduated in AI Engineering, with over 10 years of experience in construction operations, project management, and process improvement. He develops solutions in Python and generative AI with REST APIs, OAuth, SQL/SQLite, document search, multimodal AI, and structured outputs. Ideal for AI Solutions, AI Automation, Implementation, ConTech, and PropTech roles."
+ },
+ {
+  "id": "experiencia_ia",
+  "t": "Experiência com IA e Automação",
+  "te": "AI & Automation Experience",
+  "s": "#projetos",
+  "k": "ia inteligencia artificial llm experiencia tempo anos senior pleno nivel senioridade machine learning ai experience years seniority level mid pedido material compra lista fase lojas parceiras app interface",
+  "x": "Pós-graduação em Engenharia de IA concluída em 2026 na Faculdade Impacta Digital. Na Arquitetool (construtech), de agosto a setembro de 2026, como Consultor de IA e Automação, traduziu problemas da operação de obra em requisitos de automação, desenhou a interface do app com apoio de IA e redesenhou o pedido de material: ao escolher a fase da obra, o app abre a lista de itens já preenchida, com marcas de fácil acesso, e envia o pedido às lojas parceiras, sem o pedreiro digitar item por item. Projetos próprios: Civil RAG, Arc Copilot, Vigia Obra, Síndico Inteligente, Agenda Retrátil e Gerador de Cronograma. A experiência em IA é recente; a senioridade dele está em gestão e operações.",
+  "xe": "Postgraduate degree in AI Engineering completed in 2026 at Impacta Digital. At Arquitetool (construction tech), from August to September 2026, as AI & Automation Consultant, he turned site-operation problems into automation requirements, designed the app interface with AI tools and redesigned material ordering: picking the construction phase opens a pre-filled item list with easy-to-find brands and sends the order to partner stores, so workers no longer type each item. Own projects: Civil RAG, Arc Copilot, Vigia Obra, Síndico Inteligente, Agenda Retrátil and Schedule Generator. His AI experience is recent; his seniority is in management and operations."
+ },
+ {
+  "id": "maturidade_testes",
+  "t": "Maturidade e Testes Automatizados",
+  "te": "Maturity & Automated Tests",
+  "s": "#projetos",
+  "k": "producao usuarios clientes comercial saas escala real deploy testes test pytest unittest cobertura qualificacao quality tests automated",
+  "x": "Projetos com testes automatizados: Civil RAG (12 testes e avaliação de recuperação com 30 perguntas), RAG do Zero (11 testes), Arc Copilot (10 testes de permissão e idempotência), Agenda Retrátil (7 testes), Prospecção de Leads (5 testes) e Síndico Inteligente (4 testes). São MVPs locais e protótipos, cada um com o nível de maturidade declarado; nenhum é produto comercial em produção.",
+  "xe": "Projects with automated tests: Civil RAG (12 tests plus a retrieval evaluation with 30 questions), RAG do Zero (11 tests), Arc Copilot (10 permission and idempotency tests), Agenda Retrátil (7 tests), Lead Prospecting (5 tests) and Síndico Inteligente (4 tests). They are local MVPs and prototypes with declared maturity; none is a commercial product in production."
+ },
+ {
+  "id": "stack",
+  "t": "Competências Técnicas & Stack",
+  "te": "Technical Skills & Stack",
+  "s": "#competencias",
+  "k": "stack tecnologias ferramentas linguagens python langchain langgraph sql sqlite postgresql api rest json git github testes programa codigo fastapi technologies tools languages tests code fastapi pgvector postgresql react typescript revit pytest",
+  "x": "IA e LLMs: APIs de LLMs (Gemini, Anthropic, OpenAI), RAG com embeddings e busca vetorial (pgvector), structured outputs, agentes com Pydantic, LangChain, engenharia de prompts, visão multimodal com OpenCV. Desenvolvimento: Python, FastAPI, SQLAlchemy, Alembic, SQL (PostgreSQL e SQLite com FTS5), APIs REST, OAuth, JavaScript, TypeScript, React, Git e GitHub, testes automatizados (pytest). Dados e interfaces: Streamlit, Plotly, Power BI. Em formação: sistemas embarcados e IoT, ROS. Ferramentas de projeto: Revit (intermediário), MS Project.",
+  "xe": "AI and LLMs: LLM APIs (Gemini, Anthropic, OpenAI), RAG with embeddings and vector search (pgvector), structured outputs, agents with Pydantic, LangChain, prompt engineering, multimodal vision with OpenCV. Development: Python, FastAPI, SQLAlchemy, Alembic, SQL (PostgreSQL and SQLite with FTS5), REST APIs, OAuth, JavaScript, TypeScript, React, Git and GitHub, automated tests (pytest). Data and interfaces: Streamlit, Plotly, Power BI. Learning: embedded systems and IoT, ROS. Design tools: Revit (intermediate), MS Project."
+ },
+ {
+  "id": "sindico_inteligente",
+  "t": "Projeto: Síndico Inteligente",
+  "te": "Project: Síndico Inteligente",
+  "s": "#projetos",
+  "k": "sindico condominio condominios documentos pdf fts5 pywebview busca documental condo building documents",
+  "x": "Aplicação desktop local para gestão condominial (Python, SQLite FTS5, PDFs, JavaScript). Realiza importação e indexação de PDFs com busca textual por documento e página, regras de reserva, histórico, backup SQLite e exportação JSON. Implementou prévia antes de alterações e bloqueio de conflitos; suíte automatizada validada com 4 testes aprovados.",
+  "xe": "Local desktop app for condo management (Python, SQLite FTS5, PDFs, JavaScript). Features PDF import and indexing with page-level text search, reservation rules, history, SQLite backup, and JSON export. Implemented preview before changes and conflict blocking; automated suite validated with 4 passed tests."
+ },
+ {
+  "id": "agenda_retratil",
+  "t": "Projeto: Agenda Retrátil",
+  "te": "Project: Agenda Retrátil",
+  "s": "#projetos",
+  "k": "agenda retratil calendario calendar google oauth windows metas compromissos credential goals appointments keyring request_id etag",
+  "x": "Assistente desktop para leitura, criação, edição e exclusão de eventos no Google Calendar via OAuth (Python, Google Calendar API, OAuth, SQLite, Keyring). Executa ações somente após prévia e confirmação explícita. Implementou armazenamento seguro de token no Gerenciador de Credenciais do Windows, persistência local, proteção contra repetição por request_id e sobrescrita por etag; 7 testes automatizados aprovados.",
+  "xe": "Desktop assistant for reading, creating, updating, and deleting Google Calendar events via OAuth (Python, Google Calendar API, OAuth, SQLite, Keyring). Executes actions only after preview and explicit confirmation. Implemented secure token storage in Windows Credential Manager, local persistence, request_id replay protection, and etag overwrite protection; 4 passed automated tests."
+ },
+ {
+  "id": "gerador_cronograma",
+  "t": "Projeto: Gerador de Cronograma Físico-Financeiro",
+  "te": "Project: Cost-Loaded Schedule Generator",
+  "s": "#projetos",
+  "k": "gerador cronograma fisico financeiro gantt streamlit plotly llm json escopo obras schedule generator",
+  "x": "Aplicação em Python, Streamlit, API de LLM e Plotly. Transforma escopo de obra em texto livre em JSON estruturado, calcula datas e dependências e apresenta etapas, orçamento e gráfico de Gantt interativo, incluindo tratamento robusto de respostas incompletas e mensagens de erro.",
+  "xe": "Application built with Python, Streamlit, LLM API, and Plotly. Transforms free-text construction scope into structured JSON, calculates dates and dependencies, and displays stages, budget, and an interactive Gantt chart, including error handling for incomplete responses."
+ },
+ {
+  "id": "vigia_obra",
+  "t": "Projeto: Vigia Obra Segurança",
+  "te": "Project: Vigia Obra Safety",
+  "s": "#projetos",
+  "k": "vigia video videos canteiro seguranca opencv visao multimodal frames ndjson safety site vision",
+  "x": "Pipeline assistivo em Python, OpenCV, API Multimodal e NDJSON. Extrai frames de vídeos de canteiros de obra e sinaliza possíveis não conformidades de segurança, emitindo progresso em NDJSON. Exige revisão humana e não substitui inspeção presencial.",
+  "xe": "Assistive pipeline in Python, OpenCV, Multimodal API, and NDJSON. Extracts frames from site videos and flags potential safety non-conformities, emitting progress in NDJSON. Requires human review and does not replace onsite inspection."
+ },
+ {
+  "id": "historico",
+  "t": "Experiência Profissional Detalhada",
+  "te": "Detailed Work Experience",
+  "s": "#experiencia",
+  "k": "empresa empresas trabalhou trabalha emprego atual historico carreira trajetoria cargos arquitetool ch3 blink engconsult torao mazza arq lmanzo bougue obras arquiteto coordenador diretor consultor gestor company companies worked works current history career jobs construction architect",
+  "x": "• Arquitetool (ago–set/2026): Consultor de IA e Automação (temporário) em SP. Requisitos de automação, interface do app e fluxo de pedido de material para lojas parceiras.\n• CH3 Incorporadora (out/2025–atual): Gestor de Obras em SP. Idealizou e desenvolveu app de checklist para padronizar registros de campo; coordena equipes, planejamento executivo e suprimentos.\n• Blink Reformei (jun/2024–out/2025): Coordenador de Obras.\n• Torão Design (mar/2022–2024): Coordenador de Obras.\n• Engconsult (2023): Gestor de Obras (temporário - obras comerciais/Caedu/shoppings).\n• M. Mazza Arquitetura (mar/2021–mar/2022): Coordenador de Obras.\n• Arq. LManzo (jan/2016–mar/2021): Arquiteto Autônomo.\n• Experiência Anterior (2008–2015): Bougue (Arquiteto Projetista), Torão Design, e estágios na Construtora Bracoo, União Técnica, Nucleora e Monaco San Marzano.",
+  "xe": "• Arquitetool (Aug–Sep 2026): AI & Automation Consultant (temporary) in SP. Automation requirements, app interface and the material-ordering flow to partner stores.\n• CH3 Incorporadora (Oct/2025–present): Construction Manager in SP. Built a site checklist app; manages teams, executive planning, and procurement.\n• Blink Reformei (Jun/2024–Oct/2025): Construction Coordinator.\n• Torão Design (Mar/2022–2024): Construction Coordinator.\n• Engconsult (2023): Construction Manager (temporary - commercial retail/malls).\n• M. Mazza Arquitetura (Mar/2021–Mar/2022): Construction Coordinator.\n• Arq. LManzo (Jan/2016–Mar/2021): Independent Architect.\n• Earlier Experience (2008–2015): Bougue, Torão Design, and internships at Bracoo, União Técnica, Nucleora, and Monaco San Marzano."
+ },
+ {
+  "id": "formacao",
+  "t": "Formação Acadêmica",
+  "te": "Education",
+  "s": "#formacao",
+  "k": "formacao faculdade graduacao pos estudou curso universidade diploma arquitetura impacta anhembi belas artes education degree studied university college architecture robotica eletronica embarcados iot ros pos andamento robotics embedded",
+  "x": "• Pós-graduação em Engenharia Eletrônica e Robótica Aplicada: UNIASSELVI (em andamento): visão computacional na borda, sistemas embarcados e IoT, ROS. • Pós-graduação em Engenharia de IA: Faculdade Impacta Digital (Concluída em 2026).\n• Pós-graduação em Gestão de Projetos: Universidade Anhembi Morumbi (2023).\n• Arquitetura e Urbanismo: Centro Universitário Belas Artes de São Paulo (2007–2013).",
+  "xe": "• Postgraduate program in Electronic Engineering and Applied Robotics: UNIASSELVI (in progress): edge computer vision, embedded systems and IoT, ROS. • Postgraduate degree in AI Engineering: Faculdade Impacta Digital (Completed in 2026).\n• Postgraduate degree in Project Management: Universidade Anhembi Morumbi (2023).\n• Bachelor's degree in Architecture and Urbanism: Centro Universitário Belas Artes de São Paulo (2007–2013)."
+ },
+ {
+  "id": "certificacoes",
+  "t": "Certificações & Cursos Complementares",
+  "te": "Certifications & Courses",
+  "s": "#formacao",
+  "k": "certificacao certificacoes certificado certificados google anthropic claude dio lean scrum nr10 sebrae eletrica certification certifications certificate",
+  "x": "Certificações: Google AI Professional Certificate (Google / Coursera); Claude Platform 101 (Anthropic); Sistema de Interpretação de Gestos com Python e Machine Learning (DIO).\nCursos: Lean Construction (Udemy); Metodologia Scrum (Udemy); Finanças para pequenas empresas (Sebrae); Elétrica Residencial e NR 10 (Seal).",
+  "xe": "Certifications: Google AI Professional Certificate (Google / Coursera); Claude Platform 101 (Anthropic); Gesture Recognition System with Python & Machine Learning (DIO).\nCourses: Lean Construction (Udemy); Scrum Methodology (Udemy); Small Business Finance (Sebrae); Residential Electricity and NR 10 (Seal)."
+ },
+ {
+  "id": "competencias_negocio",
+  "t": "Competências de Negócio, Domínio & Ferramentas",
+  "te": "Business Competencies, Domain & Tools",
+  "s": "#competencias",
+  "k": "negocio dominio ferramentas powerbi excel ms project autocad sketchup lumion vray photoshop riscos planejamento lideranca business tools",
+  "x": "Negócio & Domínio: Gestão de projetos, Análise de requisitos, Planejamento e indicadores, Melhoria de processos, Gestão de riscos, Liderança multidisciplinar, Comunicação técnico-negócio, Documentação técnica, Operações de construção, ConTech / PropTech.\nFerramentas: Excel, Power BI, MS Project, Pacote Office, AutoCAD, SketchUp/Layout, Lumion, V-Ray, Twinmotion, Photoshop.",
+  "xe": "Business & Domain: Project management, Requirements analysis, Planning and KPIs, Process improvement, Risk management, Multidisciplinary leadership, Technical-business communication, Technical documentation, Construction operations, ConTech / PropTech.\nTools: Excel, Power BI, MS Project, Office Suite, AutoCAD, SketchUp/Layout, Lumion, V-Ray, Twinmotion, Photoshop."
+ },
+ {
+  "id": "trajetoria_historia_pessoal",
+  "t": "Trajetória e História de Carreira Detalhada",
+  "te": "Detailed Career History & Story",
+  "s": "#experiencia",
+  "k": "faculdade bolsa roberto monaco nucleora uniao tecnica bracco torao bougue loja material mazza engconsult blink ch3 champions league koji guedala buddha spa osasco historia inicio estagio",
+  "x": "Leonardo iniciou a faculdade aos 17 anos com bolsa integral. Seu primeiro estágio foi com o Prof. Roberto Monaco, atuando em processos jurídicos, laudos estruturais e perícias documentais. Em seguida, na Nucleora, elaborou projetos industriais de cozinhas. Na União Técnica de Engenharia, apoiou o engenheiro residente no canteiro, tirando dúvidas técnicas, realizando mapeamento de concreto e conferência de projetos. Na Construtora Bracoo, atendia clientes, desenhava projetos executivos de personalização/reforma e supervisionava a execução até a entrega das chaves. Trabalhou como projetista na Torão Design e na Bougue (onde atendia leads do Google, fazia visitas técnicas, projetos e orçamentos). Também empreendeu com loja de materiais de construção, unindo fornecimento a projetos/obras. Na M. Mazza Arquitetura, coordenou 5 obras residenciais simultâneas. Na Engconsult (temporário), geriu equipes em obras comerciais de shopping centers (lojas Caedu). Retornou à Torão Design para coordenar obras do escritório. Na Blink Reformei, geriu simultaneamente 8 reformas residenciais completas. Na CH3 Incorporadora, é Gestor de Obras de projetos de alto padrão e comerciais em shopping (como a Champions League Experience, Koji Guedala e Buddha Spa no Super Shopping Osasco), onde também desenvolveu o app interno de checklist de obra.",
+  "xe": "Leonardo entered university at age 17 on a full scholarship. His first internship was with Prof. Roberto Monaco, working on legal processes, structural reports, and document audits. Next, at Nucleora, he designed industrial kitchen projects. At União Técnica de Engenharia, he supported the resident engineer onsite with concrete mapping and project verification. At Construtora Bracoo, he met clients, designed customization plans, and supervised renovations through to key handover. Worked as designer at Torão Design and Bougue (handling Google leads, site visits, design, and budgeting). Also owned/managed a building material store, bridging materials to renovation execution. At M. Mazza Arquitetura, he coordinated 5 residential sites simultaneously. At Engconsult (temporary), he managed commercial mall builds (Caedu stores). Returned to Torão Design as coordinator. At Blink Reformei, managed 8 full residential renovations at once. At CH3 Incorporadora, serves as Construction Manager for flagship commercial mall builds (Champions League Exp, Koji Guedala, Buddha Spa Osasco) and built an internal site checklist app."
+ },
+ {
+  "id": "vagas_pretensao_contrato",
+  "t": "Contratação, Local e Disponibilidade",
+  "te": "Hiring, Location & Availability",
+  "s": "#contato",
+  "k": "pretensao salario valores valor contratacao contrato pj clt inicio disponibilidade quando comecar contrato chapeco santa catarina mudanca local cidade remoto hibrido presencial",
+  "x": "• Pretensão salarial: tratada diretamente com o Leonardo, conforme a vaga.\n• Contrato: CLT ou PJ.\n• Local: muda-se para Chapecó (SC) em janeiro de 2027; aberto a presencial ou híbrido na região e a remoto.\n• Funções de interesse: gestão de projetos e implantação de soluções digitais, automação e IA aplicadas a operações, construção e indústria.\n• Contato: leonardo.r.manzo@gmail.com.",
+  "xe": "• Salary: discussed directly with Leonardo, depending on the role.\n• Contract: CLT or contractor (PJ).\n• Location: moving to Chapecó (SC, Brazil) in January 2027; open to on-site or hybrid in the region and to remote.\n• Roles of interest: project management and implementation of digital solutions, automation and AI applied to operations, construction and industry.\n• Contact: leonardo.r.manzo@gmail.com."
+ },
+ {
+  "id": "diferencial_construcao_ia",
+  "t": "Diferencial Competitivo: Vivência Prática no Canteiro",
+  "te": "Competitive Advantage: Onsite Domain Expertise",
+  "s": "#sobre",
+  "k": "diferencial vantagem por que contratar visao campo canteiro pratica construcao civil operacao dores reais",
+  "x": "O grande diferencial de Leonardo em IA é a sua vivência prática de 10+ anos em obras, lojas de materiais e coordenação de canteiro. Com esse conhecimento de causa, ele enxerga e projeta soluções de IA e automação que realmente fazem diferença no campo, criando ferramentas úteis que resolvem dores operacionais reais.",
+  "xe": "Leonardo's key edge in AI is his 10+ years of hands-on experience in construction sites, material procurement, and team management. With deep domain knowledge, he identifies and builds AI and automation solutions that solve real field pain points."
+ },
+ {
+  "id": "arc_copilot_desafio",
+  "t": "Projeto Arc Copilot & Desafios Técnicos",
+  "te": "Arc Copilot Project & Technical Challenges",
+  "s": "#projetos",
+  "k": "arc copilot desafio tecnico mais desafiador fastapi sqlalchemy mensagens whatsapp permissões rdo estoque",
+  "x": "O Arc Copilot é um dos projetos mais completos e desafiadores: aplicação web em FastAPI/SQLAlchemy que converte mensagens de campo em registros estruturados, movimentações de estoque e Diário de Obra (RDO). Implementou controle de acesso refinado por função (trabalhador, mestre de obra, engenheiro), isolamento por obra e validação com 10 testes automatizados.",
+  "xe": "Arc Copilot is one of his most comprehensive technical projects: a FastAPI/SQLAlchemy web app converting field messages into confirmed records, inventory movements, and Daily Reports (RDO). Features role-based access control (worker, foreman, engineer), site isolation, and 10 automated tests."
+ },
+ {
+  "id": "decisoes_tecnicas_arquitetura",
+  "t": "Decisões Técnicas de Arquitetura (FTS5 & Keyring)",
+  "te": "Architectural Technical Decisions (FTS5 & Keyring)",
+  "s": "#projetos",
+  "k": "por que fts5 porque sqlite fts5 local privacidade keyring agenda retratil tokens oauth seguranca",
+  "x": "No Síndico Inteligente, a escolha do SQLite FTS5 foi feita para rodar 100% localmente: garante privacidade total dos documentos do condomínio, custo zero de infraestrutura e funcionamento em qualquer máquina sem dependência de nuvem. No Agenda Retrátil, o armazenamento de tokens OAuth utiliza o Gerenciador de Credenciais do Windows (Windows Keyring) para criptografia nativa no SO.",
+  "xe": "In Síndico Inteligente, SQLite FTS5 was selected to run 100% locally: ensuring document privacy, zero cloud infrastructure cost, and local execution. In Agenda Retrátil, OAuth tokens are stored via Windows Credential Manager (Keyring) for OS-level encryption."
+ },
+ {
+  "id": "como_ajudar_empresas",
+  "t": "Como o Leonardo pode ajudar uma empresa",
+  "te": "How Leonardo can help a company",
+  "s": "#projetos",
+  "k": "ajudar ajuda empresa empresas negocio servico servicos contratar contratacao valor beneficio resolver problema dor how help company business hire value",
+  "x": "Ele atua onde operação e tecnologia se encontram: entende o processo de quem está no campo, transforma o problema em requisito e entrega a solução até o uso. Exemplos concretos: na Arquitetool, o pedido de material passou a sair de uma lista pré-preenchida por fase da obra, direto para as lojas parceiras; no Arc Copilot, mensagens de campo viram registros de estoque e diário de obra com confirmação; no Civil RAG, a equipe consulta documentos técnicos e recebe a resposta com arquivo e página. Também traz 10+ anos de gestão de prazo, custo, risco e fornecedores.",
+  "xe": "He works where operations and technology meet: he understands how field teams work, turns the problem into requirements and delivers the solution through adoption. Concrete examples: at Arquitetool, material orders became a pre-filled list per construction phase sent straight to partner stores; in Arc Copilot, field messages become confirmed inventory and daily-report records; in Civil RAG, teams query technical documents and get answers citing file and page. He also brings 10+ years managing schedule, cost, risk and suppliers."
+ },
+ {
+  "id": "civil_rag",
+  "t": "Civil RAG",
+  "te": "Civil RAG",
+  "s": "#projetos",
+  "k": "civil rag documentos tecnicos memorial especificacao pgvector embeddings gemini busca vetorial avaliacao recuperacao bm25 hit documents retrieval evaluation",
+  "x": "Consulta a documentos técnicos de obra com embeddings do Gemini e busca vetorial em PostgreSQL com pgvector, filtrada por obra; as respostas citam arquivo e página e o modelo recusa quando a informação não consta. Tem avaliação de recuperação com 30 perguntas de resposta conhecida (linha de base BM25: 97% no top 3) e 12 testes automatizados. Limite declarado: corpus de avaliação pequeno e fictício; protótipo, não produto em operação.",
+  "xe": "Lookup over technical construction documents using Gemini embeddings and PostgreSQL vector search (pgvector), filtered per site; answers cite file and page and the model declines when the information is missing. Includes a retrieval evaluation with 30 known-answer questions (BM25 baseline: 97% in top 3) and 12 automated tests. Stated limit: small, fictional evaluation corpus; a prototype, not a product in operation."
+ },
+ {
+  "id": "rag_e_agentes",
+  "t": "RAG e Agentes",
+  "te": "RAG and Agents",
+  "s": "#projetos",
+  "k": "rag agentes agente retrieval embeddings vetorial pgvector consolidacao orquestrador agents agent vector orchestrator",
+  "x": "No Civil RAG usa embeddings do Gemini e busca vetorial em PostgreSQL com pgvector citando arquivo e página. No RAG do Zero criou pipeline sem bibliotecas prontas (11 testes). Em agentes desenvolveu um orquestrador com 4 agentes (planejador, executor, revisor, avaliador) em Python e Pydantic.",
+  "xe": "Civil RAG uses Gemini embeddings and PostgreSQL vector search (pgvector) citing file and page. RAG do Zero is a pipeline built without ready-made libraries (11 tests). In agents, he built an orchestrator with 4 agents (planner, executor, reviewer, evaluator) in Python and Pydantic."
+ },
+ {
+  "id": "lideranca_gestao",
+  "t": "Liderança e Gestão",
+  "te": "Leadership and Management",
+  "s": "#experiencia",
+  "k": "lideranca lider gestao gestor equipe equipes time pessoas fornecedores clientes negociacao risco riscos planejamento custos prazo leadership leader management manager team teams people suppliers clients negotiation risk planning cost",
+  "x": "Mais de 10 anos em coordenação e gestão de obras: responsabilidade direta por prazo, custo e risco, equipes multidisciplinares, gestão de fornecedores, contratos, clientes e orçamentos.",
+  "xe": "Over 10 years in construction coordination and management: directly accountable for schedule, cost and risk, multidisciplinary teams, supplier management, contracts, clients and budgets."
+ },
+ {
+  "id": "aplicacoes_interativas",
+  "t": "Aplicações Interativas",
+  "te": "Interactive Apps",
+  "s": "#projetos",
+  "k": "simulador reforma pedir material insumos habit tracker pwa react vite typescript aplicativo app interativo mobile",
+  "x": "Aplicações publicadas e navegáveis no site: Simulador de Reforma (HTML/JS), Pedir Material (PWA mobile em React + Vite) e Habit Tracker PWA (PWA em React + Vite para metas e hábitos).",
+  "xe": "Interactive apps live on the portfolio site: Renovation Simulator (HTML/JS), Materials Order PWA (React + Vite PWA), and Habit Tracker PWA (React + Vite PWA)."
+ },
+ {
+  "id": "outros_experimentos",
+  "t": "Outros Experimentos Técnicos",
+  "te": "Other Technical Experiments",
+  "s": "#projetos",
+  "k": "rag do zero cronograma leads prospeccao orquestrador agentes diario checklist robosim experiments prototypes CLI PyTorch TF-IDF word2vec",
+  "x": "Outros projetos no GitHub: RAG do Zero (pipeline de RAG sem bibliotecas prontas, TF-IDF, Word2Vec em PyTorch e 11 testes), Orquestrador de Agentes (4 agentes em Python/Pydantic), Prospecção de Leads CLI (5 testes, Google Places API), Gerador de Cronograma com IA, Diário de Obra, Checklist de Obra e o experimento RoboSim 3D.",
+  "xe": "Other GitHub projects: RAG do Zero (custom RAG pipeline, TF-IDF, Word2Vec in PyTorch, 11 tests), Agent Orchestrator (4 agents in Python/Pydantic), Lead Prospecting CLI (5 tests, Google Places API), AI Schedule Generator, Diário de Obra, Checklist de Obra, and the RoboSim 3D experiment."
+ },
+ {
+  "id": "contato",
+  "t": "Disponibilidade e Contato",
+  "te": "Availability & Contact",
+  "s": "#contato",
+  "k": "remoto remota presencial hibrido local cidade onde mora chapeco santa catarina disponivel disponibilidade contato email linkedin github curriculo cv contratar falar remote onsite hybrid location city where live available availability contact resume hire reach cnh viagem travel linkedin github email",
+  "x": "Contato: leonardo.r.manzo@gmail.com · LinkedIn: in/leonardo-manzo-05ab4075 · GitHub: github.com/leonardormanzo · Currículo em PDF disponível no site. Muda-se para Chapecó (SC) em janeiro de 2027; aberto a presencial ou híbrido na região e a remoto. CNH B e disponibilidade para viagens.",
+  "xe": "Contact: leonardo.r.manzo@gmail.com · LinkedIn: in/leonardo-manzo-05ab4075 · GitHub: github.com/leonardormanzo · Résumé PDF available on the site. Moving to Chapecó (SC, Brazil) in January 2027; open to on-site or hybrid in the region and to remote. Driver's license B and available to travel."
+ }
+]

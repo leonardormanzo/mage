@@ -1,0 +1,26 @@
+.env
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.pyc
+*.db
+htmlcov/
+.coverage
+storage/*
+!storage/.gitkeep
+
+node_modules/
+.neon
+.env.local
+
+# Binários, logs e artefatos locais
+cloudflared.exe
+*.exe
+*.log
+*.egg-info/
+.agents/
+skills-lock.json
+neon.ts
+package.json
+package-lock.json

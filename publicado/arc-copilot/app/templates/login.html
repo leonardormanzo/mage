@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block body %}
+<main class="login-shell">
+  <section class="login-card">
+    <div class="brand-mark">ARC<span>_</span></div>
+    <p class="eyebrow">COPILOT 1.0</p>
+    <h1>A obra fala.<br>O Arc organiza.</h1>
+    <p class="muted">Registros confirmados, estoque rastreável e RDO no mesmo fluxo.</p>
+    <form id="login-form" class="stack">
+      <label>E-mail<input name="email" type="email" value="engenheiro@arc.local" required></label>
+      <label>Senha<input name="password" type="password" value="ArcDemo123!" required></label>
+      <button type="submit">Entrar no canteiro <span>→</span></button>
+      <p id="login-error" class="error" hidden></p>
+    </form>
+    <p class="fineprint">Ambiente demonstrativo · troque as credenciais antes do uso real.</p>
+  </section>
+  <aside class="login-visual" aria-hidden="true">
+    <div class="grid-lines"></div>
+    <div class="status-orbit"><span></span><strong>RDO</strong><small>CONFIRMADO</small></div>
+    <p>INFORMAÇÃO DE CAMPO<br><em>→</em> DECISÃO RASTREÁVEL</p>
+  </aside>
+</main>
+<script>
+document.querySelector('#login-form').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const data = Object.fromEntries(new FormData(event.target));
+  const response = await fetch('/api/auth/login', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
+  if (response.ok) location.href='/app';
+  else {
+    const error = document.querySelector('#login-error');
+    error.textContent = (await response.json()).detail || 'Não foi possível entrar.';
+    error.hidden = false;
+  }
+});
+</script>
+{% endblock %}
+

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="app-shell" data-project-id="{{ project.id }}">
+  <aside class="sidebar">
+    <div><div class="brand-mark">ARC<span>_</span></div><p class="eyebrow">COPILOT 1.0</p></div>
+    <nav>
+      <button class="nav-item active" data-view="overview">Visão geral</button>
+      <button class="nav-item" data-view="chat">Conversa</button>
+      <button class="nav-item" data-view="rdo">RDO do dia</button>
+      <button class="nav-item" data-view="materials">Materiais</button>
+      <button class="nav-item" data-view="query">Consultar obra</button>
+    </nav>
+    <div class="user-card"><span>{{ user.name }}</span><small>{{ {'engineer':'Engenheiro','master':'Mestre de obras','worker':'Trabalhador'}[user.role] }}</small></div>
+  </aside>
+  <main class="content">
+    <header class="topbar">
+      <div><p class="eyebrow">OBRA ATIVA · {{ project.code }}</p><h1>{{ project.name }}</h1></div>
+      <div class="mode-pill"><i></i> Modo demonstração</div>
+    </header>
+
+    <section class="view active" id="view-overview">
+      <div class="section-heading"><div><p class="eyebrow">{{ today_label }}</p><h2>Pulso da obra</h2></div><button class="ghost refresh">Atualizar</button></div>
+      <div class="metrics">
+        <article><small>RDO DE HOJE</small><strong id="metric-rdo">—</strong><span>Status atual</span></article>
+        <article><small>PENDÊNCIAS</small><strong id="metric-pending">—</strong><span>Precisam de resposta</span></article>
+        <article><small>MATERIAIS</small><strong id="metric-materials">—</strong><span>Itens acompanhados</span></article>
+      </div>
+      <article class="panel"><div class="panel-title"><h3>Últimas mensagens</h3><span>RASTREÁVEIS</span></div><div id="recent-messages" class="timeline"></div></article>
+    </section>
+
+    <section class="view" id="view-chat">
+      <div class="section-heading"><div><p class="eyebrow">SIMULADOR WHATSAPP</p><h2>Conversa de campo</h2></div></div>
+      <div class="phone-frame">
+        <div class="phone-head"><span>AC</span><div><strong>Arc Copilot</strong><small>assistente da obra</small></div></div>
+        <div id="chat-log" class="chat-log"><div class="bubble bot">Envie um registro. Ex.: “Usamos 20 sacos.”</div></div>
+        <form id="chat-form" class="composer"><input id="chat-input" placeholder="Digite uma mensagem…" required><button>Enviar</button></form>
+      </div>
+    </section>
+
+    <section class="view" id="view-rdo">
+      <div class="section-heading"><div><p class="eyebrow">RELATÓRIO DIÁRIO</p><h2>RDO do dia</h2></div><div id="rdo-actions"></div></div>
+      <article class="panel"><div id="rdo-content" class="empty">Carregando…</div></article>
+    </section>
+
+    <section class="view" id="view-materials">
+      <div class="section-heading"><div><p class="eyebrow">ESTOQUE POR EVENTOS</p><h2>Materiais</h2></div></div>
+      <div id="materials-grid" class="materials-grid"></div>
+    </section>
+
+    <section class="view" id="view-query">
+      <div class="section-heading"><div><p class="eyebrow">FONTES DA OBRA</p><h2>Pergunte aos registros</h2></div></div>
+      <article class="panel query-panel">
+        <form id="query-form"><input id="query-input" placeholder="Qual é o saldo de cimento?" required><button>Consultar</button></form>
+        <div id="query-result" class="query-result empty">A resposta mostrará a rota e as fontes utilizadas.</div>
+      </article>
+    </section>
+  </main>
+</div>
+<script>window.ARC_USER_ROLE={{ user.role|tojson }};</script>
+<script src="/static/app.js"></script>
+{% endblock %}
