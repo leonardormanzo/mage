@@ -24,14 +24,23 @@ def run_migrations_offline():
         context.run_migrations()
 
 
+def _run(connection):
+    context.configure(connection=connection, target_metadata=target_metadata)
+    with context.begin_transaction():
+        context.run_migrations()
+
+
 def run_migrations_online():
+    # Quem chama pode injetar uma conexão pronta (config.attributes["connection"]), como os testes.
+    injected = config.attributes.get("connection")
+    if injected is not None:
+        _run(injected)
+        return
     connectable = engine_from_config(
         config.get_section(config.config_ini_section), prefix="sqlalchemy.", poolclass=pool.NullPool
     )
     with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
-        with context.begin_transaction():
-            context.run_migrations()
+        _run(connection)
 
 
 run_migrations_offline() if context.is_offline_mode() else run_migrations_online()

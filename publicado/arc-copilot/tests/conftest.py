@@ -9,9 +9,25 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
+from app.core.config import get_settings
+from app.core.throttle import login_throttle
 from app.database.session import Base, get_db
 from app.main import app
 from app.seed import seed_demo
+
+
+@pytest.fixture(autouse=True)
+def _reset_login_throttle() -> None:
+    login_throttle.reset()
+
+
+@pytest.fixture(autouse=True)
+def _isolated_storage(tmp_path: Path) -> Generator[None, None, None]:
+    settings = get_settings()
+    original = settings.storage_dir
+    object.__setattr__(settings, "storage_dir", tmp_path)  # Settings é frozen
+    yield
+    object.__setattr__(settings, "storage_dir", original)
 
 
 @pytest.fixture

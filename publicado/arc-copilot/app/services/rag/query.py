@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import re
 import unicodedata
 from decimal import Decimal
@@ -17,7 +18,17 @@ from app.database.models import (
     RagSource,
     User,
 )
+from app.services import ai
 from app.services.inventory import material_balance
+from app.services.rag.vector_store import search_chunks
+
+logger = logging.getLogger(__name__)
+
+TOP_K = 3
+LEXICAL_LIMIT = 5
+LEXICAL_MIN_WORD = 4
+LEXICAL_MAX_WORDS = 8
+ANSWER_PREVIEW_CHARS = 600
 
 
 def normalize(value: str) -> str:
@@ -59,6 +70,15 @@ def answer_question(db: Session, *, user: User, project_id: str, question: str) 
     return result
 
 
+def _movement_source(move: MaterialMovement) -> dict:
+    return {
+        "type": "material_movement",
+        "id": move.id,
+        "label": f"{move.movement_type}: {move.quantity:g} {move.unit}",
+        "date": move.movement_date,
+    }
+
+
 def _answer_quantitative(db: Session, *, user: User, project_id: str, question: str) -> dict:
     normalized = normalize(question)
     materials = db.scalars(
@@ -68,123 +88,104 @@ def _answer_quantitative(db: Session, *, user: User, project_id: str, question: 
     ).all()
     material = next((item for item in materials if normalize(item.name) in normalized), None)
     if not material:
-        return _not_found("structured")
+        return _not_found("structured", retrieval="structured")
+    scope = (
+        MaterialMovement.company_id == user.company_id,
+        MaterialMovement.project_id == project_id,
+        MaterialMovement.material_id == material.id,
+        MaterialMovement.status == "confirmed",
+    )
     if "saldo" in normalized:
         balance = material_balance(
             db, company_id=user.company_id, project_id=project_id, material_id=material.id
         )
-        movements = db.scalars(
-            select(MaterialMovement).where(
-                MaterialMovement.company_id == user.company_id,
-                MaterialMovement.project_id == project_id,
-                MaterialMovement.material_id == material.id,
-                MaterialMovement.status == "confirmed",
-            )
-        ).all()
+        movements = db.scalars(select(MaterialMovement).where(*scope)).all()
         return {
             "answer": f"Saldo de {material.name}: {balance:g} {material.default_unit}.",
             "route": "structured",
+            "retrieval": "structured",
             "confidence": 1.0,
-            "sources": [
-                {
-                    "type": "material_movement",
-                    "id": move.id,
-                    "label": f"{move.movement_type}: {move.quantity:g} {move.unit}",
-                    "date": move.movement_date,
-                }
-                for move in movements
-            ],
+            "sources": [_movement_source(move) for move in movements],
         }
     movement_type = "consumption" if "consum" in normalized else "entry"
+    reversed_ids = select(MaterialMovement.reverses_movement_id).where(
+        MaterialMovement.reverses_movement_id.is_not(None)
+    )
     movements = db.scalars(
         select(MaterialMovement).where(
-            MaterialMovement.company_id == user.company_id,
-            MaterialMovement.project_id == project_id,
-            MaterialMovement.material_id == material.id,
+            *scope,
             MaterialMovement.movement_type == movement_type,
-            MaterialMovement.status == "confirmed",
+            MaterialMovement.id.not_in(reversed_ids),
         )
     ).all()
     total = sum((Decimal(move.quantity) for move in movements), Decimal(0))
     return {
         "answer": f"Total de {material.name}: {total:g} {material.default_unit}.",
         "route": "structured",
+        "retrieval": "structured",
         "confidence": 1.0 if movements else 0.0,
-        "sources": [
-            {
-                "type": "material_movement",
-                "id": move.id,
-                "label": f"{move.movement_type}: {move.quantity:g} {move.unit}",
-                "date": move.movement_date,
-            }
-            for move in movements
-        ],
+        "sources": [_movement_source(move) for move in movements],
     }
 
 
-import math
-from app.core.config import get_settings
-
-def cosine_similarity(v1: list[float], v2: list[float]) -> float:
-    if not v1 or not v2:
-        return 0.0
-    dot_product = sum(a * b for a, b in zip(v1, v2))
-    magnitude1 = math.sqrt(sum(a * a for a in v1))
-    magnitude2 = math.sqrt(sum(b * b for b in v2))
-    if magnitude1 == 0 or magnitude2 == 0:
-        return 0.0
-    return dot_product / (magnitude1 * magnitude2)
-
 def _answer_documental(db: Session, *, user: User, project_id: str, question: str) -> dict:
-    settings = get_settings()
-    
-    # Try Semantic RAG
-    if settings.ai_mode and settings.gemini_api_key:
-        from app.services.ai.providers import GeminiProvider
-        provider = GeminiProvider(api_key=settings.gemini_api_key)
-        try:
-            question_embedding = provider.embed(question)
-            
-            stmt = (
-                select(DocumentChunk, Document)
-                .join(Document, Document.id == DocumentChunk.document_id)
-                .where(
-                    DocumentChunk.company_id == user.company_id,
-                    DocumentChunk.project_id == project_id,
-                    DocumentChunk.embedding_json.is_not(None)
-                )
-            )
-            rows = db.execute(stmt).all()
-            
-            scored_rows = []
-            for chunk, doc in rows:
-                score = cosine_similarity(question_embedding, chunk.embedding_json)
-                scored_rows.append((score, chunk, doc))
-            
-            scored_rows.sort(key=lambda x: x[0], reverse=True)
-            top_rows = [x for x in scored_rows if x[0] > 0.4][:3]
-            
-            if top_rows:
-                context_texts = [x[1].content for x in top_rows]
-                answer = provider.answer(question, context_texts)
-                return {
-                    "answer": answer,
-                    "route": "documental",
-                    "confidence": float(top_rows[0][0]),
-                    "sources": [
-                        {
-                            "type": "document",
-                            "id": x[2].id,
-                            "label": x[2].name,
-                            "date": x[2].created_at.date() if x[2].created_at else None,
-                        } for x in top_rows
-                    ]
-                }
-        except Exception:
-            pass # fallback to lexical
-            
-    # Lexical Fallback
-    words = [word for word in re.findall(r"\w+", normalize(question)) if len(word) > 3][:8]
+    return _answer_by_vector(db, user=user, project_id=project_id, question=question) or (
+        _answer_lexical(db, user=user, project_id=project_id, question=question)
+    )
+
+
+def _answer_by_vector(db: Session, *, user: User, project_id: str, question: str) -> dict | None:
+    """Busca vetorial nos documentos da obra; devolve None para cair na busca textual."""
+    provider = ai.get_embedding_provider()
+    try:
+        question_vector = provider.embed(question, task="query")
+    except Exception:
+        logger.warning("Embedding da pergunta indisponível; usando busca textual", exc_info=True)
+        return None
+    hits = search_chunks(
+        db,
+        company_id=user.company_id,
+        project_id=project_id,
+        embedding=question_vector,
+        embedder=provider.name,
+        limit=TOP_K,
+        min_score=provider.min_score,
+    )
+    if not hits:
+        return None
+    context = [chunk.content for _, chunk, _ in hits]
+    try:
+        answer = ai.get_llm_provider().answer(question, context)
+    except Exception:
+        logger.warning("Geração indisponível; devolvendo o trecho mais próximo", exc_info=True)
+        answer = context[0][:ANSWER_PREVIEW_CHARS]
+    documents: dict[str, Document] = {}
+    for _, _, document in hits:
+        documents.setdefault(document.id, document)
+    return {
+        "answer": answer,
+        "route": "documental",
+        "retrieval": "vector",
+        "confidence": round(hits[0][0], 3),
+        "sources": [_document_source(document) for document in documents.values()],
+    }
+
+
+def _document_source(document: Document) -> dict:
+    return {
+        "type": "document",
+        "id": document.id,
+        "label": document.name,
+        "date": document.created_at.date() if document.created_at else None,
+    }
+
+
+def _answer_lexical(db: Session, *, user: User, project_id: str, question: str) -> dict:
+    words = [
+        word
+        for word in re.findall(r"\w+", normalize(question))
+        if len(word) >= LEXICAL_MIN_WORD
+    ][:LEXICAL_MAX_WORDS]
     filters = [func.lower(DocumentChunk.content).contains(word) for word in words]
     stmt = (
         select(DocumentChunk, Document)
@@ -193,59 +194,55 @@ def _answer_documental(db: Session, *, user: User, project_id: str, question: st
             DocumentChunk.company_id == user.company_id,
             DocumentChunk.project_id == project_id,
         )
-        .limit(5)
+        .limit(LEXICAL_LIMIT)
     )
     if filters:
         stmt = stmt.where(or_(*filters))
     rows = db.execute(stmt).all()
-    if not rows:
-        records = db.scalars(
-            select(ExtractedRecord)
-            .where(
-                ExtractedRecord.company_id == user.company_id,
-                ExtractedRecord.project_id == project_id,
-                ExtractedRecord.status.in_(["included_in_rdo", "closed"]),
-            )
-            .order_by(ExtractedRecord.event_date.desc())
-            .limit(5)
-        ).all()
-        matched = [r for r in records if any(word in normalize(r.evidence_text) for word in words)]
-        if not matched:
-            return _not_found("documental")
-        record = matched[0]
+    if rows:
+        chunk, document = rows[0]
         return {
-            "answer": record.evidence_text,
+            "answer": chunk.content[:ANSWER_PREVIEW_CHARS],
             "route": "documental",
-            "confidence": 0.75,
-            "sources": [
-                {
-                    "type": "record",
-                    "id": record.id,
-                    "label": "Registro confirmado",
-                    "date": record.event_date,
-                }
-            ],
+            "retrieval": "lexical",
+            "confidence": 0.7,
+            "sources": [_document_source(document)],
         }
-    chunk, document = rows[0]
+    records = db.scalars(
+        select(ExtractedRecord)
+        .where(
+            ExtractedRecord.company_id == user.company_id,
+            ExtractedRecord.project_id == project_id,
+            ExtractedRecord.status.in_(["included_in_rdo", "closed"]),
+        )
+        .order_by(ExtractedRecord.event_date.desc())
+        .limit(LEXICAL_LIMIT)
+    ).all()
+    matched = [r for r in records if any(word in normalize(r.evidence_text) for word in words)]
+    if not matched:
+        return _not_found("documental")
+    record = matched[0]
     return {
-        "answer": chunk.content[:600],
+        "answer": record.evidence_text,
         "route": "documental",
-        "confidence": 0.7,
+        "retrieval": "lexical",
+        "confidence": 0.75,
         "sources": [
             {
-                "type": "document",
-                "id": document.id,
-                "label": document.name,
-                "date": document.created_at.date() if document.created_at else None,
+                "type": "record",
+                "id": record.id,
+                "label": "Registro confirmado",
+                "date": record.event_date,
             }
         ],
     }
 
 
-def _not_found(route: str) -> dict:
+def _not_found(route: str, retrieval: str = "none") -> dict:
     return {
         "answer": "Não encontrei esse dado nos registros da obra.",
         "route": route,
+        "retrieval": retrieval,
         "confidence": 0.0,
         "sources": [],
     }

@@ -58,3 +58,10 @@ def require_roles(*roles: str):
         return context
 
     return dependency
+
+
+def require_engineer(user: User = Depends(current_user)) -> User:
+    """Administração da empresa: vale para todas as obras, não para uma obra específica."""
+    if user.role != "engineer":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Sem permissão")
+    return user

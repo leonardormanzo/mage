@@ -17,7 +17,10 @@ Aplicação funcional para transformar mensagens de campo em registros confirmad
 - upload e indexação textual de TXT, PDF e DOCX;
 - consulta quantitativa pelo banco e consulta documental com fontes;
 - auditoria de operações críticas;
-- seed completo e testes de fluxo, permissão e isolamento.
+- cancelamento, estorno e correção de registros, com motivo e auditoria; o estoque é compensado por movimentos de estorno, sem apagar histórico;
+- gestão de usuários pelo engenheiro: criar, trocar perfil e obras, desativar e redefinir senha, com bloqueio após tentativas de login falhas;
+- busca vetorial nos documentos da obra: pgvector com índice HNSW no PostgreSQL e, no SQLite da demonstração, vetor local por hashing de palavras;
+- seed completo e testes de fluxo, permissão, isolamento, estorno, usuários e busca.
 
 ## Rodar agora no Windows, sem Docker
 
@@ -95,15 +98,27 @@ Documentação interativa: `http://127.0.0.1:8000/docs`.
 
 ## Limitações honestas do MVP
 
-- OpenAI, visão, transcrição real, S3 e WhatsApp Cloud API possuem contratos/adaptadores, mas não chamadas externas validadas.
+- Gemini (extração, embeddings, resposta, transcrição e visão) e WhatsApp Cloud API têm adaptadores, mas nenhuma chamada externa foi validada com chave real. Não há adaptador OpenAI nem S3: arquivos ficam em disco local.
 - O modo demonstração usa regras e uma transcrição simulada. Ele não deve ser apresentado como IA de produção.
-- A busca documental local é textual; pgvector está previsto no container, mas a indexação vetorial real é próxima fase.
+- O vetor do modo demonstração mede vocabulário em comum, não significado. Busca semântica só existe com `GEMINI_API_KEY`, e vetores de modelos diferentes nunca são comparados: ao trocar de modelo, reenvie os documentos.
+- O caminho pgvector foi validado em um PostgreSQL 17 com pgvector 0.8.0 (Neon, projeto descartável): migrations do zero e sobre banco legado, downgrade, busca vetorial pela API com isolamento entre obras e uso do índice HNSW no `<=>`. Não foi executado o `docker compose` nem a imagem `pgvector/pgvector:pg16`. Com filtro por obra, o planejador pode escolher varredura exata em vez do HNSW; em corpus grande, habilite `hnsw.iterative_scan` (pgvector 0.8+).
 - O importador preserva e extrai documentos; o editor visual de mapeamento de modelos personalizados ainda não está implementado.
-- Correção/estorno completo na interface, gestão administrativa de usuários e captura de vídeo quadro a quadro permanecem fora da primeira fatia.
+- O estorno exige o RDO do dia aberto: com o RDO fechado, o engenheiro precisa reabri-lo antes.
+- Recuperação de senha por e-mail, MFA e captura de vídeo quadro a quadro permanecem fora do escopo; a senha é redefinida por um engenheiro.
 
 Consulte [ARCHITECTURE.md](ARCHITECTURE.md) para as decisões e fronteiras técnicas.
 
-## Próximo passo mais importante
+## Demonstração pública
 
-Executar um piloto controlado com dados não sensíveis da obra: validar o vocabulário real das mensagens, campos obrigatórios do seu RDO e regras de estoque. Só depois conectar a WhatsApp Cloud API e um provedor de IA, com conjunto de testes baseado nas mensagens reais anonimizadas.
+O `render.yaml` publica uma instância de demonstração no Render (plano gratuito) com `DEMO_MODE=true`:
+
+1. No Render, escolha **New → Blueprint** e aponte para este repositório.
+2. O serviço sobe com SQLite efêmero, dados fictícios e as três contas demonstrativas na tela de login.
+3. Em `DEMO_MODE` o upload é limitado a 1 MB, as contas fixas não podem ser desativadas nem ter a senha trocada, e os dados voltam ao seed a cada reinício.
+
+Nunca use `DEMO_MODE` com dados reais.
+
+## Próximo passo
+
+Rodar um piloto controlado com dados não sensíveis de obra, para validar o vocabulário real das mensagens, os campos obrigatórios do RDO e as regras de estoque. Só depois conectar a WhatsApp Cloud API e um provedor de IA, com testes baseados em mensagens reais anonimizadas.
 

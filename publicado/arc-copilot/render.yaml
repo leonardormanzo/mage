@@ -1,0 +1,15 @@
+# Demonstração pública no Render (plano gratuito): dados fictícios, banco SQLite efêmero.
+# O disco é apagado a cada reinício; o seed recria as contas e os dados de exemplo.
+services:
+  - type: web
+    name: arc-copilot-demo
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: DEMO_MODE
+        value: "true"
+      - key: APP_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true

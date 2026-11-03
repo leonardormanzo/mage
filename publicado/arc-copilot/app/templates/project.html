@@ -9,13 +9,14 @@
       <button class="nav-item" data-view="rdo">RDO do dia</button>
       <button class="nav-item" data-view="materials">Materiais</button>
       <button class="nav-item" data-view="query">Consultar obra</button>
+      {% if user.role == 'engineer' %}<button class="nav-item" data-view="team">Equipe</button>{% endif %}
     </nav>
     <div class="user-card"><span>{{ user.name }}</span><small>{{ {'engineer':'Engenheiro','master':'Mestre de obras','worker':'Trabalhador'}[user.role] }}</small></div>
   </aside>
   <main class="content">
     <header class="topbar">
       <div><p class="eyebrow">OBRA ATIVA · {{ project.code }}</p><h1>{{ project.name }}</h1></div>
-      <div class="mode-pill"><i></i> Modo demonstração</div>
+      <div class="mode-pill"><i></i> {{ mode_label }}</div>
     </header>
 
     <section class="view active" id="view-overview">
@@ -53,9 +54,43 @@
         <form id="query-form"><input id="query-input" placeholder="Qual é o saldo de cimento?" required><button>Consultar</button></form>
         <div id="query-result" class="query-result empty">A resposta mostrará a rota e as fontes utilizadas.</div>
       </article>
+      {% if user.role == 'engineer' %}
+      <article class="panel docs-panel">
+        <div class="panel-title"><h3>Documentos da obra</h3><span>PDF · DOCX · TXT</span></div>
+        <form id="doc-form" class="inline-form">
+          <input id="doc-file" type="file" accept=".pdf,.docx,.txt" required>
+          <button class="primary">Indexar documento</button>
+        </form>
+        <p id="doc-result" class="muted small"></p>
+      </article>
+      {% endif %}
     </section>
+
+    {% if user.role == 'engineer' %}
+    <section class="view" id="view-team">
+      <div class="section-heading"><div><p class="eyebrow">ACESSO À EMPRESA</p><h2>Equipe</h2></div><button class="ghost" id="team-new">Novo usuário</button></div>
+      <article class="panel"><div id="team-list" class="empty">Carregando…</div></article>
+    </section>
+    {% endif %}
   </main>
 </div>
-<script>window.ARC_USER_ROLE={{ user.role|tojson }};</script>
+
+<dialog id="action-dialog">
+  <form id="action-form" method="dialog">
+    <h3 id="action-title"></h3>
+    <div id="action-fields"></div>
+    <p id="action-error" class="error" hidden></p>
+    <div class="dialog-actions">
+      <button type="button" class="ghost" id="action-cancel">Voltar</button>
+      <button class="primary" id="action-submit">Confirmar</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+window.ARC_USER_ROLE={{ user.role|tojson }};
+window.ARC_USER_ID={{ user.id|tojson }};
+</script>
 <script src="/static/app.js"></script>
+<script src="/static/actions.js"></script>
 {% endblock %}

@@ -7,12 +7,12 @@
     <h1>A obra fala.<br>O Arc organiza.</h1>
     <p class="muted">Registros confirmados, estoque rastreável e RDO no mesmo fluxo.</p>
     <form id="login-form" class="stack">
-      <label>E-mail<input name="email" type="email" value="engenheiro@arc.local" required></label>
-      <label>Senha<input name="password" type="password" value="ArcDemo123!" required></label>
+      <label>E-mail<input name="email" type="email" autocomplete="username"{% if demo_mode %} value="engenheiro@arc.local"{% endif %} required></label>
+      <label>Senha<input name="password" type="password" autocomplete="current-password"{% if demo_mode %} value="ArcDemo123!"{% endif %} required></label>
       <button type="submit">Entrar no canteiro <span>→</span></button>
       <p id="login-error" class="error" hidden></p>
     </form>
-    <p class="fineprint">Ambiente demonstrativo · troque as credenciais antes do uso real.</p>
+    <p class="fineprint">{% if demo_mode %}Demonstração pública com dados fictícios · os dados são reiniciados periodicamente.{% else %}Ambiente demonstrativo · troque as credenciais antes do uso real.{% endif %}</p>
   </section>
   <aside class="login-visual" aria-hidden="true">
     <div class="grid-lines"></div>

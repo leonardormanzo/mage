@@ -9,7 +9,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.api.dependencies import ProjectContext, current_user, project_context
-from app.core.config import BASE_DIR
+from app.core.config import BASE_DIR, get_settings
 from app.database.models import Project, ProjectUser, User
 from app.database.session import get_db
 
@@ -20,7 +20,16 @@ MONTHS_PT = ("JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT
 
 @router.get("/", response_class=HTMLResponse)
 def login_page(request: Request):
-    return templates.TemplateResponse(request, "login.html", {"title": "Entrar"})
+    return templates.TemplateResponse(
+        request, "login.html", {"title": "Entrar", "demo_mode": get_settings().demo_mode}
+    )
+
+
+def _mode_label() -> str:
+    settings = get_settings()
+    if settings.demo_mode:
+        return "Demonstração pública · dados fictícios"
+    return "IA ativa" if settings.ai_mode else "Modo demonstração"
 
 
 @router.get("/app", response_class=HTMLResponse)
@@ -59,6 +68,7 @@ def project_page(
             "title": context.project.name,
             "project": context.project,
             "user": context.user,
+            "mode_label": _mode_label(),
             "today_label": f"{today.day:02d} {MONTHS_PT[today.month - 1]} {today.year}",
         },
     )

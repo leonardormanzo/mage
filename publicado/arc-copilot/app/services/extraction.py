@@ -71,11 +71,12 @@ Responda APENAS em formato JSON válido e sem blocos markdown:
             
             missing = []
             if data.get("record_type") in ("material_consumed", "material_received"):
-                if data.get("quantity") is None: missing.append("quantity")
-                if data.get("unit") is None: missing.append("unit")
-                if data.get("material_name") is None: missing.append("material_name")
-                if data.get("service") is None: missing.append("service")
-            
+                missing = [
+                    field
+                    for field in ("quantity", "unit", "material_name", "service")
+                    if data.get(field) is None
+                ]
+
             return Extraction(
                 data.get("record_type", "service"),
                 Decimal(str(data["quantity"])) if data.get("quantity") is not None else None,

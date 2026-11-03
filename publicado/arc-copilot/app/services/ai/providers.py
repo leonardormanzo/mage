@@ -2,7 +2,11 @@ from __future__ import annotations
 
 import hashlib
 import math
+import re
+import unicodedata
 from abc import ABC, abstractmethod
+
+from app.core.config import EMBEDDING_DIMENSION
 
 
 class TranscriptionProvider(ABC):
@@ -12,8 +16,18 @@ class TranscriptionProvider(ABC):
 
 
 class EmbeddingProvider(ABC):
+    """Gera vetores de EMBEDDING_DIMENSION posições.
+
+    `name` identifica o espaço vetorial: só se comparam vetores do mesmo `name`.
+    `min_score` é a similaridade de cosseno mínima para considerar um trecho relevante.
+    """
+
+    name: str
+    min_score: float
+
     @abstractmethod
-    def embed(self, text: str) -> list[float]:
+    def embed(self, text: str, task: str = "document") -> list[float]:
+        """`task` é "document" para trechos indexados e "query" para perguntas."""
         raise NotImplementedError
 
 
@@ -34,14 +48,45 @@ class MockTranscriptionProvider(TranscriptionProvider):
         return "Usamos 20 sacos de cimento na alvenaria do segundo pavimento."
 
 
-class MockEmbeddingProvider(EmbeddingProvider):
-    """Deterministic local vector for demos; not a semantic production embedding."""
+_TOKEN = re.compile(r"[a-z0-9]+")
+_STOPWORDS = frozenset(
+    "que qual quais como onde quando quem uma uns umas para por com sem sobre entre dos das nos nas "
+    "aos pelo pela pelos pelas ser foi sao tem tinha este esta esse essa isso aqui ali mais menos "
+    "muito pouco alem apos ate desde contra seu sua seus suas nao".split()
+)
+_STEM_LENGTH = 6
 
-    def embed(self, text: str) -> list[float]:
-        digest = hashlib.sha256(text.lower().encode()).digest()
-        values = [(byte - 127.5) / 127.5 for byte in digest[:16]]
-        norm = math.sqrt(sum(value * value for value in values)) or 1
-        return [value / norm for value in values]
+
+def _tokens(text: str) -> list[str]:
+    folded = "".join(
+        char
+        for char in unicodedata.normalize("NFD", text.lower())
+        if unicodedata.category(char) != "Mn"
+    )
+    return [
+        token[:_STEM_LENGTH]
+        for token in _TOKEN.findall(folded)
+        if len(token) >= 3 and token not in _STOPWORDS
+    ]
+
+
+class MockEmbeddingProvider(EmbeddingProvider):
+    """Vetor local por hashing de palavras (bag-of-words), sem chave nem rede.
+
+    Mede sobreposição de vocabulário, não significado: serve para demonstração e testes.
+    """
+
+    name = "hashing-v1"
+    min_score = 0.15
+
+    def embed(self, text: str, task: str = "document") -> list[float]:
+        vector = [0.0] * EMBEDDING_DIMENSION
+        for token in _tokens(text):
+            digest = hashlib.blake2b(token.encode(), digest_size=8).digest()
+            index = int.from_bytes(digest[:4], "big") % EMBEDDING_DIMENSION
+            vector[index] += 1.0 if digest[4] & 1 else -1.0
+        norm = math.sqrt(sum(value * value for value in vector))
+        return [value / norm for value in vector] if norm else vector
 
 
 class MockVisionProvider(VisionProvider):
@@ -57,6 +102,10 @@ class MockLLMProvider(LLMProvider):
 
 
 class GeminiProvider(TranscriptionProvider, EmbeddingProvider, VisionProvider, LLMProvider):
+    name = "gemini-embedding-001-768"
+    min_score = 0.4
+    _TASKS = {"document": "retrieval_document", "query": "retrieval_query"}
+
     def __init__(self, api_key: str | None):
         if not api_key:
             raise ValueError("GEMINI_API_KEY não configurada")
@@ -74,13 +123,14 @@ class GeminiProvider(TranscriptionProvider, EmbeddingProvider, VisionProvider, L
         audio_file.delete()
         return response.text
 
-    def embed(self, text: str) -> list[float]:
+    def embed(self, text: str, task: str = "document") -> list[float]:
         result = self.genai.embed_content(
-            model="models/text-embedding-004",
+            model="models/gemini-embedding-001",
             content=text,
-            task_type="retrieval_document",
+            task_type=self._TASKS[task],
+            output_dimensionality=EMBEDDING_DIMENSION,
         )
-        return result["embedding"]
+        return list(result["embedding"])
 
     def describe(self, path: str) -> str:
         img_file = self.genai.upload_file(path=path)

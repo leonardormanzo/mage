@@ -20,6 +20,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database.session import Base
+from app.database.types import EMBEDDING_TYPE
 
 
 def new_uuid() -> str:
@@ -250,6 +251,14 @@ class Document(Base):
 
 class DocumentChunk(Base):
     __tablename__ = "document_chunks"
+    __table_args__ = (
+        Index(
+            "ix_document_chunks_embedding_hnsw",
+            "embedding",
+            postgresql_using="hnsw",
+            postgresql_ops={"embedding": "vector_cosine_ops"},
+        ).ddl_if(dialect="postgresql"),
+    )
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_uuid)
     company_id: Mapped[str] = mapped_column(ForeignKey("companies.id"), index=True)
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id"), index=True)
@@ -257,7 +266,7 @@ class DocumentChunk(Base):
     content: Mapped[str] = mapped_column(Text)
     page: Mapped[int | None] = mapped_column(Integer)
     metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
-    embedding_json: Mapped[list | None] = mapped_column(JSON)
+    embedding: Mapped[list[float] | None] = mapped_column(EMBEDDING_TYPE, nullable=True)
 
 
 class RagQuery(Base):

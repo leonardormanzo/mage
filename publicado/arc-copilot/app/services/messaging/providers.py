@@ -76,7 +76,7 @@ class MetaWhatsAppProvider(WhatsAppProvider):
                 content=content,
             )
         except (KeyError, IndexError) as e:
-            raise ValueError(f"Payload do WhatsApp malformado: {e}")
+            raise ValueError(f"Payload do WhatsApp malformado: {e}") from e
 
     def send_text(self, destination: str, text: str) -> dict:
         if not self.access_token or not self.phone_id:

@@ -6,6 +6,8 @@ from functools import lru_cache
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parents[2]
+EMBEDDING_DIMENSION = 768
+DEMO_UPLOAD_LIMIT_MB = 1
 
 
 @dataclass(frozen=True)
@@ -23,10 +25,16 @@ class Settings:
     webhook_app_secret: str | None = os.getenv("WHATSAPP_APP_SECRET")
     whatsapp_access_token: str | None = os.getenv("WHATSAPP_ACCESS_TOKEN")
     whatsapp_phone_id: str | None = os.getenv("WHATSAPP_PHONE_ID")
+    demo_mode: bool = os.getenv("DEMO_MODE", "").lower() in {"1", "true", "yes"}
 
     @property
     def ai_mode(self) -> bool:
         return bool(self.gemini_api_key)
+
+    @property
+    def upload_limit_mb(self) -> int:
+        """Na demonstração pública o disco é efêmero e aberto a visitantes: limite menor."""
+        return min(self.max_upload_mb, DEMO_UPLOAD_LIMIT_MB) if self.demo_mode else self.max_upload_mb
 
 
 @lru_cache

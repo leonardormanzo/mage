@@ -21,8 +21,7 @@ from sqlalchemy.orm import Session
 from app.core.config import BASE_DIR
 from app.database.models import ExtractedRecord, FieldLink, Project, User
 from app.database.session import get_db
-from app.services.audit import audit
-from app.services.workflow import answer_record, confirm_record, receive_message, transition
+from app.services.workflow import answer_record, cancel_record, confirm_record, receive_message
 
 router = APIRouter(prefix="/e")
 templates = Jinja2Templates(directory=str(BASE_DIR / "app" / "templates"))
@@ -62,7 +61,8 @@ def resolve_link(token: str, db: Session = Depends(get_db)) -> FieldLink:
             FieldLink.token_hash == hash_token(token), FieldLink.active.is_(True)
         )
     )
-    if not link:
+    owner = db.get(User, link.user_id) if link else None
+    if not link or not owner or not owner.active:
         raise HTTPException(status_code=404, detail="Link inválido ou desativado")
     now = time.monotonic()
     hits = _hits[link.id]
@@ -132,16 +132,5 @@ def field_confirm(payload: RecordInput, link: FieldLink = Depends(resolve_link),
 @router.post("/{token}/cancel")
 def field_cancel(payload: RecordInput, link: FieldLink = Depends(resolve_link), db: Session = Depends(get_db)):
     record = _record(db, link, payload.record_id)
-    transition(record, "cancelled")
-    audit(
-        db,
-        company_id=link.company_id,
-        project_id=link.project_id,
-        user_id=link.user_id,
-        entity_type="record",
-        entity_id=record.id,
-        operation="cancelled",
-        new_value={"status": "cancelled"},
-    )
-    db.commit()
+    cancel_record(db, record=record, user=db.get(User, link.user_id))
     return {"record_id": record.id, "record_status": record.status, "bot": "Registro cancelado."}

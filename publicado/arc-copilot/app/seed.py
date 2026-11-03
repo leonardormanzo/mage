@@ -10,7 +10,6 @@ from app.core.security import hash_password
 from app.database.models import (
     Company,
     Document,
-    DocumentChunk,
     Material,
     MaterialMovement,
     Project,
@@ -18,6 +17,7 @@ from app.database.models import (
     ProjectUser,
     User,
 )
+from app.services.documents import index_document
 
 DEMO_PASSWORD = "ArcDemo123!"
 
@@ -154,15 +154,13 @@ def seed_demo(db: Session) -> dict:
     )
     db.add(document)
     db.flush()
-    db.add(
-        DocumentChunk(
-            company_id=company.id,
-            project_id=project.id,
-            document_id=document.id,
-            content="Antes da concretagem, conferir formas, armaduras, espaçadores e liberação do engenheiro responsável.",
-            page=1,
-            metadata_json={"source_name": document.name, "confirmation_status": "confirmed"},
-        )
+    index_document(
+        db,
+        document=document,
+        text=(
+            "Antes da concretagem, conferir formas, armaduras, espaçadores "
+            "e liberação do engenheiro responsável."
+        ),
     )
     db.commit()
     return {"company": company, "engineer": users[0], "project": project, "created": True}

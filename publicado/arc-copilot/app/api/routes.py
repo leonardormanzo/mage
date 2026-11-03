@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import re
 import uuid
 from datetime import date
@@ -13,13 +14,13 @@ from sqlalchemy.orm import Session
 from app.api.dependencies import ProjectContext, current_user, project_context, require_roles
 from app.core.config import get_settings
 from app.core.security import create_session_token, verify_password
+from app.core.throttle import login_throttle
 from app.database.models import (
     AuditLog,
     Company,
     DailyReport,
     DailyReportItem,
     Document,
-    DocumentChunk,
     ExtractedRecord,
     Material,
     MaterialMovement,
@@ -32,21 +33,33 @@ from app.database.models import (
 )
 from app.database.session import get_db
 from app.schemas import (
+    CorrectionInput,
     LoginInput,
     MessageInput,
     MovementInput,
     QueryInput,
+    ReasonInput,
     RecordAnswerInput,
     ReopenInput,
 )
 from app.services.audit import audit
+from app.services.documents import extract_text, index_document
 from app.services.inventory import material_balance
-from app.services.messaging import MockWhatsAppProvider, MetaWhatsAppProvider
+from app.services.messaging import MetaWhatsAppProvider, MockWhatsAppProvider
 from app.services.rag import answer_question
 from app.services.reports import build_report_pdf
-from app.services.workflow import answer_record, confirm_record, receive_message
+from app.services.workflow import (
+    answer_record,
+    cancel_record,
+    confirm_record,
+    correct_record,
+    receive_message,
+    reverse_record,
+)
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api")
+ACTIVE_RDO_STATUSES = ("included_in_rdo", "closed")
 ALLOWED_UPLOADS = {
     "application/pdf": ".pdf",
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document": ".docx",
@@ -60,12 +73,21 @@ ALLOWED_UPLOADS = {
 
 
 @router.post("/auth/login")
-def login(payload: LoginInput, db: Session = Depends(get_db)):
+def login(payload: LoginInput, request: Request, db: Session = Depends(get_db)):
+    key = f"{_client_ip(request)}|{payload.email.strip().lower()}"
+    if login_throttle.is_blocked(key):
+        raise HTTPException(
+            status_code=429, detail="Muitas tentativas. Aguarde alguns minutos e tente de novo."
+        )
     user = db.scalar(
-        select(User).where(func.lower(User.email) == payload.email.lower(), User.active.is_(True))
+        select(User).where(
+            func.lower(User.email) == payload.email.strip().lower(), User.active.is_(True)
+        )
     )
     if not user or not verify_password(payload.password, user.password_hash):
+        login_throttle.record_failure(key)
         raise HTTPException(status_code=401, detail="E-mail ou senha inválidos")
+    login_throttle.clear(key)
     token = create_session_token(user.id, get_settings().secret_key)
     response = Response(
         content='{"ok":true}',
@@ -203,12 +225,68 @@ def confirm(
     context: ProjectContext = Depends(project_context),
     db: Session = Depends(get_db),
 ):
-    record = _scoped_record(db, context, record_id)
+    record = _scoped_record(db, context, record_id, lock=True)
     bot_text, balance = confirm_record(db, record=record, user=context.user)
     return {
         "record_id": record.id,
         "record_status": record.status,
         "bot": bot_text,
+        "balance": balance,
+    }
+
+
+@router.post("/projects/{project_id}/records/{record_id}/cancel")
+def cancel(
+    record_id: str,
+    request: Request,
+    context: ProjectContext = Depends(project_context),
+    db: Session = Depends(get_db),
+):
+    record = _scoped_record(db, context, record_id, lock=True)
+    cancel_record(db, record=record, user=context.user, ip_address=_client_ip(request))
+    return {"record_id": record.id, "record_status": record.status, "bot": "Registro cancelado."}
+
+
+@router.post("/projects/{project_id}/records/{record_id}/reverse")
+def reverse(
+    record_id: str,
+    payload: ReasonInput,
+    request: Request,
+    context: ProjectContext = Depends(require_roles("master", "engineer")),
+    db: Session = Depends(get_db),
+):
+    record = _scoped_record(db, context, record_id, lock=True)
+    balance = reverse_record(
+        db,
+        record=record,
+        user=context.user,
+        reason=payload.reason,
+        ip_address=_client_ip(request),
+    )
+    return {"record_id": record.id, "record_status": record.status, "balance": balance}
+
+
+@router.post("/projects/{project_id}/records/{record_id}/correct")
+def correct(
+    record_id: str,
+    payload: CorrectionInput,
+    request: Request,
+    context: ProjectContext = Depends(require_roles("master", "engineer")),
+    db: Session = Depends(get_db),
+):
+    record = _scoped_record(db, context, record_id, lock=True)
+    corrected, balance = correct_record(
+        db,
+        record=record,
+        user=context.user,
+        reason=payload.reason,
+        changes=payload.model_dump(exclude={"reason"}),
+        ip_address=_client_ip(request),
+    )
+    return {
+        "record_id": corrected.id,
+        "replaces_record_id": record.id,
+        "record_status": corrected.status,
         "balance": balance,
     }
 
@@ -426,8 +504,9 @@ async def upload_document(
     extension = ALLOWED_UPLOADS.get(content_type)
     if extension not in {".pdf", ".docx", ".txt"}:
         raise HTTPException(status_code=415, detail="Envie PDF, DOCX ou TXT")
-    content = await file.read(settings.max_upload_mb * 1024 * 1024 + 1)
-    if len(content) > settings.max_upload_mb * 1024 * 1024:
+    limit_bytes = settings.upload_limit_mb * 1024 * 1024
+    content = await file.read(limit_bytes + 1)
+    if len(content) > limit_bytes:
         raise HTTPException(status_code=413, detail="Arquivo excede o limite")
     safe_stem = re.sub(r"[^a-zA-Z0-9_-]", "-", Path(file.filename or "documento").stem)[:80]
     stored_name = (
@@ -446,42 +525,19 @@ async def upload_document(
     )
     db.add(document)
     db.flush()
-    text = _extract_document_text(destination, extension)
-    
-    provider = None
-    if settings.ai_mode and settings.gemini_api_key:
-        from app.services.ai.providers import GeminiProvider
-        provider = GeminiProvider(api_key=settings.gemini_api_key)
-
-    for position in range(0, len(text), 900):
-        chunk = text[position : position + 900].strip()
-        if chunk:
-            embedding = None
-            if provider:
-                try:
-                    embedding = provider.embed(chunk)
-                except Exception:
-                    pass
-            db.add(
-                DocumentChunk(
-                    company_id=context.user.company_id,
-                    project_id=context.project.id,
-                    document_id=document.id,
-                    content=chunk,
-                    embedding_json=embedding,
-                    metadata_json={
-                        "source_name": document.name,
-                        "confirmation_status": "confirmed",
-                    },
-                )
-            )
+    text = extract_text(destination, extension)
+    indexed = index_document(db, document=document, text=text)
     db.commit()
     return {
         "id": document.id,
         "name": document.name,
         "status": document.status,
         "characters": len(text),
+        "chunks": indexed.chunks,
+        "embedded_chunks": indexed.embedded,
+        "embedder": indexed.embedder,
     }
+
 
 @router.get("/projects/{project_id}/audit")
 def list_audit(
@@ -592,13 +648,11 @@ async def whatsapp_webhook(request: Request, db: Session = Depends(get_db)):
         destination_phone=incoming.destination_phone,
     )
     
-    # Send reply via WhatsApp
     if bot_text:
         try:
             provider.send_text(incoming.origin_phone, bot_text)
-        except Exception as e:
-            # Log failure to send
-            pass
+        except Exception:
+            logger.warning("Falha ao responder no WhatsApp", exc_info=True)
 
     return {"status": "success"}
 
@@ -644,14 +698,16 @@ async def mock_whatsapp_webhook(request: Request, db: Session = Depends(get_db))
     }
 
 
-def _scoped_record(db: Session, context: ProjectContext, record_id: str) -> ExtractedRecord:
-    record = db.scalar(
-        select(ExtractedRecord).where(
-            ExtractedRecord.id == record_id,
-            ExtractedRecord.company_id == context.user.company_id,
-            ExtractedRecord.project_id == context.project.id,
-        )
+def _scoped_record(
+    db: Session, context: ProjectContext, record_id: str, *, lock: bool = False
+) -> ExtractedRecord:
+    """Busca o registro da obra; `lock` trava a linha no PostgreSQL contra operações simultâneas."""
+    statement = select(ExtractedRecord).where(
+        ExtractedRecord.id == record_id,
+        ExtractedRecord.company_id == context.user.company_id,
+        ExtractedRecord.project_id == context.project.id,
     )
+    record = db.scalar(statement.with_for_update() if lock else statement)
     if not record:
         raise HTTPException(status_code=404, detail="Registro não encontrado")
     return record
@@ -690,6 +746,7 @@ def _report_records(db: Session, context: ProjectContext, report_id: str):
             DailyReportItem.daily_report_id == report_id,
             ExtractedRecord.company_id == context.user.company_id,
             ExtractedRecord.project_id == context.project.id,
+            ExtractedRecord.status.in_(ACTIVE_RDO_STATUSES),
         )
     ).all()
 
@@ -703,6 +760,7 @@ def _record_dict(record: ExtractedRecord):
         "unit": record.unit,
         "material": record.material_name,
         "service": record.service,
+        "location": record.location,
         "date": record.event_date,
     }
 
@@ -716,21 +774,5 @@ def _report_pending(report: DailyReport) -> list[str]:
     return pending
 
 
-def _extract_document_text(path: Path, extension: str) -> str:
-    if extension == ".txt":
-        return path.read_text(encoding="utf-8", errors="replace")
-    if extension == ".pdf":
-        try:
-            from pypdf import PdfReader
-
-            return "\n".join(page.extract_text() or "" for page in PdfReader(path).pages)
-        except Exception:
-            return ""
-    if extension == ".docx":
-        try:
-            from docx import Document as DocxDocument
-
-            return "\n".join(paragraph.text for paragraph in DocxDocument(path).paragraphs)
-        except Exception:
-            return ""
-    return ""
+def _client_ip(request: Request) -> str | None:
+    return request.client.host if request.client else None
